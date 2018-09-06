@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Fragment.CreateGroupFragment"
+    android:background="@drawable/background">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/group_image"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_above="@id/linear_layout"
+        android:layout_centerHorizontal="true"
+        app:civ_border_width="2dp"
+        app:civ_border_color="@android:color/white"
+        android:src="@drawable/ic_photo_camera"/>
+
+    <LinearLayout
+        android:id="@+id/linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/group_name"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:hint="Group Name"
+            android:padding="5dp"
+            android:background="@drawable/text"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/man_no_of_member"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/text"
+                android:ems="8"
+                android:hint="Maximum Member"
+                android:inputType="number"
+                android:padding="5dp" />
+
+            <CheckBox
+                android:id="@+id/join_automatically"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Join Automatically" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/create_group_btn"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:layout_below="@id/linear_layout"
+        android:background="@drawable/button"
+        android:text="Create" />
+
+</RelativeLayout>

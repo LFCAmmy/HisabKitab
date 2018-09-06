@@ -54,7 +54,7 @@ public class GettingStartedFragment extends Fragment {
                 String code = groupCode.getText().toString();
 
                 if (TextUtils.isEmpty(code)){
-                    
+
                 }
             }
         });

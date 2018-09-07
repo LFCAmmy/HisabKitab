@@ -166,11 +166,11 @@ ADDED from /Users/lfcammy/Downloads/HisabKitab/app/src/main/AndroidManifest.xml:
 	android:name
 		ADDED from /Users/lfcammy/Downloads/HisabKitab/app/src/main/AndroidManifest.xml:18:23-70
 activity#susankyatech.com.hisabkitab.RegisterActivity
-ADDED from /Users/lfcammy/Downloads/HisabKitab/app/src/main/AndroidManifest.xml:21:9-23:59
+ADDED from /Users/lfcammy/Downloads/HisabKitab/app/src/main/AndroidManifest.xml:21:9-23:55
 	android:parentActivityName
-		ADDED from /Users/lfcammy/Downloads/HisabKitab/app/src/main/AndroidManifest.xml:23:13-56
+		ADDED from /Users/lfcammy/Downloads/HisabKitab/app/src/main/AndroidManifest.xml:23:9-52
 	android:name
-		ADDED from /Users/lfcammy/Downloads/HisabKitab/app/src/main/AndroidManifest.xml:22:13-45
+		ADDED from /Users/lfcammy/Downloads/HisabKitab/app/src/main/AndroidManifest.xml:22:9-41
 activity#susankyatech.com.hisabkitab.WelcomeActivity
 ADDED from /Users/lfcammy/Downloads/HisabKitab/app/src/main/AndroidManifest.xml:24:9-62
 	android:name

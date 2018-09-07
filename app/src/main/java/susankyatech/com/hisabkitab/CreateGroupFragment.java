@@ -18,8 +18,11 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -48,11 +51,11 @@ public class CreateGroupFragment extends Fragment {
     Button createGroup;
 
     private ProgressDialog loadingBar;
-    private String joinAuto, currentUserId, token, downloadUrl="";
+    private String joinAuto, userName, currentUserId, token, downloadUrl="";
     final static int gallery_pick = 1;
 
     private FirebaseAuth mAuth;
-    private DatabaseReference groupRef;
+    private DatabaseReference groupRef, userRef;
     private StorageReference groupImageRef;
 
 
@@ -74,9 +77,24 @@ public class CreateGroupFragment extends Fragment {
         currentUserId = mAuth.getCurrentUser().getUid();
 
         groupRef = FirebaseDatabase.getInstance().getReference().child("Group");
+        userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
         groupImageRef = FirebaseStorage.getInstance().getReference().child("Group Images");
 
         loadingBar = new ProgressDialog(getContext());
+
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    userName = dataSnapshot.child("user_name").getValue().toString();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         String easy = RandomString.digits + "ACEFGHJKLMNPQRUVWXYabcdefhijkprstuvwx";
         RandomString tickets = new RandomString(23, new SecureRandom(), easy);
@@ -120,12 +138,31 @@ public class CreateGroupFragment extends Fragment {
                     groupMap.put("max_members",max);
                     groupMap.put("join_automatically",joinAuto);
                     groupMap.put("group_image",downloadUrl);
+                    groupMap.put("token",token);
                    groupRef.child(token).updateChildren(groupMap).addOnCompleteListener(new OnCompleteListener() {
                        @Override
                        public void onComplete(@NonNull Task task) {
                            if (task.isSuccessful()){
                                HashMap memberMap = new HashMap();
-                               memberMap.put("id",currentUserId);
+                               memberMap.put("name", userName);
+                               memberMap.put("role","admin");
+                               groupRef.child(token).child("members").child(currentUserId).updateChildren(memberMap)
+                                       .addOnCompleteListener(new OnCompleteListener() {
+                                           @Override
+                                           public void onComplete(@NonNull Task task) {
+                                               HashMap userMap = new HashMap();
+                                               userMap.put("group_id",token);
+                                               userRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
+                                                   @Override
+                                                   public void onComplete(@NonNull Task task) {
+                                                       Intent intent = new Intent(getActivity(), MainActivity.class);
+                                                       intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                       startActivity(intent);
+                                                   }
+                                               });
+
+                                           }
+                                       });
 
                            } else{
                                String message = task.getException().getMessage();

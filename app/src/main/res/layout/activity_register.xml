@@ -5,6 +5,10 @@
     android:layout_height="match_parent"
     android:background="@color/colorBackground">
 
+    <include
+        android:id="@+id/register_main_toolbar"
+        layout="@layout/app_bar_layout"/>
+
     <TextView
         android:id="@+id/app_name"
         android:layout_width="wrap_content"
@@ -18,26 +22,41 @@
         android:textStyle="italic"/>
 
     <EditText
-        android:id="@+id/email_field"
+        android:id="@+id/new_username_field"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:layout_below="@id/app_name"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:padding="12dp"
+        android:hint="@string/username"
+        android:textColor="@android:color/background_dark"
+        android:background="@drawable/text"
+        android:drawableStart="@drawable/ic_user"
+        android:drawablePadding="10dp"/>
+
+    <EditText
+        android:id="@+id/new_email_field"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
-        android:layout_below="@id/app_name"
-        android:layout_marginTop="25dp"
+        android:layout_below="@id/new_username_field"
         android:layout_centerHorizontal="true"
-        android:padding="12dp"
+        android:layout_marginTop="20dp"
         android:hint="@string/email"
+        android:padding="12dp"
         android:textColor="@android:color/background_dark"
         android:background="@drawable/text"
         android:drawableStart="@drawable/ic_email"
         android:drawablePadding="10dp"/>
 
     <EditText
-        android:id="@+id/password_field"
+        android:id="@+id/new_password_field"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
-        android:layout_below="@id/email_field"
+        android:layout_below="@id/new_email_field"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:padding="12dp"
@@ -48,26 +67,13 @@
         android:drawablePadding="10dp"/>
 
     <Button
-        android:id="@+id/login_btn"
+        android:id="@+id/register_btn"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/password_field"
+        android:layout_below="@id/new_password_field"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="@string/login"
+        android:text="@string/register"
         android:background="@drawable/login_button"/>
-
-    <TextView
-        android:id="@+id/create_new_account"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/login_btn"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="35dp"
-        android:text="@string/need_new_account"
-        android:textSize="19sp"
-        android:textColor="@android:color/background_dark"
-        android:textColorHint="@android:color/background_dark"/>
 
 </RelativeLayout>

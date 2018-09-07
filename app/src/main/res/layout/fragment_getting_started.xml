@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragment.GettingStartedFragment"
-    android:background="@color/bg">
+    android:background="@color/colorBackground">
 
     <TextView
         android:layout_width="match_parent"
@@ -15,7 +15,7 @@
         android:layout_marginTop="30dp"
         android:gravity="center"
         android:padding="5dp"
-        android:text="@string/geting_started"
+        android:text="@string/getting_started"
         android:textColor="@android:color/black"
         android:textSize="20sp" />
 

@@ -1,4 +1,4 @@
-package susankyatech.com.hisabkitab.Fragment;
+package susankyatech.com.hisabkitab;
 
 
 import android.os.Bundle;
@@ -14,12 +14,7 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import susankyatech.com.hisabkitab.R;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class GettingStartedFragment extends Fragment {
 
     @BindView(R.id.group_code)
@@ -66,7 +61,7 @@ public class GettingStartedFragment extends Fragment {
                 Fragment fragment = new CreateGroupFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-                transaction.replace(R.id.content_welcome_frame, fragment);
+                //transaction.replace(R.id.content_welcome_frame, fragment);
                 transaction.addToBackStack(null);
 
                 transaction.commit();

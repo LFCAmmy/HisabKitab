@@ -1,16 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.LoginActivity">
+    android:background="@color/colorBackground">
 
-    <FrameLayout
-        android:id="@+id/contain_login_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="140dp"
+        android:padding="10dp"
+        android:text="@string/app_name"
+        android:textSize="40sp"
+        android:textColor="@android:color/background_dark"
+        android:textStyle="italic"/>
 
-    </FrameLayout>
+    <EditText
+        android:id="@+id/email_field"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:layout_below="@id/app_name"
+        android:layout_marginTop="25dp"
+        android:layout_centerHorizontal="true"
+        android:padding="12dp"
+        android:hint="@string/email"
+        android:textColor="@android:color/background_dark"
+        android:background="@drawable/text"
+        android:drawableStart="@drawable/ic_email"
+        android:drawablePadding="10dp"/>
 
-</android.support.constraint.ConstraintLayout>
+    <EditText
+        android:id="@+id/password_field"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:layout_below="@id/email_field"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:padding="12dp"
+        android:hint="@string/password"
+        android:textColor="@android:color/background_dark"
+        android:background="@drawable/text"
+        android:drawableStart="@drawable/ic_password_lock"
+        android:drawablePadding="10dp"/>
+
+    <Button
+        android:id="@+id/login_btn"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/password_field"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/login"
+        android:background="@drawable/login_button"/>
+
+    <TextView
+        android:id="@+id/create_new_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_btn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="35dp"
+        android:text="@string/need_new_account"
+        android:textSize="19sp"
+        android:textColor="@android:color/background_dark"
+        android:textColorHint="@android:color/background_dark"/>
+
+</RelativeLayout>

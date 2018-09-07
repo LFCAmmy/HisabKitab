@@ -4,17 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Fragment.GettingStartedFragment"
-    android:background="@color/bg">
+    tools:context=".GettingStartedFragment"
+    android:background="@color/colorBackground">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/cardView"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="30dp"
         android:gravity="center"
         android:padding="5dp"
+        android:layout_marginBottom="70dp"
         android:text="@string/getting_started"
         android:textColor="@android:color/black"
         android:textSize="20sp" />
@@ -36,7 +36,7 @@
             android:layout_centerVertical="true"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="5dp">
+            android:padding="15dp">
 
             <EditText
                 android:id="@+id/group_code"
@@ -52,8 +52,7 @@
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:elevation="5dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/button"
                 android:text="Join Group" />
 
@@ -67,8 +66,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/cardView"
-        android:layout_marginTop="100dp"
         android:gravity="center"
+        android:layout_marginTop="70dp"
         android:text="Or Do you want to create Group"
         android:textColor="@android:color/black"
         android:textSize="18sp" />

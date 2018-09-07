@@ -1,7 +1,10 @@
-package susankyatech.com.hisabkitab;
+package susankyatech.com.hisabkitab.Activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import susankyatech.com.hisabkitab.Fragment.LoginFragment;
+import susankyatech.com.hisabkitab.R;
 
 public class LoginActivity extends AppCompatActivity {
 

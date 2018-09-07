@@ -1,4 +1,4 @@
-package susankyatech.com.hisabkitab;
+package susankyatech.com.hisabkitab.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import susankyatech.com.hisabkitab.Activity.WelcomeActivity;
+import susankyatech.com.hisabkitab.R;
 
 public class LoginFragment extends Fragment {
 

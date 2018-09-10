@@ -110,10 +110,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
 
-        if (item.getItemId() == R.id.menu_logout) {
-            mAuth.signOut();
-            logOutUser();
-        }
+//        if (item.getItemId() == R.id.menu_logout) {
+//            mAuth.signOut();
+//            logOutUser();
+//        }
         return super.onOptionsItemSelected(item);
     }
 

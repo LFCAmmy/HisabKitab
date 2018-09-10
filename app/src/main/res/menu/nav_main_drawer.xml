@@ -8,6 +8,10 @@
             android:id="@+id/nav_my_expense"
             android:title="@string/my_expenses" />
         <item
+            android:id="@+id/nav_list_members"
+            android:icon="@drawable/ic_group_members"
+            android:title="@string/list_member" />
+        <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings"
             android:title="@string/settings" />
@@ -16,5 +20,17 @@
             android:icon="@drawable/ic_sign_out"
             android:title="@string/logout" />
     </group>
+    <item android:title="@string/communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share_app"
+                android:icon="@drawable/ic_share_this_app"
+                android:title="@string/share"/>
+            <item
+                android:id="@+id/nav_app_about"
+                android:icon="@drawable/ic_about_this_app"
+                android:title="@string/about"/>
+        </menu>
+    </item>
 
 </menu>

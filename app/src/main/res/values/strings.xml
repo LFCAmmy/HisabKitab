@@ -22,13 +22,23 @@
     <!-- Main Activity -->
     <string name="logout">Logout</string>
 
-    <!-- Navigation Drawer -->
+    <!-- Navigation Drawer/Menu -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="communicate">Communicate</string>
     <string name="my_expenses">My Expenses</string>
+    <string name="list_member">Group Members</string>
     <string name="settings">Settings</string>
+    <string name="share">Share app</string>
+    <string name="about">About</string>
+    <string name="faq">FAQ?</string>
+    <string name="report_bug">Report Bug</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- My Expenses/Group Members Fragment -->
+
+
+
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

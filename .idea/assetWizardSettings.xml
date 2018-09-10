@@ -3,6 +3,11 @@
   <component name="WizardSettings">
     <option name="children">
       <map>
+        <entry key="imageWizard">
+          <value>
+            <PersistentState />
+          </value>
+        </entry>
         <entry key="vectorWizard">
           <value>
             <PersistentState>
@@ -14,8 +19,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_email" />
-                            <entry key="sourceFile" value="C:\Users\Attikz\Downloads\ic_email.svg" />
+                            <entry key="outputName" value="ic_add" />
+                            <entry key="sourceFile" value="$PROJECT_DIR$/../add.svg" />
                           </map>
                         </option>
                       </PersistentState>

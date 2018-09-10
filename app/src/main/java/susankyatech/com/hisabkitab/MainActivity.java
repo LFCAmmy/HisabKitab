@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference userRef;
 
-    private String currentUserId;
+    private String currentUserId, groupId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,26 +35,10 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("HisabKitab");
 
-        mAuth = FirebaseAuth.getInstance();
-        currentUserId = mAuth.getCurrentUser().getUid();
 
-        userRef = FirebaseDatabase.getInstance().getReference().child(currentUserId);
 
-        userRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()){
-                    if (!dataSnapshot.hasChild("group_id")){
-                        sendUserToHomeActivity();
-                    }
-                }
-            }
+        getSupportFragmentManager().beginTransaction().add(R.id.content_main_frame, new CurrentExpenseFragment()).commit();
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
     private void sendUserToHomeActivity() {
@@ -65,11 +51,29 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        mAuth = FirebaseAuth.getInstance();
+        currentUserId = mAuth.getCurrentUser().getUid();
 
-        if (currentUser == null) {
-            logOutUser();
-        }
+        userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    groupId = dataSnapshot.child("group_id").getValue().toString();
+                    if (groupId.equals("none")){
+                        sendUserToHomeActivity();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     private void logOutUser() {

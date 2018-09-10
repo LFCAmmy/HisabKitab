@@ -10,12 +10,12 @@
         android:id="@+id/main_activity_toolbar"
         layout="@layout/app_bar_layout"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/need_new_account"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:textSize="20sp"/>
+    <FrameLayout
+        android:id="@+id/content_main_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/main_activity_toolbar"
+        android:layout_alignParentStart="true"
+        tools:background="#EFEFEF" />
 
 </RelativeLayout>

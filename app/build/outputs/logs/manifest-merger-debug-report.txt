@@ -5,7 +5,10 @@ INJECTED from /Users/lfcammy/Downloads/HisabKitab/app/src/main/AndroidManifest.x
 INJECTED from /Users/lfcammy/Downloads/HisabKitab/app/src/main/AndroidManifest.xml:2:1-27:12
 INJECTED from /Users/lfcammy/Downloads/HisabKitab/app/src/main/AndroidManifest.xml:2:1-27:12
 MERGED from [com.google.firebase:firebase-core:11.8.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/firebase-core-11.8.0.aar/563e6008d356e808b4ad2a5d2b1c8c17/AndroidManifest.xml:2:1-6:12
-MERGED from [com.android.support:appcompat-v7:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0-rc02.aar/b19ba0a844298365aae80849b548bbc4/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:design:28.0.0-rc01] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/design-28.0.0-rc01.aar/0eedf8d3757eb277bfd522db2858d25f/AndroidManifest.xml:17:1-24:12
+MERGED from [com.afollestad.material-dialogs:core:0.9.6.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/core-0.9.6.0.aar/071e48129bae2c90f2f1c77c54f66765/AndroidManifest.xml:2:1-15:12
+MERGED from [me.zhanghai.android.materialprogressbar:library:1.4.2] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/library-1.4.2.aar/63612e4b4b5255ee09367ee7999d8d2e/AndroidManifest.xml:6:1-16:12
+MERGED from [com.android.support:appcompat-v7:28.0.0-rc01] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0-rc01.aar/603d41d107aabfbb7a233e67f82500f7/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support.constraint:constraint-layout:1.1.3] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/constraint-layout-1.1.3.aar/794c6af46afe053b8e98d5c93aa41460/AndroidManifest.xml:2:1-11:12
 MERGED from [com.google.firebase:firebase-auth:11.8.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/firebase-auth-11.8.0.aar/a8a8824fffc0f187b127c174b157bd3b/AndroidManifest.xml:17:1-32:12
 MERGED from [com.google.firebase:firebase-database:11.8.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/firebase-database-11.8.0.aar/e1b278c978afea57b73fa851388197da/AndroidManifest.xml:2:1-8:12
@@ -24,11 +27,13 @@ MERGED from [com.jakewharton:butterknife:8.8.1] /Users/lfcammy/.gradle/caches/tr
 MERGED from [de.hdodenhof:circleimageview:2.2.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/circleimageview-2.2.0.aar/2afc30f7be157b4955ccc2c2d7277f99/AndroidManifest.xml:2:1-11:12
 MERGED from [com.squareup.picasso:picasso:2.71828] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/picasso-2.71828.aar/b30b66e4ff29351f70405e6891b541bb/AndroidManifest.xml:2:1-14:12
 MERGED from [com.android.support:cardview-v7:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/cardview-v7-28.0.0-rc02.aar/23ad20b5f6792daa74b76159733af053/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:transition:28.0.0-rc01] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/transition-28.0.0-rc01.aar/802f725b7f4b2b9ada0d0316cf1e92b0/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:exifinterface:27.1.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/exifinterface-27.1.0.aar/3a39a1947d183306fd10375098c88b48/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:support-fragment:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/support-fragment-28.0.0-rc02.aar/0abb8db0c69d1d21d9836a2f41003d47/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:animated-vector-drawable:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-28.0.0-rc02.aar/ac6c6b12d0b2563766ee63bf913f74b9/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:animated-vector-drawable:28.0.0-rc01] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-28.0.0-rc01.aar/1cca977b12a8beb4c1f49211b408edf9/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:recyclerview-v7:28.0.0-rc01] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-28.0.0-rc01.aar/d591dc1a2ae628cad461ce40fa72672b/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:support-core-ui:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/support-core-ui-28.0.0-rc02.aar/111a52bfbc97ea13c319a273d2affec7/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:support-core-utils:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/support-core-utils-28.0.0-rc02.aar/1823e88cb4f6bbc3173d9c3d57cad780/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:support-vector-drawable:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-28.0.0-rc02.aar/30470dc1332b0ad9b558b3f395459bbe/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:loader:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/loader-28.0.0-rc02.aar/df21f904970275f535b728edb6c57f54/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:viewpager:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/viewpager-28.0.0-rc02.aar/869bb71e37e25292cb65ec6b407adecb/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:coordinatorlayout:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/coordinatorlayout-28.0.0-rc02.aar/ecbf12d843e75dde0c8b66f98aa61637/AndroidManifest.xml:17:1-22:12
@@ -37,19 +42,19 @@ MERGED from [com.android.support:slidingpanelayout:28.0.0-rc02] /Users/lfcammy/.
 MERGED from [com.android.support:customview:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/customview-28.0.0-rc02.aar/0a7448e79bd7bf6a6780d7ef76d11fa6/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:swiperefreshlayout:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/swiperefreshlayout-28.0.0-rc02.aar/af9eadf194f7d2bf90e3d1c5099c208e/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:asynclayoutinflater:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/asynclayoutinflater-28.0.0-rc02.aar/e9e4256e4ce480e0b5c8e637cda1541a/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-vector-drawable:28.0.0-rc01] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-28.0.0-rc01.aar/56baa4db4a106630d428541f215eb62d/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:support-media-compat:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0-rc02.aar/ee1b250922fa96b1c84ee4a8d141b104/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:support-compat:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/support-compat-28.0.0-rc02.aar/765b1f517cffc372d994d3a09909ef4a/AndroidManifest.xml:17:1-24:12
+MERGED from [android.arch.lifecycle:runtime:1.1.1] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/runtime-1.1.1.aar/88727a62a1aef43a59ddc62945d1e4c3/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:versionedparcelable:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/versionedparcelable-28.0.0-rc02.aar/8753f6667d0cd00de2a75da4706c7a8a/AndroidManifest.xml:17:1-25:12
-MERGED from [com.android.support:cursoradapter:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/cursoradapter-28.0.0-rc02.aar/07fa9ab2682d2a8bdf6eeb9c5366fe91/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:exifinterface:27.1.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/exifinterface-27.1.0.aar/3a39a1947d183306fd10375098c88b48/AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/livedata-core-1.1.1.aar/7eb7b541563669756fbc7bd0367f9287/AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.core:runtime:1.1.1] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/runtime-1.1.1.aar/9e4fdd69823339e73da63c00b3941af8/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:documentfile:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/documentfile-28.0.0-rc02.aar/bbf07f4772286118548cb8f6fffd4044/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:localbroadcastmanager:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/localbroadcastmanager-28.0.0-rc02.aar/95e390ebb99ccbe11a7b4be49d58ccce/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:print:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/print-28.0.0-rc02.aar/60488774f409033e979e854b6d0ee645/AndroidManifest.xml:17:1-22:12
 MERGED from [android.arch.lifecycle:viewmodel:1.1.1] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/viewmodel-1.1.1.aar/0a561c188197149de9b0337ecad92863/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:interpolator:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/interpolator-28.0.0-rc02.aar/8874939861285fc2f7cc8c3e51620089/AndroidManifest.xml:17:1-22:12
-MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/livedata-core-1.1.1.aar/7eb7b541563669756fbc7bd0367f9287/AndroidManifest.xml:17:1-22:12
-MERGED from [android.arch.lifecycle:runtime:1.1.1] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/runtime-1.1.1.aar/88727a62a1aef43a59ddc62945d1e4c3/AndroidManifest.xml:17:1-22:12
-MERGED from [android.arch.core:runtime:1.1.1] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/runtime-1.1.1.aar/9e4fdd69823339e73da63c00b3941af8/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:cursoradapter:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/cursoradapter-28.0.0-rc02.aar/07fa9ab2682d2a8bdf6eeb9c5366fe91/AndroidManifest.xml:17:1-22:12
 MERGED from [com.google.firebase:firebase-auth-license:11.8.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/firebase-auth-license-11.8.0.aar/8e2d228898f7fdfe2b33cdcc8bd955f8/AndroidManifest.xml:2:1-6:12
 MERGED from [com.google.firebase:firebase-database-license:11.8.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/firebase-database-license-11.8.0.aar/75cf0f826f1150269cb71ed6f0d33237/AndroidManifest.xml:2:1-6:12
 MERGED from [com.google.firebase:firebase-storage-license:11.8.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/firebase-storage-license-11.8.0.aar/4fbac6503e6bf5b6af4704ed92ae4f35/AndroidManifest.xml:2:1-6:12
@@ -83,6 +88,10 @@ application
 ADDED from /Users/lfcammy/Downloads/HisabKitab/app/src/main/AndroidManifest.xml:5:5-25:19
 MERGED from [com.google.firebase:firebase-core:11.8.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/firebase-core-11.8.0.aar/563e6008d356e808b4ad2a5d2b1c8c17/AndroidManifest.xml:5:5-20
 MERGED from [com.google.firebase:firebase-core:11.8.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/firebase-core-11.8.0.aar/563e6008d356e808b4ad2a5d2b1c8c17/AndroidManifest.xml:5:5-20
+MERGED from [com.android.support:design:28.0.0-rc01] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/design-28.0.0-rc01.aar/0eedf8d3757eb277bfd522db2858d25f/AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:design:28.0.0-rc01] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/design-28.0.0-rc01.aar/0eedf8d3757eb277bfd522db2858d25f/AndroidManifest.xml:22:5-20
+MERGED from [com.afollestad.material-dialogs:core:0.9.6.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/core-0.9.6.0.aar/071e48129bae2c90f2f1c77c54f66765/AndroidManifest.xml:13:5-20
+MERGED from [com.afollestad.material-dialogs:core:0.9.6.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/core-0.9.6.0.aar/071e48129bae2c90f2f1c77c54f66765/AndroidManifest.xml:13:5-20
 MERGED from [com.android.support.constraint:constraint-layout:1.1.3] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/constraint-layout-1.1.3.aar/794c6af46afe053b8e98d5c93aa41460/AndroidManifest.xml:9:5-20
 MERGED from [com.android.support.constraint:constraint-layout:1.1.3] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/constraint-layout-1.1.3.aar/794c6af46afe053b8e98d5c93aa41460/AndroidManifest.xml:9:5-20
 MERGED from [com.google.firebase:firebase-auth:11.8.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/firebase-auth-11.8.0.aar/a8a8824fffc0f187b127c174b157bd3b/AndroidManifest.xml:22:5-30:19
@@ -181,8 +190,14 @@ INJECTED from /Users/lfcammy/Downloads/HisabKitab/app/src/main/AndroidManifest.x
 INJECTED from /Users/lfcammy/Downloads/HisabKitab/app/src/main/AndroidManifest.xml
 MERGED from [com.google.firebase:firebase-core:11.8.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/firebase-core-11.8.0.aar/563e6008d356e808b4ad2a5d2b1c8c17/AndroidManifest.xml:4:5-43
 MERGED from [com.google.firebase:firebase-core:11.8.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/firebase-core-11.8.0.aar/563e6008d356e808b4ad2a5d2b1c8c17/AndroidManifest.xml:4:5-43
-MERGED from [com.android.support:appcompat-v7:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0-rc02.aar/b19ba0a844298365aae80849b548bbc4/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:appcompat-v7:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0-rc02.aar/b19ba0a844298365aae80849b548bbc4/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:design:28.0.0-rc01] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/design-28.0.0-rc01.aar/0eedf8d3757eb277bfd522db2858d25f/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:design:28.0.0-rc01] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/design-28.0.0-rc01.aar/0eedf8d3757eb277bfd522db2858d25f/AndroidManifest.xml:20:5-44
+MERGED from [com.afollestad.material-dialogs:core:0.9.6.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/core-0.9.6.0.aar/071e48129bae2c90f2f1c77c54f66765/AndroidManifest.xml:8:5-11:75
+MERGED from [com.afollestad.material-dialogs:core:0.9.6.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/core-0.9.6.0.aar/071e48129bae2c90f2f1c77c54f66765/AndroidManifest.xml:8:5-11:75
+MERGED from [me.zhanghai.android.materialprogressbar:library:1.4.2] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/library-1.4.2.aar/63612e4b4b5255ee09367ee7999d8d2e/AndroidManifest.xml:12:5-14:41
+MERGED from [me.zhanghai.android.materialprogressbar:library:1.4.2] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/library-1.4.2.aar/63612e4b4b5255ee09367ee7999d8d2e/AndroidManifest.xml:12:5-14:41
+MERGED from [com.android.support:appcompat-v7:28.0.0-rc01] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0-rc01.aar/603d41d107aabfbb7a233e67f82500f7/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:appcompat-v7:28.0.0-rc01] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0-rc01.aar/603d41d107aabfbb7a233e67f82500f7/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support.constraint:constraint-layout:1.1.3] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/constraint-layout-1.1.3.aar/794c6af46afe053b8e98d5c93aa41460/AndroidManifest.xml:5:5-7:41
 MERGED from [com.android.support.constraint:constraint-layout:1.1.3] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/constraint-layout-1.1.3.aar/794c6af46afe053b8e98d5c93aa41460/AndroidManifest.xml:5:5-7:41
 MERGED from [com.google.firebase:firebase-auth:11.8.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/firebase-auth-11.8.0.aar/a8a8824fffc0f187b127c174b157bd3b/AndroidManifest.xml:20:5-44
@@ -219,16 +234,20 @@ MERGED from [com.squareup.picasso:picasso:2.71828] /Users/lfcammy/.gradle/caches
 MERGED from [com.squareup.picasso:picasso:2.71828] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/picasso-2.71828.aar/b30b66e4ff29351f70405e6891b541bb/AndroidManifest.xml:5:5-44
 MERGED from [com.android.support:cardview-v7:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/cardview-v7-28.0.0-rc02.aar/23ad20b5f6792daa74b76159733af053/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:cardview-v7:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/cardview-v7-28.0.0-rc02.aar/23ad20b5f6792daa74b76159733af053/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:transition:28.0.0-rc01] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/transition-28.0.0-rc01.aar/802f725b7f4b2b9ada0d0316cf1e92b0/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:transition:28.0.0-rc01] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/transition-28.0.0-rc01.aar/802f725b7f4b2b9ada0d0316cf1e92b0/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:exifinterface:27.1.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/exifinterface-27.1.0.aar/3a39a1947d183306fd10375098c88b48/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:exifinterface:27.1.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/exifinterface-27.1.0.aar/3a39a1947d183306fd10375098c88b48/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-fragment:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/support-fragment-28.0.0-rc02.aar/0abb8db0c69d1d21d9836a2f41003d47/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-fragment:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/support-fragment-28.0.0-rc02.aar/0abb8db0c69d1d21d9836a2f41003d47/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:animated-vector-drawable:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-28.0.0-rc02.aar/ac6c6b12d0b2563766ee63bf913f74b9/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:animated-vector-drawable:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-28.0.0-rc02.aar/ac6c6b12d0b2563766ee63bf913f74b9/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:animated-vector-drawable:28.0.0-rc01] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-28.0.0-rc01.aar/1cca977b12a8beb4c1f49211b408edf9/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:animated-vector-drawable:28.0.0-rc01] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-28.0.0-rc01.aar/1cca977b12a8beb4c1f49211b408edf9/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:recyclerview-v7:28.0.0-rc01] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-28.0.0-rc01.aar/d591dc1a2ae628cad461ce40fa72672b/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:recyclerview-v7:28.0.0-rc01] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-28.0.0-rc01.aar/d591dc1a2ae628cad461ce40fa72672b/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-core-ui:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/support-core-ui-28.0.0-rc02.aar/111a52bfbc97ea13c319a273d2affec7/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-core-ui:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/support-core-ui-28.0.0-rc02.aar/111a52bfbc97ea13c319a273d2affec7/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-core-utils:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/support-core-utils-28.0.0-rc02.aar/1823e88cb4f6bbc3173d9c3d57cad780/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-core-utils:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/support-core-utils-28.0.0-rc02.aar/1823e88cb4f6bbc3173d9c3d57cad780/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-vector-drawable:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-28.0.0-rc02.aar/30470dc1332b0ad9b558b3f395459bbe/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-vector-drawable:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-28.0.0-rc02.aar/30470dc1332b0ad9b558b3f395459bbe/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:loader:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/loader-28.0.0-rc02.aar/df21f904970275f535b728edb6c57f54/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:loader:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/loader-28.0.0-rc02.aar/df21f904970275f535b728edb6c57f54/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:viewpager:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/viewpager-28.0.0-rc02.aar/869bb71e37e25292cb65ec6b407adecb/AndroidManifest.xml:20:5-44
@@ -245,16 +264,20 @@ MERGED from [com.android.support:swiperefreshlayout:28.0.0-rc02] /Users/lfcammy/
 MERGED from [com.android.support:swiperefreshlayout:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/swiperefreshlayout-28.0.0-rc02.aar/af9eadf194f7d2bf90e3d1c5099c208e/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:asynclayoutinflater:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/asynclayoutinflater-28.0.0-rc02.aar/e9e4256e4ce480e0b5c8e637cda1541a/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:asynclayoutinflater:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/asynclayoutinflater-28.0.0-rc02.aar/e9e4256e4ce480e0b5c8e637cda1541a/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:28.0.0-rc01] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-28.0.0-rc01.aar/56baa4db4a106630d428541f215eb62d/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:28.0.0-rc01] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-28.0.0-rc01.aar/56baa4db4a106630d428541f215eb62d/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-media-compat:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0-rc02.aar/ee1b250922fa96b1c84ee4a8d141b104/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-media-compat:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0-rc02.aar/ee1b250922fa96b1c84ee4a8d141b104/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-compat:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/support-compat-28.0.0-rc02.aar/765b1f517cffc372d994d3a09909ef4a/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-compat:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/support-compat-28.0.0-rc02.aar/765b1f517cffc372d994d3a09909ef4a/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:runtime:1.1.1] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/runtime-1.1.1.aar/88727a62a1aef43a59ddc62945d1e4c3/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:runtime:1.1.1] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/runtime-1.1.1.aar/88727a62a1aef43a59ddc62945d1e4c3/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:versionedparcelable:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/versionedparcelable-28.0.0-rc02.aar/8753f6667d0cd00de2a75da4706c7a8a/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:versionedparcelable:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/versionedparcelable-28.0.0-rc02.aar/8753f6667d0cd00de2a75da4706c7a8a/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:cursoradapter:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/cursoradapter-28.0.0-rc02.aar/07fa9ab2682d2a8bdf6eeb9c5366fe91/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:cursoradapter:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/cursoradapter-28.0.0-rc02.aar/07fa9ab2682d2a8bdf6eeb9c5366fe91/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:exifinterface:27.1.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/exifinterface-27.1.0.aar/3a39a1947d183306fd10375098c88b48/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:exifinterface:27.1.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/exifinterface-27.1.0.aar/3a39a1947d183306fd10375098c88b48/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/livedata-core-1.1.1.aar/7eb7b541563669756fbc7bd0367f9287/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/livedata-core-1.1.1.aar/7eb7b541563669756fbc7bd0367f9287/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.core:runtime:1.1.1] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/runtime-1.1.1.aar/9e4fdd69823339e73da63c00b3941af8/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.core:runtime:1.1.1] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/runtime-1.1.1.aar/9e4fdd69823339e73da63c00b3941af8/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:documentfile:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/documentfile-28.0.0-rc02.aar/bbf07f4772286118548cb8f6fffd4044/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:documentfile:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/documentfile-28.0.0-rc02.aar/bbf07f4772286118548cb8f6fffd4044/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:localbroadcastmanager:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/localbroadcastmanager-28.0.0-rc02.aar/95e390ebb99ccbe11a7b4be49d58ccce/AndroidManifest.xml:20:5-44
@@ -265,12 +288,8 @@ MERGED from [android.arch.lifecycle:viewmodel:1.1.1] /Users/lfcammy/.gradle/cach
 MERGED from [android.arch.lifecycle:viewmodel:1.1.1] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/viewmodel-1.1.1.aar/0a561c188197149de9b0337ecad92863/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:interpolator:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/interpolator-28.0.0-rc02.aar/8874939861285fc2f7cc8c3e51620089/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:interpolator:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/interpolator-28.0.0-rc02.aar/8874939861285fc2f7cc8c3e51620089/AndroidManifest.xml:20:5-44
-MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/livedata-core-1.1.1.aar/7eb7b541563669756fbc7bd0367f9287/AndroidManifest.xml:20:5-44
-MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/livedata-core-1.1.1.aar/7eb7b541563669756fbc7bd0367f9287/AndroidManifest.xml:20:5-44
-MERGED from [android.arch.lifecycle:runtime:1.1.1] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/runtime-1.1.1.aar/88727a62a1aef43a59ddc62945d1e4c3/AndroidManifest.xml:20:5-44
-MERGED from [android.arch.lifecycle:runtime:1.1.1] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/runtime-1.1.1.aar/88727a62a1aef43a59ddc62945d1e4c3/AndroidManifest.xml:20:5-44
-MERGED from [android.arch.core:runtime:1.1.1] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/runtime-1.1.1.aar/9e4fdd69823339e73da63c00b3941af8/AndroidManifest.xml:20:5-44
-MERGED from [android.arch.core:runtime:1.1.1] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/runtime-1.1.1.aar/9e4fdd69823339e73da63c00b3941af8/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:cursoradapter:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/cursoradapter-28.0.0-rc02.aar/07fa9ab2682d2a8bdf6eeb9c5366fe91/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:cursoradapter:28.0.0-rc02] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/cursoradapter-28.0.0-rc02.aar/07fa9ab2682d2a8bdf6eeb9c5366fe91/AndroidManifest.xml:20:5-44
 MERGED from [com.google.firebase:firebase-auth-license:11.8.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/firebase-auth-license-11.8.0.aar/8e2d228898f7fdfe2b33cdcc8bd955f8/AndroidManifest.xml:4:5-43
 MERGED from [com.google.firebase:firebase-auth-license:11.8.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/firebase-auth-license-11.8.0.aar/8e2d228898f7fdfe2b33cdcc8bd955f8/AndroidManifest.xml:4:5-43
 MERGED from [com.google.firebase:firebase-database-license:11.8.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/firebase-database-license-11.8.0.aar/75cf0f826f1150269cb71ed6f0d33237/AndroidManifest.xml:4:5-43
@@ -297,6 +316,8 @@ MERGED from [com.google.firebase:firebase-iid-license:11.8.0] /Users/lfcammy/.gr
 MERGED from [com.google.firebase:firebase-iid-license:11.8.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/firebase-iid-license-11.8.0.aar/5e3f896705f4db081fabd2fb7d1645d2/AndroidManifest.xml:4:5-43
 INJECTED from /Users/lfcammy/Downloads/HisabKitab/app/src/main/AndroidManifest.xml
 INJECTED from /Users/lfcammy/Downloads/HisabKitab/app/src/main/AndroidManifest.xml
+	tools:overrideLibrary
+		ADDED from [com.afollestad.material-dialogs:core:0.9.6.0] /Users/lfcammy/.gradle/caches/transforms-1/files-1.1/core-0.9.6.0.aar/071e48129bae2c90f2f1c77c54f66765/AndroidManifest.xml:11:9-72
 	android:targetSdkVersion
 		INJECTED from /Users/lfcammy/Downloads/HisabKitab/app/src/main/AndroidManifest.xml
 		ADDED from /Users/lfcammy/Downloads/HisabKitab/app/src/main/AndroidManifest.xml

@@ -1,4 +1,4 @@
-#Fri Sep 07 14:17:37 NPT 2018
+#Sun Sep 09 19:42:33 NPT 2018
 base.0=/Users/lfcammy/Downloads/HisabKitab/app/build/intermediates/transforms/dexMerger/debug/42
 path.0=classes.dex
 renamed.0=classes.dex

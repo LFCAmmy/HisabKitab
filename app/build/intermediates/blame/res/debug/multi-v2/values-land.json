@@ -4,7 +4,26 @@
             "outputFile": "/Users/lfcammy/Downloads/HisabKitab/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-land/values-land.xml",
             "map": [
                 {
-                    "source": "/Users/lfcammy/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0-rc02.aar/b19ba0a844298365aae80849b548bbc4/res/values-land/values-land.xml",
+                    "source": "/Users/lfcammy/.gradle/caches/transforms-1/files-1.1/design-28.0.0-rc01.aar/0eedf8d3757eb277bfd522db2858d25f/res/values-land/values-land.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "5",
+                        "endColumns": "10",
+                        "endOffsets": "222"
+                    },
+                    "to": {
+                        "startLines": "5",
+                        "startColumns": "4",
+                        "startOffsets": "264",
+                        "endLines": "8",
+                        "endColumns": "10",
+                        "endOffsets": "431"
+                    }
+                },
+                {
+                    "source": "/Users/lfcammy/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0-rc01.aar/603d41d107aabfbb7a233e67f82500f7/res/values-land/values-land.xml",
                     "from": {
                         "startLines": "2,3,4",
                         "startColumns": "4,4,4",

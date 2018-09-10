@@ -39,7 +39,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class CreateGroupFragment extends Fragment {
 
-    @BindView(R.id.group_image)
+    @BindView(R.id.new_group_image)
     CircleImageView groupImage;
     @BindView(R.id.group_name)
     EditText groupName;
@@ -57,7 +57,6 @@ public class CreateGroupFragment extends Fragment {
     private FirebaseAuth mAuth;
     private DatabaseReference groupRef, userRef;
     private StorageReference groupImageRef;
-
 
     public CreateGroupFragment() { }
 
@@ -203,7 +202,7 @@ public class CreateGroupFragment extends Fragment {
 
                         loadingBar.dismiss();
                     } else {
-                        Toast.makeText(getContext(), "Error Occured: Images upload failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Error Occurred, Please try again!", Toast.LENGTH_SHORT).show();
                         loadingBar.dismiss();
                     }
                 }

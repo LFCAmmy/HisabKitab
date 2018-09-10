@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/lfcammy/Downloads/HisabKitab/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v23/values-v23.xml",
+            "outputFile": "D:\\Work\\Android\\HisabKitab\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v23\\values-v23.xml",
             "map": [
                 {
-                    "source": "/Users/lfcammy/.gradle/caches/transforms-1/files-1.1/cardview-v7-28.0.0-rc02.aar/23ad20b5f6792daa74b76159733af053/res/values-v23/values-v23.xml",
+                    "source": "C:\\Users\\Attikz\\.gradle\\caches\\transforms-1\\files-1.1\\cardview-v7-28.0.0-rc02.aar\\e362fab6f95e987218f205b859cac61a\\res\\values-v23\\values-v23.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -23,7 +23,7 @@
                     }
                 },
                 {
-                    "source": "/Users/lfcammy/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0-rc02.aar/b19ba0a844298365aae80849b548bbc4/res/values-v23/values-v23.xml",
+                    "source": "C:\\Users\\Attikz\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-28.0.0-rc02.aar\\f0d7a13ced05c12eab73b2cbfb003058\\res\\values-v23\\values-v23.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,19,32,33,34,35,36",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4",

@@ -1,4 +1,4 @@
-#Fri Sep 07 14:58:32 NPT 2018
-base.0=/Users/lfcammy/Downloads/HisabKitab/app/build/intermediates/transforms/dexMerger/debug/41
+#Sun Sep 09 11:33:32 NPT 2018
+base.0=D\:\\Work\\Android\\HisabKitab\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\24
 path.0=classes.dex
 renamed.0=classes.dex

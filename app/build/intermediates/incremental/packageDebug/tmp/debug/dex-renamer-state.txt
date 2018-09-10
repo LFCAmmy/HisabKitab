@@ -1,4 +1,4 @@
-#Fri Sep 07 14:17:37 NPT 2018
+#Sun Sep 09 11:33:32 NPT 2018
 path.3=classes.dex
 path.2=classes.dex
 path.1=classes.dex
@@ -7,7 +7,7 @@ renamed.3=classes4.dex
 renamed.2=classes3.dex
 renamed.1=classes2.dex
 renamed.0=classes.dex
-base.3=/Users/lfcammy/Downloads/HisabKitab/app/build/intermediates/transforms/dexMerger/debug/48
-base.2=/Users/lfcammy/Downloads/HisabKitab/app/build/intermediates/transforms/dexMerger/debug/45
-base.1=/Users/lfcammy/Downloads/HisabKitab/app/build/intermediates/transforms/dexMerger/debug/47
-base.0=/Users/lfcammy/Downloads/HisabKitab/app/build/intermediates/transforms/dexMerger/debug/46
+base.3=D\:\\Work\\Android\\HisabKitab\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\31
+base.2=D\:\\Work\\Android\\HisabKitab\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\28
+base.1=D\:\\Work\\Android\\HisabKitab\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\29
+base.0=D\:\\Work\\Android\\HisabKitab\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\30

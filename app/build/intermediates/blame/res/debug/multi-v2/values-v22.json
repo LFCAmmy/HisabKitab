@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/lfcammy/Downloads/HisabKitab/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v22/values-v22.xml",
+            "outputFile": "D:\\Work\\Android\\HisabKitab\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v22\\values-v22.xml",
             "map": [
                 {
-                    "source": "/Users/lfcammy/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0-rc02.aar/b19ba0a844298365aae80849b548bbc4/res/values-v22/values-v22.xml",
+                    "source": "C:\\Users\\Attikz\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-28.0.0-rc02.aar\\f0d7a13ced05c12eab73b2cbfb003058\\res\\values-v22\\values-v22.xml",
                     "from": {
                         "startLines": "2,3,4,9",
                         "startColumns": "4,4,4,4",

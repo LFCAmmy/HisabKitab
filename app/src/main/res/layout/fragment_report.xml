@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ReportFragment">
+
+    <Button
+        android:id="@+id/previous_day"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_toStartOf="@id/report_day_tv"
+        android:layout_marginEnd="5dp"
+        android:layout_marginTop="25dp"
+        android:drawableStart="@drawable/ic_next"
+        android:scaleX="-1"/>
+
+    <TextView
+        android:id="@+id/report_day_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:padding="10dp"
+        android:text="Wednesday"
+        android:textSize="20sp"/>
+
+    <Button
+        android:id="@+id/next_day"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_toEndOf="@id/report_day_tv"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="25dp"
+        android:drawableStart="@drawable/ic_next"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/report_day_tv"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:padding="5dp"
+        android:text="Apple"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/report_day_tv"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:padding="5dp"
+        android:text="+ Rs. 120 "
+        android:textSize="18sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/report_day_tv"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="55dp"
+        android:padding="5dp"
+        android:text="Orange"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/report_day_tv"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="55dp"
+        android:layout_marginEnd="20dp"
+        android:padding="5dp"
+        android:text="+ Rs. 680 "
+        android:textSize="18sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/report_day_tv"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="100dp"
+        android:padding="5dp"
+        android:text="Banana"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/report_day_tv"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="20dp"
+        android:padding="5dp"
+        android:text="+ Rs. 2500 "
+        android:textSize="18sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/report_day_tv"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="145dp"
+        android:padding="5dp"
+        android:text="Lemon"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/report_day_tv"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="145dp"
+        android:layout_marginEnd="20dp"
+        android:padding="5dp"
+        android:text="+ Rs. 80 "
+        android:textSize="18sp"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100dp"
+        android:padding="20dp"
+        android:text="Clear Due"
+        android:textSize="16sp"
+        android:background="@drawable/button"/>
+
+</RelativeLayout>

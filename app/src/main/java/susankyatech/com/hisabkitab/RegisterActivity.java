@@ -27,7 +27,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText newUsername, newEmail, newPassword;
     private Button btnRegister;
 
-    private Toolbar toolbar;
+    private Toolbar mToolbar;
     private Animation animation;
 
     private FirebaseAuth mAuth;
@@ -43,8 +43,8 @@ public class RegisterActivity extends AppCompatActivity {
         newPassword = findViewById(R.id.new_password_field);
         btnRegister = findViewById(R.id.register_btn);
 
-        toolbar = findViewById(R.id.register_main_toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -81,13 +81,16 @@ public class RegisterActivity extends AppCompatActivity {
     private void RegisterAccount(final String name, String email, String password) {
 
         if (TextUtils.isEmpty(name)) {
-            Toast.makeText(RegisterActivity.this, "Name field is empty!", Toast.LENGTH_SHORT).show();
+            newUsername.setError("Please enter your name!");
+            newUsername.requestFocus();
         }
-        if (TextUtils.isEmpty(email)) {
-            Toast.makeText(RegisterActivity.this, "Email field is empty!", Toast.LENGTH_SHORT).show();
+        else if (TextUtils.isEmpty(email)) {
+            newEmail.setError("Please enter your email!");
+            newEmail.requestFocus();
         }
-        if (TextUtils.isEmpty(password)) {
-            Toast.makeText(RegisterActivity.this, "Password field is empty!", Toast.LENGTH_SHORT).show();
+        else if (TextUtils.isEmpty(password)) {
+            newPassword.setError("Please enter your password!");
+            newPassword.requestFocus();
         } else {
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {

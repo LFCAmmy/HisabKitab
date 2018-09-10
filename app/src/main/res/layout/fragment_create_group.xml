@@ -9,68 +9,70 @@
     tools:context=".CreateGroupFragment">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/group_image"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_above="@id/linear_layout"
+        android:id="@+id/new_group_image"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
         app:civ_border_width="2dp"
         app:civ_border_color="@android:color/white"
         android:src="@drawable/ic_photo_camera"/>
 
-    <LinearLayout
-        android:id="@+id/linear_layout"
-        android:layout_width="match_parent"
+    <EditText
+        android:id="@+id/group_name"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
+        android:inputType="text"
+        android:layout_below="@id/new_group_image"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="30sp"
+        android:padding="12dp"
+        android:hint="@string/group_name"
+        android:background="@drawable/text"/>
+
+    <EditText
+        android:id="@+id/max_no_of_member"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:layout_below="@id/group_name"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:padding="12dp"
+        android:ems="8"
+        android:hint="@string/maximum_member"
+        android:textSize="15sp"
+        android:background="@drawable/text"/>
 
-        <EditText
-            android:id="@+id/group_name"
-            android:layout_width="320dp"
-            android:layout_height="wrap_content"
-            android:hint="Group Name"
-            android:padding="5dp"
-            android:background="@drawable/text"/>
+    <CheckBox
+        android:id="@+id/join_automatically"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/group_name"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:padding="5dp"
+        android:layout_toEndOf="@id/max_no_of_member"
+        android:textColor="@color/cardview_dark_background"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/max_no_of_member"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/text"
-                android:ems="8"
-                android:hint="Maximum Member"
-                android:inputType="number"
-                android:padding="5dp" />
-
-            <CheckBox
-                android:id="@+id/join_automatically"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Join Automatically" />
-
-        </LinearLayout>
-
-    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/join_automatically"
+        android:layout_below="@id/group_name"
+        android:layout_toEndOf="@id/join_automatically"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="21dp"
+        android:textSize="15sp"/>
 
     <Button
         android:id="@+id/create_group_btn"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:layout_below="@id/max_no_of_member"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:layout_below="@id/linear_layout"
+        android:layout_marginTop="50dp"
         android:background="@drawable/button"
-        android:text="Create" />
+        android:text="@string/create_group" />
 
 </RelativeLayout>

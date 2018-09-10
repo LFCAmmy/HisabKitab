@@ -1,7 +1,7 @@
 package susankyatech.com.hisabkitab;
 
-
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
@@ -24,15 +24,10 @@ public class GettingStartedFragment extends Fragment {
     @BindView(R.id.create_group_tv)
     TextView createGroup;
 
-    public GettingStartedFragment() {
-        // Required empty public constructor
-    }
-
+    public GettingStartedFragment() { }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_getting_started, container, false);
 
         ButterKnife.bind(this, view);
@@ -46,27 +41,28 @@ public class GettingStartedFragment extends Fragment {
         joinGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 String code = groupCode.getText().toString();
 
                 if (TextUtils.isEmpty(code)){
+                    groupCode.setError("Please enter group code!");
+                    groupCode.requestFocus();
+                }
+                else {
 
                 }
             }
         });
-
 
         createGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Fragment fragment = new CreateGroupFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
                 transaction.replace(R.id.content_welcome_frame, fragment);
                 transaction.addToBackStack(null);
-
                 transaction.commit();
             }
         });
     }
-
 }

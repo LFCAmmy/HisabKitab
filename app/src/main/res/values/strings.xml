@@ -1,20 +1,34 @@
 <resources>
     <string name="app_name">HisabKitab</string>
-    <string name="getting_started">Before we Continue, Please Join/Create Group</string>
 
     <!-- For Login & Register -->
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Log in</string>
-    <string name="username">Username</string>
+    <string name="username">Your Name</string>
     <string name="register">Register</string>
     <string name="need_new_account"><u>Need new Account?</u></string>
 
+    <!-- Join/Create Group -->
+    <string name="join_group_remainder">Please join a group.</string>
+    <string name="enter_group_code">Enter group code</string>
+    <string name="join_group">Join Group</string>
+    <string name="need_group_remainder"><u>Need a new group?</u></string>
+    <string name="group_name">Group Name</string>
+    <string name="maximum_member">Maximum member</string>
+    <string name="join_automatically">Join automatically</string>
+    <string name="create_group">Create</string>
+
     <!-- Main Activity -->
     <string name="logout">Logout</string>
+
+    <!-- Navigation Drawer -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="my_expenses">My Expenses</string>
+    <string name="settings">Settings</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
-

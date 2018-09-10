@@ -20,7 +20,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-
 public class LoginActivity extends AppCompatActivity {
 
     private EditText userEmail, userPassword;
@@ -82,13 +81,27 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        if (currentUser != null) {
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            finish();
+        }
+    }
+
     private void logInUserAccount(String email, String password) {
 
         if (TextUtils.isEmpty(email)) {
-            Toast.makeText(LoginActivity.this, "Email field is empty!", Toast.LENGTH_SHORT).show();
+            userEmail.setError("Please enter your email");
+            userEmail.requestFocus();
         }
-        if (TextUtils.isEmpty(password)) {
-            Toast.makeText(LoginActivity.this, "Password field is empty!", Toast.LENGTH_SHORT).show();
+        else if (TextUtils.isEmpty(password)) {
+            userPassword.setError("Please enter your password");
+            userPassword.requestFocus();
         } else {
             loadingBar.setTitle("Logging In");
             loadingBar.setMessage("Please wait!");
@@ -98,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                Intent intent = new Intent(LoginActivity.this, WelcomeActivity.class);
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                             } else {

@@ -30,8 +30,6 @@
         android:supportsRtl="true"
         android:testOnly="true"
         android:theme="@style/AppTheme" >
-        <activity android:name="susankyatech.com.hisabkitab.MainActivity" >
-        </activity>
         <activity android:name="susankyatech.com.hisabkitab.LoginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,6 +37,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="susankyatech.com.hisabkitab.MainActivity" />
         <activity
             android:name="susankyatech.com.hisabkitab.RegisterActivity"
             android:parentActivityName="susankyatech.com.hisabkitab.LoginActivity" />

@@ -20,7 +20,7 @@ public class CreateGroupFragment_ViewBinding implements Unbinder {
   public CreateGroupFragment_ViewBinding(CreateGroupFragment target, View source) {
     this.target = target;
 
-    target.groupImage = Utils.findRequiredViewAsType(source, R.id.group_image, "field 'groupImage'", CircleImageView.class);
+    target.groupImage = Utils.findRequiredViewAsType(source, R.id.new_group_image, "field 'groupImage'", CircleImageView.class);
     target.groupName = Utils.findRequiredViewAsType(source, R.id.group_name, "field 'groupName'", EditText.class);
     target.maxMember = Utils.findRequiredViewAsType(source, R.id.max_no_of_member, "field 'maxMember'", EditText.class);
     target.autoJoin = Utils.findRequiredViewAsType(source, R.id.join_automatically, "field 'autoJoin'", CheckBox.class);

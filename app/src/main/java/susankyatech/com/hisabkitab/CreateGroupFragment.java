@@ -97,7 +97,7 @@ public class CreateGroupFragment extends Fragment {
         });
 
         String easy = RandomString.digits + "ACEFGHJKLMNPQRUVWXYabcdefhijkprstuvwx";
-        RandomString tickets = new RandomString(23, new SecureRandom(), easy);
+        RandomString tickets = new RandomString(6, new SecureRandom(), easy);
 
         token = tickets.nextString();
 

@@ -1,11 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CurrentExpenseFragment"
-    android:background="@color/colorBackground">
+    android:background="@color/colorBackground"
+    tools:context=".CurrentExpenseFragment">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/current_expense_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="140dp"
+            android:text="@string/username"
+            android:textSize="18sp"/>
+
+        <Spinner
+            android:id="@+id/current_expense_user_name_chooser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/current_expense_user_name"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="140dp">
+
+        </Spinner>
+
+        <TableLayout
+            android:id="@+id/current_expense_table_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/current_expense_user_name"
+            android:layout_marginTop="40dp">
+
+            <TableRow>
+
+                <TextView
+                    android:layout_marginStart="5dp"
+                    android:padding="10dp"
+                    android:gravity="center"
+                    android:text="@string/id"
+                    android:textSize="18sp"/>
+
+                <TextView
+                    android:layout_marginStart="60dp"
+                    android:padding="10dp"
+                    android:gravity="center"
+                    android:text="@string/product_name"
+                    android:textSize="18sp"/>
+
+                <TextView
+                    android:layout_marginStart="35dp"
+                    android:padding="10dp"
+                    android:gravity="center"
+                    android:text="@string/amount"
+                    android:textSize="18sp"/>
+
+            </TableRow>
+
+        </TableLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/current_expense_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/current_expense_table_layout">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

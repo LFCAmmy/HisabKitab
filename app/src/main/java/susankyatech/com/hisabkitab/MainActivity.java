@@ -12,6 +12,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -27,13 +29,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private Toolbar mToolbar;
 
-    private CircleImageView groupImageDisplay;
+    private CircleImageView navGroupImageDisplay;
+    private TextView navGroupNameDisplay;
 
     private FirebaseAuth mAuth;
 
     private DatabaseReference userRef, groupRef;
 
-    private String currentUserId, groupId, groupImageUrl;
+    private String currentUserId, groupId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,17 +46,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        groupImageDisplay = findViewById(R.id.nav_group_image_display);
-
         getSupportFragmentManager().beginTransaction().add(R.id.content_main_frame, new CurrentExpenseFragment()).commit();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        View navHeader = navigationView.getHeaderView(0);
+        navGroupImageDisplay = navHeader.findViewById(R.id.nav_group_image_display);
+        navGroupNameDisplay = navHeader.findViewById(R.id.nav_group_name_display);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
@@ -64,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     groupId = dataSnapshot.child("group_id").getValue().toString();
-                    Log.d("Apple","" + groupId);
                     if (groupId.equals("none")) {
                         sendUserToHomeActivity();
                     }
@@ -74,9 +78,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
-                                groupImageUrl = dataSnapshot.child("group_image").getValue().toString();
-                                Log.d("Apple", "" + groupImageUrl);
-                                //Picasso.get().load(groupImageUrl).into(groupImageDisplay);
+                                String groupImageUrl = dataSnapshot.child("group_image").getValue().toString();
+                                String groupNameUrl = dataSnapshot.child("name").getValue().toString();
+                                Picasso.get().load(groupImageUrl).into(navGroupImageDisplay);
+                                navGroupNameDisplay.setText(groupNameUrl);
                             }
                         }
 

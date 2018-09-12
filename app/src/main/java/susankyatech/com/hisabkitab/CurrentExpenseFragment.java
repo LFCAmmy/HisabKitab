@@ -5,11 +5,13 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -30,10 +32,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CurrentExpenseFragment extends Fragment {
+public class CurrentExpenseFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     @BindView(R.id.fab)
     FloatingActionButton addExpense;
+
+    @BindView(R.id.current_expense_spinner)
+    Spinner mSpinner;
 
     private EditText title, amount;
     private String currentUserId, userName, groupId, date;
@@ -53,6 +58,8 @@ public class CurrentExpenseFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_current_expense, container, false);
 
         ButterKnife.bind(this,view);
+
+        mSpinner.setOnItemSelectedListener(this);
 
         init();
 
@@ -75,7 +82,6 @@ public class CurrentExpenseFragment extends Fragment {
                         groupId = dataSnapshot.child("group_id").getValue().toString();
                     }
                     userName = dataSnapshot.child("user_name").getValue().toString();
-                    Log.d("Pratik","" + userName);
 
                     userListRef = FirebaseDatabase.getInstance().getReference().child("Group").child(groupId).child("members");
                     userListRef.addValueEventListener(new ValueEventListener() {
@@ -84,8 +90,11 @@ public class CurrentExpenseFragment extends Fragment {
                             for (DataSnapshot ds: dataSnapshot.getChildren()) {
                                 String name = ds.child("name").getValue().toString();
                                 userList.add(name);
-                                Log.d("asdasd", "onDataChange: "+userList);
                             }
+                            userList.add("All Members");
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, userList);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            mSpinner.setAdapter(adapter);
                         }
 
                         @Override
@@ -135,6 +144,16 @@ public class CurrentExpenseFragment extends Fragment {
             }
         });
     }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+        String item = adapterView.getItemAtPosition(i).toString();
+
+        //Toast.makeText(adapterView.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+    }
+
+    public void onNothingSelected(AdapterView<?> arg0) { }
 
     private void addExpenseToDB() {
         mCalendar =  Calendar.getInstance();

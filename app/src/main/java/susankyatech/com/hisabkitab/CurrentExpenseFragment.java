@@ -1,17 +1,17 @@
 package susankyatech.com.hisabkitab;
 
-
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -24,42 +24,42 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
-public class CurrentExpenseFragment extends Fragment {
+public class CurrentExpenseFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     @BindView(R.id.fab)
     FloatingActionButton addExpense;
 
-    private FirebaseAuth mAuth;
-    private DatabaseReference userRef, expenseRef;
+    @BindView(R.id.current_expense_spinner)
+    Spinner mSpinner;
 
+    private EditText title, amount;
     private String currentUserId, userName, groupId, date;
-    EditText title, amount;
+
+    private FirebaseAuth mAuth;
+    private DatabaseReference userRef, expenseRef, userListRef;
+
     private Calendar mCalendar;
     int day, month, year;
 
+    private List<String> userList = new ArrayList<>();
 
-    public CurrentExpenseFragment() {
-        // Required empty public constructor
-    }
-
+    public CurrentExpenseFragment() { }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_current_expense, container, false);
 
         ButterKnife.bind(this,view);
+
+        mSpinner.setOnItemSelectedListener(this);
 
         init();
 
@@ -67,6 +67,7 @@ public class CurrentExpenseFragment extends Fragment {
     }
 
     private void init() {
+
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
 
@@ -82,6 +83,25 @@ public class CurrentExpenseFragment extends Fragment {
                     }
                     userName = dataSnapshot.child("user_name").getValue().toString();
 
+                    userListRef = FirebaseDatabase.getInstance().getReference().child("Group").child(groupId).child("members");
+                    userListRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot ds: dataSnapshot.getChildren()) {
+                                String name = ds.child("name").getValue().toString();
+                                userList.add(name);
+                            }
+                            userList.add("All Members");
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, userList);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            mSpinner.setAdapter(adapter);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             }
 
@@ -125,6 +145,16 @@ public class CurrentExpenseFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+        String item = adapterView.getItemAtPosition(i).toString();
+
+        //Toast.makeText(adapterView.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+    }
+
+    public void onNothingSelected(AdapterView<?> arg0) { }
+
     private void addExpenseToDB() {
         mCalendar =  Calendar.getInstance();
 
@@ -167,5 +197,4 @@ public class CurrentExpenseFragment extends Fragment {
                     });
         }
     }
-
 }

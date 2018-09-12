@@ -5,8 +5,13 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_my_expense"
-            android:title="@string/my_expenses" />
+            android:id="@+id/nav_current_expense"
+            android:icon="@drawable/ic_current_expenses"
+            android:title="@string/current_expenses" />
+        <item
+            android:id="@+id/nav_group_expenses"
+            android:icon="@drawable/ic_group_members"
+            android:title="@string/group_expenses" />
         <item
             android:id="@+id/nav_list_members"
             android:icon="@drawable/ic_group_members"

@@ -15,10 +15,16 @@
         android:text="@string/group_name"
         android:textSize="28sp"/>
 
-    <ListView
-        android:id="@+id/list_member_list_view"
+    <TableLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/list_members_group_name"/>
+        android:layout_below="@id/list_members_group_name">
+
+        <ListView
+            android:id="@+id/list_member_list_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </TableLayout>
 
 </RelativeLayout>

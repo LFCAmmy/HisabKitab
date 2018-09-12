@@ -54,6 +54,7 @@ public class CreateGroupFragment extends Fragment {
     private ProgressDialog loadingBar;
     private String joinAuto, userName, currentUserId, token, downloadUrl="";
     final static int gallery_pick = 1;
+    private View view;
 
     private FirebaseAuth mAuth;
     private DatabaseReference groupRef, userRef;
@@ -66,6 +67,7 @@ public class CreateGroupFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_create_group, container, false);
 
         ButterKnife.bind(this,view);
+        this.view = view;
 
         init();
 

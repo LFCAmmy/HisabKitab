@@ -1,5 +1,6 @@
 package susankyatech.com.hisabkitab;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -47,13 +48,14 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
     private Calendar calender;
 
     private List<String> userList = new ArrayList<>();
+    private SharedPreferences sp;
 
     private FirebaseAuth mAuth;
-    private DatabaseReference userReference, groupReference, expenseReference, userListReference;
+    private DatabaseReference userReference, expenseReference, userListReference;
 
     private int day, month, year;
 
-    private String currentUserId, currentUserName, currentGroupId, date;
+    private String currentUserId, currentUserName, currentGroupId, date, groupCreatedDate;
 
     private View mView;
 
@@ -79,13 +81,16 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
 
         mSpinner.setOnItemSelectedListener(this);
 
+        sp = getActivity().getSharedPreferences(LoginActivity.MY_PREFERENCES, 0);
+        groupCreatedDate = sp.getString("group_create_date", "00");
+
         Calendar currentDate = Calendar.getInstance();
         currentDate.add(Calendar.MONTH, 0);
 
         Calendar startDate = Calendar.getInstance();
         startDate.add(Calendar.MONTH, -1);
 
-        Log.d("TAG","" + startDate);
+        Log.d("Google","" + groupCreatedDate);
 
         HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(mView, R.id.calendarView)
                 .range(startDate, currentDate)

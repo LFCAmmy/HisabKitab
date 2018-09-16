@@ -2,10 +2,12 @@ package susankyatech.com.hisabkitab;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -27,17 +29,20 @@ import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
 
+    public static final String MY_PREFERENCES = "group_created_date";
+
     private EditText userEmail, userPassword;
     private Button loginBtn;
     private TextView appName, createNewAccount;
-
+    private DatabaseReference groupReference;
     private ProgressDialog loadingBar;
     private Animation animation;
 
-    private String currentUserId, currentGroupId;
-
     private FirebaseAuth mAuth;
-    private DatabaseReference userReference, groupReference;
+    private DatabaseReference userReference, groupMembersReference;
+
+    private String currentUserId, currentGroupId;
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,10 +122,28 @@ public class LoginActivity extends AppCompatActivity {
                                         if (dataSnapshot.exists()) {
                                             currentGroupId = dataSnapshot.child("group_id").getValue().toString();
 
-                                            groupReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members").child(currentUserId);
+                                            groupReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId);
                                             groupReference.addValueEventListener(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                                    String date = dataSnapshot.child("group_create_date").getValue().toString();
+
+                                                    sp = getSharedPreferences(MY_PREFERENCES, 0);
+                                                    sp.edit().putString("group_create_date", date).commit();
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+
+                                                }
+                                            });
+
+                                            groupMembersReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members").child(currentUserId);
+                                            groupMembersReference.addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+
                                                     String userStatus = dataSnapshot.child("role").getValue().toString();
 
                                                     if (userStatus.equals("admin")) {
@@ -149,10 +172,6 @@ public class LoginActivity extends AppCompatActivity {
 
                                     }
                                 });
-
-                                Intent intent = new Intent(LoginActivity.this, AdminMainActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
                             } else {
                                 Toast.makeText(LoginActivity.this, "Email/Password not matched. Try again!", Toast.LENGTH_SHORT).show();
                             }

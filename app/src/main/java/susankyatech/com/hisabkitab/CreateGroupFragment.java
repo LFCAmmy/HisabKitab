@@ -169,13 +169,18 @@ public class CreateGroupFragment extends Fragment {
                                                                @Override
                                                                public void onComplete(@NonNull Task<Void> task) {
                                                                    if (task.isSuccessful()){
-                                                                       Intent intent = new Intent(getActivity(), MainActivity.class);
+                                                                       Intent intent = new Intent(getActivity(), AdminMainActivity.class);
                                                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                                        startActivity(intent);
                                                                    }
                                                                }
                                                            });
                                                        }
+
+                                                       Intent intent = new Intent(getActivity(), AdminMainActivity.class);
+                                                       intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                       startActivity(intent);
+
                                                    }
                                                });
 

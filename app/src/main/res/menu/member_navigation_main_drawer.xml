@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_current_expense"
+            android:icon="@drawable/ic_current_expenses"
+            android:title="@string/current_expenses" />
+        <item
+            android:id="@+id/nav_group_expenses"
+            android:icon="@drawable/ic_group_members"
+            android:title="@string/group_expenses" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_sign_out"
+            android:title="@string/logout" />
+    </group>
+    <item android:title="@string/communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share_app"
+                android:icon="@drawable/ic_share_this_app"
+                android:title="@string/share"/>
+            <item
+                android:id="@+id/nav_app_about"
+                android:icon="@drawable/ic_about_this_app"
+                android:title="@string/about"/>
+        </menu>
+    </item>
+
+</menu>

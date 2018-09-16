@@ -45,7 +45,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("");
+        mToolbar.setTitle(getString(R.string.app_name));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         animation = AnimationUtils.loadAnimation(this,R.anim.from_left);

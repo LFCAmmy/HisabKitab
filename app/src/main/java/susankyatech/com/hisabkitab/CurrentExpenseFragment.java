@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,11 +82,13 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
         Calendar currentDate = Calendar.getInstance();
         currentDate.add(Calendar.MONTH, 0);
 
-        Calendar mDate = Calendar.getInstance();
-        currentDate.add(Calendar.MONTH, -1);
+        Calendar startDate = Calendar.getInstance();
+        startDate.add(Calendar.MONTH, -1);
+
+        Log.d("TAG","" + startDate);
 
         HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(mView, R.id.calendarView)
-                .range(mDate,currentDate)
+                .range(startDate, currentDate)
                 .datesNumberOnScreen(5)
                 .defaultSelectedDate(currentDate)
                 .build();
@@ -120,9 +123,9 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                             }
 
                             userList.add("All Members");
-//                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, userList);
-//                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                            mSpinner.setAdapter(adapter);
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, userList);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            mSpinner.setAdapter(adapter);
                         }
 
                         @Override

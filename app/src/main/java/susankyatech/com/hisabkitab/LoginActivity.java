@@ -108,44 +108,49 @@ public class LoginActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
 
-//                                currentUserId = mAuth.getCurrentUser().getUid();
-//                                userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
-//                                userReference.addValueEventListener(new ValueEventListener() {
-//                                    @Override
-//                                    public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                                        if (dataSnapshot.exists()) {
-//                                            currentGroupId = dataSnapshot.child("group_id").getValue().toString();
-//
-//                                            groupReference = FirebaseDatabase.getInstance().getReference().child(currentGroupId).child("members").child(currentUserId);
-//                                            groupReference.addValueEventListener(new ValueEventListener() {
-//                                                @Override
-//                                                public void onDataChange(DataSnapshot dataSnapshot) {
-//                                                    String userStatus = dataSnapshot.child("role").getValue().toString();
-//
-//                                                    if (userStatus.equals("admin")) {
-//
-//                                                    }
-//
-//                                                }
-//
-//                                                @Override
-//                                                public void onCancelled(DatabaseError databaseError) {
-//
-//                                                }
-//                                            });
-//
-//                                        }
-//
-//                                    }
-//
-//                                    @Override
-//                                    public void onCancelled(DatabaseError databaseError) {
-//
-//                                    }
-//                                });
+                                currentUserId = mAuth.getCurrentUser().getUid();
+                                userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+                                userReference.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        if (dataSnapshot.exists()) {
+                                            currentGroupId = dataSnapshot.child("group_id").getValue().toString();
+
+                                            groupReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members").child(currentUserId);
+                                            groupReference.addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    String userStatus = dataSnapshot.child("role").getValue().toString();
+
+                                                    if (userStatus.equals("admin")) {
+                                                        Intent intent = new Intent(LoginActivity.this, AdminMainActivity.class);
+                                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                        startActivity(intent);
+                                                    }
+
+                                                    if (userStatus.equals("member")) {
+                                                        Intent intent = new Intent(LoginActivity.this, MemberMainActivity.class);
+                                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                        startActivity(intent);
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+
+                                                }
+                                            });
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                                Intent intent = new Intent(LoginActivity.this, AdminMainActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                             } else {
@@ -168,7 +173,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void sendUserToMainActivity() {
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        Intent intent = new Intent(LoginActivity.this, AdminMainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }

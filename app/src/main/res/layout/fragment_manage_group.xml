@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".AdminMainActivity">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/group_manage_display_group_image"

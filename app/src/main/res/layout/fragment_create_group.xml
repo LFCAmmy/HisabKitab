@@ -72,7 +72,7 @@
         android:layout_below="@id/max_no_of_member"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
-        android:background="@drawable/button"
+        android:background="@drawable/button_layout"
         android:text="@string/create_group" />
 
 </RelativeLayout>

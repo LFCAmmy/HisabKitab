@@ -50,7 +50,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
                 android:padding="15dp"
-                android:background="@drawable/button"
+                android:background="@drawable/button_layout"
                 android:text="@string/join_group"
                 android:textSize="15sp"/>
 

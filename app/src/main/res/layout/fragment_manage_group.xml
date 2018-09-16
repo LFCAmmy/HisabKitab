@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/group_manage_display_group_image"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/ic_launcher_background"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:layout_toEndOf="@id/group_manage_display_group_image"
+        android:layout_marginTop="65dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/signed_as"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/group_manage_display_user_name_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:gravity="center"
+            android:text="@string/username"
+            android:textSize="16sp"/>
+
+        <!-- <Button
+            android:id="@+id/group_manage_view_group_info_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/group_manage_display_user_name_et"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:padding="10dp"
+            android:text="Group Info"
+            android:background="@drawable/button_layout"/>
+        -->
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/group_manage_display_group_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/group_manage_display_group_image"
+        android:layout_marginStart="55dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/group_name"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/group_manage_display_group_name_tv"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="40dp"
+        android:padding="10dp"
+        android:text="@string/change_group_name"
+        android:textSize="15sp"
+        android:background="@drawable/button_layout"/>
+
+    <Button
+        android:id="@+id/group_manage_change_group_name_btn"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/group_manage_display_group_name_tv"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="10dp"
+        android:padding="10dp"
+        android:background="@drawable/button_layout"
+        android:drawableEnd="@drawable/ic_edit"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/group_manage_change_group_name_btn"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="10dp"
+        android:padding="10dp"
+        android:text="@string/change_group_image"
+        android:textSize="15sp"
+        android:background="@drawable/button_layout"/>
+
+    <Button
+        android:id="@+id/group_manage_change_group_image_btn"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/group_manage_change_group_name_btn"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="10dp"
+        android:padding="10dp"
+        android:background="@drawable/button_layout"
+        android:drawableEnd="@drawable/ic_edit"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/group_manage_change_group_image_btn"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="10dp"
+        android:padding="10dp"
+        android:text="@string/change_max_members"
+        android:textSize="15sp"
+        android:background="@drawable/button_layout"/>
+
+    <Button
+        android:id="@+id/group_manage_change_group_max_members_btn"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/group_manage_change_group_image_btn"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="10dp"
+        android:padding="10dp"
+        android:background="@drawable/button_layout"
+        android:drawableEnd="@drawable/ic_edit"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/group_manage_change_group_max_members_btn"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="10dp"
+        android:padding="10dp"
+        android:text="@string/update_group_members"
+        android:textSize="15sp"
+        android:background="@drawable/button_layout"/>
+
+    <Button
+        android:id="@+id/group_manage_update_group_members"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/group_manage_change_group_max_members_btn"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="10dp"
+        android:padding="10dp"
+        android:background="@drawable/button_layout"
+        android:drawableEnd="@drawable/ic_edit"/>
+
+    <Button
+        android:id="@+id/group_manage_show_group_id_token_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="60dp"
+        android:padding="10dp"
+        android:text="@string/display_group_token"
+        android:textSize="15sp"
+        android:background="@drawable/button_layout"/>
+
+</RelativeLayout>

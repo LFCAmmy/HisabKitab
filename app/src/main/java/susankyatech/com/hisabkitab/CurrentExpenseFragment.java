@@ -1,6 +1,5 @@
 package susankyatech.com.hisabkitab;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -48,14 +49,13 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
     private Calendar calender;
 
     private List<String> userList = new ArrayList<>();
-    private SharedPreferences sp;
 
     private FirebaseAuth mAuth;
-    private DatabaseReference userReference, expenseReference, userListReference;
+    private DatabaseReference userReference, groupReference, expenseReference, userListReference;
 
-    private int day, month, year;
+    private int day, month, year, totalAmt;
 
-    private String currentUserId, currentUserName, currentGroupId, date, groupCreatedDate;
+    private String currentUserId, currentUserName, currentGroupId, monthName, date;
 
     private View mView;
 
@@ -81,16 +81,13 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
 
         mSpinner.setOnItemSelectedListener(this);
 
-        sp = getActivity().getSharedPreferences(LoginActivity.MY_PREFERENCES, 0);
-        groupCreatedDate = sp.getString("group_create_date", "00");
-
         Calendar currentDate = Calendar.getInstance();
         currentDate.add(Calendar.MONTH, 0);
 
         Calendar startDate = Calendar.getInstance();
         startDate.add(Calendar.MONTH, -1);
 
-        Log.d("Google","" + groupCreatedDate);
+        Log.d("TAG","" + startDate);
 
         HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(mView, R.id.calendarView)
                 .range(startDate, currentDate)
@@ -101,7 +98,12 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Calendar date, int position) {
+                int day = date.getTime().getDate();
+                int year = date.getTime().getYear();
+                int month = date.getTime().getMonth();
+                getMonthName(month);
 
+                Toast.makeText(getContext(), day+"-"+monthName+"-"+year, Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -166,6 +168,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                     @Override
                     public void onClick(View view) {
                         addExpenseToDB();
+                        materialDialog.dismiss();
                     }
                 });
                 materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
@@ -177,6 +180,35 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
             }
         });
 
+    }
+
+    private String getMonthName(int month) {
+        if (month == 1){
+            monthName = "January";
+        } else if (month == 2){
+            monthName = "February";
+        } else if (month == 3){
+            monthName = "March";
+        } else if (month == 4){
+            monthName = "April";
+        } else if (month == 5){
+            monthName = "May";
+        } else if (month == 6){
+            monthName = "June";
+        } else if (month == 7){
+            monthName = "July";
+        } else if (month == 8){
+            monthName = "August";
+        } else if (month == 9){
+            monthName = "September";
+        } else if (month == 10){
+            monthName = "October";
+        } else if (month == 11){
+            monthName = "November";
+        } else{
+            monthName = "December";
+        }
+        return monthName;
     }
 
     @Override
@@ -203,25 +235,41 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
         date = mDay + "/" + mMonth + "/" + mYear;
 
         final String title = expenseTitle.getText().toString();
-        final String amount = expenseAmount.getText().toString();
+        final String amt = expenseAmount.getText().toString();
 
         if (TextUtils.isEmpty(title)){
             expenseTitle.setError("Please enter expense expenseTitle!");
             expenseTitle.requestFocus();
-        }else if (TextUtils.isEmpty(amount)){
+        }else if (TextUtils.isEmpty(amt)){
             expenseAmount.setError("Please enter expense expenseAmount!");
             expenseAmount.requestFocus();
         } else {
+            final int amount = Integer.valueOf(amt);
+            Calendar callForDate = Calendar.getInstance();
+            SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
+            final String date = currentDate.format(callForDate.getTime());
+
             HashMap expenseMap = new HashMap();
             expenseMap.put("name", currentUserName);
-            expenseReference.child(currentGroupId).child(currentUserId).updateChildren(expenseMap)
+            expenseMap.put("total_amount", totalAmt);
+            expenseReference.child(currentGroupId).child(date).child(currentUserId).updateChildren(expenseMap)
                     .addOnCompleteListener(new OnCompleteListener() {
                         @Override
                         public void onComplete(@NonNull Task task) {
                             if (task.isSuccessful()){
                                 HashMap userExpenseMap = new HashMap();
-                                userExpenseMap.put("expenseTitle", title);
-                                userExpenseMap.put("expenseAmount", amount);
+                                userExpenseMap.put("amount", amount);
+                                expenseReference.child(currentGroupId).child(date).child(currentUserId).child("expense")
+                                        .child(title).updateChildren(userExpenseMap)
+                                        .addOnCompleteListener(new OnCompleteListener() {
+                                            @Override
+                                            public void onComplete(@NonNull Task task) {
+                                                totalAmt = totalAmt + amount;
+                                                expenseReference.child(currentGroupId).child(date).child(currentUserId)
+                                                        .child("total_amount").setValue(totalAmt);
+                                            }
+                                        });
+
                             }
                         }
                     });

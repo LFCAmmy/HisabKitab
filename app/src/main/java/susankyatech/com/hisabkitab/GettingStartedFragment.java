@@ -43,8 +43,10 @@ public class GettingStartedFragment extends Fragment {
     private FirebaseAuth mAuth;
     private DatabaseReference groupRef, userRef;
 
-    private String userId, userName;
+    private String userId, userName, autoJoin, memberStatus;
     private List<String> groupIds = new ArrayList<>();
+    private int max_member;
+    private long memberCount;
 
     public GettingStartedFragment() { }
 
@@ -100,7 +102,6 @@ public class GettingStartedFragment extends Fragment {
         joinGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 final String code = groupCode.getText().toString();
 
                 if (TextUtils.isEmpty(code)){
@@ -110,10 +111,47 @@ public class GettingStartedFragment extends Fragment {
                 else {
                     if (groupIds.contains(code)){
                         groupRef.child(code).addValueEventListener(new ValueEventListener() {
+
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.exists()){
+                                   max_member = Integer.valueOf(dataSnapshot.child("max_members").getValue().toString());
+                                   memberCount = dataSnapshot.child("members").getChildrenCount();
+                                   autoJoin = dataSnapshot.child("join_automatically").getValue().toString();
+                                    Log.d("armaan", "max: " + max_member + ", count" + memberCount);
 
+                                    if (autoJoin.equals("false")){
+                                        memberStatus = "inactive";
+                                    }
+                                    else {
+                                        memberStatus = "active";
+                                    }
+                                    if (memberCount < max_member){
+                                        HashMap memberMap = new HashMap();
+                                        memberMap.put("name", userName);
+                                        memberMap.put("role","member");
+                                        memberMap.put("status", memberStatus);
+                                        groupRef.child(code).child("members").child(userId).updateChildren(memberMap)
+                                                .addOnCompleteListener(new OnCompleteListener() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task task) {
+                                                        if (task.isSuccessful()){
+                                                            userRef.child("group_id").setValue(code).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                    if (task.isSuccessful()){
+                                                                        Intent intent = new Intent(getContext(), MemberMainActivity.class);
+                                                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                                        startActivity(intent);
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                    }
+                                                });
+                                    } else {
+                                        Toast.makeText(getContext(), "Sorry, group member hax exceed its member", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             }
 
@@ -122,27 +160,10 @@ public class GettingStartedFragment extends Fragment {
 
                             }
                         });
-                        HashMap memberMap = new HashMap();
-                        memberMap.put("name", userName);
-                        memberMap.put("role","member");
-                        groupRef.child(code).child("members").child(userId).updateChildren(memberMap)
-                                .addOnCompleteListener(new OnCompleteListener() {
-                                    @Override
-                                    public void onComplete(@NonNull Task task) {
-                                        if (task.isSuccessful()){
-                                            userRef.child("group_id").setValue(code).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()){
-                                                        Intent intent = new Intent(getActivity(), AdminMainActivity.class);
-                                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                        startActivity(intent);
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    }
-                                });
+
+
+
+
                     } else {
                         groupCode.setText("");
                         groupCode.setError("Please enter valid group code!");

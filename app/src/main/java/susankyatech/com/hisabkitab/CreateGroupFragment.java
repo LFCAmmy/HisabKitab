@@ -126,7 +126,7 @@ public class CreateGroupFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 String name = groupName.getText().toString();
-                String max = maxMember.getText().toString();
+                Integer max = Integer.valueOf(maxMember.getText().toString());
 
                 Calendar callForDate = Calendar.getInstance();
                 SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
@@ -164,9 +164,18 @@ public class CreateGroupFragment extends Fragment {
                                                userRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
                                                    @Override
                                                    public void onComplete(@NonNull Task task) {
-                                                       Intent intent = new Intent(getActivity(), MainActivity.class);
-                                                       intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                       startActivity(intent);
+                                                       if (task.isSuccessful()){
+                                                           userRef.child("group_id").setValue(token).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                               @Override
+                                                               public void onComplete(@NonNull Task<Void> task) {
+                                                                   if (task.isSuccessful()){
+                                                                       Intent intent = new Intent(getActivity(), MainActivity.class);
+                                                                       intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                                       startActivity(intent);
+                                                                   }
+                                                               }
+                                                           });
+                                                       }
                                                    }
                                                });
 

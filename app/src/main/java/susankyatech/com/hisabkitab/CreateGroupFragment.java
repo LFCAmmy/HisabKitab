@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,6 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +30,8 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import butterknife.BindView;
@@ -39,6 +41,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static android.app.Activity.RESULT_OK;
 
 public class CreateGroupFragment extends Fragment {
+
+    private final static int GALLERY_PICK = 1;
 
     @BindView(R.id.new_group_image)
     CircleImageView groupImage;
@@ -52,8 +56,7 @@ public class CreateGroupFragment extends Fragment {
     Button createGroup;
 
     private ProgressDialog loadingBar;
-    private String joinAuto, userName, currentUserId, token, downloadUrl="";
-    final static int gallery_pick = 1;
+    private String joinAuto, userName, groupCreatedDate, currentUserId, token, downloadUrl="";
 
     private FirebaseAuth mAuth;
     private DatabaseReference groupRef, userRef;
@@ -87,6 +90,8 @@ public class CreateGroupFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
                     userName = dataSnapshot.child("user_name").getValue().toString();
+                    //groupCreatedDate = dataSnapshot.child("group_create_data").getValue().toString();
+                    Log.d("Pratik",""+userName);
                 }
             }
 
@@ -113,7 +118,7 @@ public class CreateGroupFragment extends Fragment {
                 Intent galleryIntent = new Intent();
                 galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
                 galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, gallery_pick);
+                startActivityForResult(galleryIntent, GALLERY_PICK);
             }
         });
 
@@ -123,6 +128,9 @@ public class CreateGroupFragment extends Fragment {
                 String name = groupName.getText().toString();
                 String max = maxMember.getText().toString();
 
+                Calendar callForDate = Calendar.getInstance();
+                SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
+                final String date = currentDate.format(callForDate.getTime());
 
                 if (downloadUrl.equals("")) {
                     downloadUrl = "none";
@@ -134,11 +142,12 @@ public class CreateGroupFragment extends Fragment {
                     maxMember.requestFocus();
                 } else {
                     HashMap groupMap = new HashMap();
-                    groupMap.put("name",name);
+                    groupMap.put("name", name);
                     groupMap.put("max_members",max);
-                    groupMap.put("join_automatically",joinAuto);
-                    groupMap.put("group_image",downloadUrl);
-                    groupMap.put("token",token);
+                    groupMap.put("join_automatically", joinAuto);
+                    groupMap.put("group_image", downloadUrl);
+                    groupMap.put("group_create_date", date);
+                    groupMap.put("groupToken", token);
                    groupRef.child(token).updateChildren(groupMap).addOnCompleteListener(new OnCompleteListener() {
                        @Override
                        public void onComplete(@NonNull Task task) {
@@ -163,7 +172,6 @@ public class CreateGroupFragment extends Fragment {
 
                                            }
                                        });
-
                            } else{
                                String message = task.getException().getMessage();
                                Toast.makeText(getContext(), "Error Occurred: " + message, Toast.LENGTH_SHORT).show();
@@ -179,9 +187,9 @@ public class CreateGroupFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == gallery_pick && data!=null && resultCode==RESULT_OK){
-            loadingBar.setTitle("Profile Picture");
-            loadingBar.setMessage("Please Wait, while we are uploading your profile picture");
+        if (requestCode == GALLERY_PICK && resultCode == RESULT_OK && data != null){
+            loadingBar.setTitle("Group Image");
+            loadingBar.setMessage("Please wait, while we are setting your group image!");
             loadingBar.show();
             loadingBar.setCanceledOnTouchOutside(true);
 
@@ -200,7 +208,6 @@ public class CreateGroupFragment extends Fragment {
                                 Picasso.get().load(downloadUrl).placeholder(R.drawable.ic_photo_camera).into(groupImage);
                             }
                         });
-
                         loadingBar.dismiss();
                     } else {
                         Toast.makeText(getContext(), "Error Occurred, Please try again!", Toast.LENGTH_SHORT).show();
@@ -208,7 +215,6 @@ public class CreateGroupFragment extends Fragment {
                     }
                 }
             });
-
         }
     }
 }

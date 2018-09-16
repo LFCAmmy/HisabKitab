@@ -9,7 +9,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -100,19 +99,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-    private void sendUserToHomeActivity() {
-        Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-    }
-
-    private void logOutUser() {
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -133,10 +119,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         int id = item.getItemId();
 
-
+        switch (id) {
+            case R.id.nav_current_expense: {
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_main_frame, new CurrentExpenseFragment()).commit();
+                break;
+            }
+            case R.id.nav_manage_group: {
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_main_frame, new ManageGroupFragment()).commit();
+                break;
+            }
+        }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void sendUserToHomeActivity() {
+        Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
 }

@@ -31,6 +31,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import devs.mulham.horizontalcalendar.HorizontalCalendar;
+import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
 
 public class CurrentExpenseFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
@@ -40,16 +42,19 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
     @BindView(R.id.current_expense_spinner)
     Spinner mSpinner;
 
-    private EditText title, amount;
-    private String currentUserId, userName, groupId, date;
-
-    private FirebaseAuth mAuth;
-    private DatabaseReference userRef, expenseRef, userListRef;
-
-    private Calendar mCalendar;
-    int day, month, year;
+    private EditText expenseTitle, expenseAmount;
+    private Calendar calender;
 
     private List<String> userList = new ArrayList<>();
+
+    private FirebaseAuth mAuth;
+    private DatabaseReference userReference, groupReference, expenseReference, userListReference;
+
+    private int day, month, year;
+
+    private String currentUserId, currentUserName, currentGroupId, date;
+
+    private View mView;
 
     public CurrentExpenseFragment() { }
 
@@ -57,13 +62,13 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_current_expense, container, false);
 
-        ButterKnife.bind(this,view);
+        ButterKnife.bind(this, view);
 
-        mSpinner.setOnItemSelectedListener(this);
+        mView = view;
 
         init();
 
-        return view;
+        return mView;
     }
 
     private void init() {
@@ -71,30 +76,53 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
 
-        userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
-        expenseRef = FirebaseDatabase.getInstance().getReference().child("Expenses");
+        mSpinner.setOnItemSelectedListener(this);
 
-        userRef.addValueEventListener(new ValueEventListener() {
+        Calendar currentDate = Calendar.getInstance();
+        currentDate.add(Calendar.MONTH, 0);
+
+        Calendar mDate = Calendar.getInstance();
+        currentDate.add(Calendar.MONTH, -1);
+
+        HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(mView, R.id.calendarView)
+                .range(mDate,currentDate)
+                .datesNumberOnScreen(5)
+                .defaultSelectedDate(currentDate)
+                .build();
+
+        horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
+            @Override
+            public void onDateSelected(Calendar date, int position) {
+
+
+            }
+        });
+
+        userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+        expenseReference = FirebaseDatabase.getInstance().getReference().child("Expenses");
+
+        userReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()){
-                    if (dataSnapshot.hasChild("group_id")){
-                        groupId = dataSnapshot.child("group_id").getValue().toString();
-                    }
-                    userName = dataSnapshot.child("user_name").getValue().toString();
 
-                    userListRef = FirebaseDatabase.getInstance().getReference().child("Group").child(groupId).child("members");
-                    userListRef.addValueEventListener(new ValueEventListener() {
+                if (dataSnapshot.exists()) {
+                    currentGroupId = dataSnapshot.child("group_id").getValue().toString();
+                    currentUserName = dataSnapshot.child("user_name").getValue().toString();
+
+                    userListReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members");
+                    userListReference.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+
                             for (DataSnapshot ds: dataSnapshot.getChildren()) {
                                 String name = ds.child("name").getValue().toString();
                                 userList.add(name);
                             }
+
                             userList.add("All Members");
-                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, userList);
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            mSpinner.setAdapter(adapter);
+//                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, userList);
+//                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                            mSpinner.setAdapter(adapter);
                         }
 
                         @Override
@@ -123,16 +151,13 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                         .negativeColor(getResources().getColor(R.color.red))
                         .show();
 
-                title = materialDialog.getCustomView().findViewById(R.id.add_expense_title);
-                amount = materialDialog.getCustomView().findViewById(R.id.add_expense_amount);
+                expenseTitle = materialDialog.getCustomView().findViewById(R.id.add_expense_title);
+                expenseAmount = materialDialog.getCustomView().findViewById(R.id.add_expense_amount);
 
                 materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         addExpenseToDB();
-
-//                        materialDialog.dismiss();
-
                     }
                 });
                 materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
@@ -143,6 +168,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                 });
             }
         });
+
     }
 
     @Override
@@ -150,18 +176,16 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
 
         String item = adapterView.getItemAtPosition(i).toString();
 
-        //Toast.makeText(adapterView.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
     }
 
     public void onNothingSelected(AdapterView<?> arg0) { }
 
     private void addExpenseToDB() {
-        mCalendar =  Calendar.getInstance();
 
-        day = mCalendar.get(Calendar.DAY_OF_MONTH);
-        month = mCalendar.get(Calendar.MONTH);
-        year = mCalendar.get(Calendar.YEAR);
-
+        calender =  Calendar.getInstance();
+        day = calender.get(Calendar.DAY_OF_MONTH);
+        month = calender.get(Calendar.MONTH);
+        year = calender.get(Calendar.YEAR);
         month = month + 1;
 
         String mYear = String.valueOf(year);
@@ -170,28 +194,26 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
 
         date = mDay + "/" + mMonth + "/" + mYear;
 
-        final String expenseTitle = title.getText().toString();
-        final String expenseAmount = amount.getText().toString();
+        final String title = expenseTitle.getText().toString();
+        final String amount = expenseAmount.getText().toString();
 
-        if (TextUtils.isEmpty(expenseTitle)){
-            title.setError("Enter Expense Title");
-            title.requestFocus();
-            return;
-        }else if (TextUtils.isEmpty(expenseAmount)){
-            amount.setError("Enter Expense Amount");
-            amount.requestFocus();
-            return;
+        if (TextUtils.isEmpty(title)){
+            expenseTitle.setError("Please enter expense expenseTitle!");
+            expenseTitle.requestFocus();
+        }else if (TextUtils.isEmpty(amount)){
+            expenseAmount.setError("Please enter expense expenseAmount!");
+            expenseAmount.requestFocus();
         } else {
             HashMap expenseMap = new HashMap();
-            expenseMap.put("name", userName);
-            expenseRef.child(groupId).child(currentUserId).updateChildren(expenseMap)
+            expenseMap.put("name", currentUserName);
+            expenseReference.child(currentGroupId).child(currentUserId).updateChildren(expenseMap)
                     .addOnCompleteListener(new OnCompleteListener() {
                         @Override
                         public void onComplete(@NonNull Task task) {
                             if (task.isSuccessful()){
                                 HashMap userExpenseMap = new HashMap();
-                                userExpenseMap.put("title", expenseTitle);
-                                userExpenseMap.put("amount", expenseAmount);
+                                userExpenseMap.put("expenseTitle", title);
+                                userExpenseMap.put("expenseAmount", amount);
                             }
                         }
                     });

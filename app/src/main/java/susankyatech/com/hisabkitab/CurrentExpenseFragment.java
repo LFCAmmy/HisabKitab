@@ -29,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -51,11 +52,11 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
     private List<String> userList = new ArrayList<>();
 
     private FirebaseAuth mAuth;
-    private DatabaseReference userReference, groupReference, expenseReference, userListReference;
+    private DatabaseReference userReference, expenseReference, userListReference;
 
     private int day, month, year, totalAmt;
 
-    private String currentUserId, currentUserName, currentGroupId, monthName, date;
+    private String currentUserId, currentUserName, currentGroupId, date;
 
     private View mView;
 
@@ -87,8 +88,6 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
         Calendar startDate = Calendar.getInstance();
         startDate.add(Calendar.MONTH, -1);
 
-        Log.d("TAG","" + startDate);
-
         HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(mView, R.id.calendarView)
                 .range(startDate, currentDate)
                 .datesNumberOnScreen(5)
@@ -97,13 +96,12 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
 
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
-            public void onDateSelected(Calendar date, int position) {
-                int day = date.getTime().getDate();
-                int year = date.getTime().getYear();
-                int month = date.getTime().getMonth();
-                getMonthName(month);
+            public void onDateSelected(Calendar cal, int position) {
 
-                Toast.makeText(getContext(), day+"-"+monthName+"-"+year, Toast.LENGTH_SHORT).show();
+                Date date = cal.getTime();
+                SimpleDateFormat format1 = new SimpleDateFormat("dd-MMMM-yyyy");
+                String date1 = format1.format(date);
+                Toast.makeText(getContext(), date1, Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -180,35 +178,6 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
             }
         });
 
-    }
-
-    private String getMonthName(int month) {
-        if (month == 1){
-            monthName = "January";
-        } else if (month == 2){
-            monthName = "February";
-        } else if (month == 3){
-            monthName = "March";
-        } else if (month == 4){
-            monthName = "April";
-        } else if (month == 5){
-            monthName = "May";
-        } else if (month == 6){
-            monthName = "June";
-        } else if (month == 7){
-            monthName = "July";
-        } else if (month == 8){
-            monthName = "August";
-        } else if (month == 9){
-            monthName = "September";
-        } else if (month == 10){
-            monthName = "October";
-        } else if (month == 11){
-            monthName = "November";
-        } else{
-            monthName = "December";
-        }
-        return monthName;
     }
 
     @Override

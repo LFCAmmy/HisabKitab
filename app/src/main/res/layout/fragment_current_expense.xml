@@ -39,29 +39,36 @@
             android:layout_marginTop="40dp">
 
             <TableRow>
+                <TableLayout
+                    android:layout_weight="1">
+                    <TextView
+                        android:padding="10dp"
+                        android:gravity="center"
+                        android:text="@string/id"
+                        android:textSize="18sp"/>
+                </TableLayout>
 
-                <TextView
-                    android:layout_marginStart="5dp"
-                    android:padding="10dp"
-                    android:gravity="center"
-                    android:text="@string/id"
-                    android:textSize="18sp"/>
+                <TableLayout
+                    android:layout_weight="1">
+                    <TextView
+                        android:padding="10dp"
+                        android:text="@string/product_name"
+                        android:textSize="18sp"/>
+                </TableLayout>
 
-                <TextView
-                    android:layout_marginStart="60dp"
-                    android:padding="10dp"
-                    android:gravity="center"
-                    android:text="@string/product_name"
-                    android:textSize="18sp"/>
+                <TableLayout
+                    android:layout_weight="1">
+                    <TextView
+                        android:padding="10dp"
+                        android:gravity="center"
+                        android:text="@string/amount"
+                        android:textSize="18sp"/>
+                </TableLayout>
 
-                <TextView
-                    android:layout_marginStart="35dp"
-                    android:padding="10dp"
-                    android:gravity="center"
-                    android:text="@string/amount"
-                    android:textSize="18sp"/>
+
 
             </TableRow>
+
 
         </TableLayout>
 

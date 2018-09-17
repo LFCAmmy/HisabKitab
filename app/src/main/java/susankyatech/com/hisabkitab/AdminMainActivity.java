@@ -124,6 +124,10 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
                 getSupportFragmentManager().beginTransaction().replace(R.id.content_main_frame, new CurrentExpenseFragment()).commit();
                 break;
             }
+            case R.id.nav_group_expenses: {
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_main_frame, new GroupExpensesFragment()).commit();
+                break;
+            }
             case R.id.nav_manage_group: {
                 getSupportFragmentManager().beginTransaction().replace(R.id.content_main_frame, new ManageGroupFragment()).commit();
                 break;

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/group_expenses_id_tv"
+                android:layout_marginStart="5dp"
+                android:padding="10dp"
+                android:gravity="center"
+                android:text="@string/id"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:id="@+id/group_expenses_user_name_tv"
+                android:layout_marginStart="95dp"
+                android:padding="10dp"
+                android:gravity="center"
+                android:text="@string/username"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:id="@+id/group_expenses_due_amount_tv"
+                android:layout_marginStart="75dp"
+                android:padding="10dp"
+                android:gravity="center"
+                android:text="@string/amount"
+                android:textSize="18sp"/>
+
+        </TableRow>
+
+    </TableLayout>
+
+</RelativeLayout>

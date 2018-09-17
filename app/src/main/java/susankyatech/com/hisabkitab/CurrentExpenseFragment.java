@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,9 +44,10 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
 
     @BindView(R.id.fab)
     FloatingActionButton addExpense;
-
     @BindView(R.id.current_expense_spinner)
     Spinner mSpinner;
+    @BindView(R.id.current_expense_recycler_view)
+    RecyclerView currentExpenseList;
 
     private EditText expenseTitle, expenseAmount;
     private Calendar calender;
@@ -56,11 +59,12 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
 
     private int day, month, year, totalAmt;
 
-    private String currentUserId, currentUserName, currentGroupId, date;
+    private String currentUserId, currentUserName, currentGroupId, date, selectedUser;
 
     private View mView;
 
-    public CurrentExpenseFragment() { }
+    public CurrentExpenseFragment() {
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,6 +84,14 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
 
+        userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+        expenseReference = FirebaseDatabase.getInstance().getReference().child("Expenses");
+        userListReference = FirebaseDatabase.getInstance().getReference().child("Group");
+
+        currentExpenseList.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        currentExpenseList.setLayoutManager(linearLayoutManager);
+
         mSpinner.setOnItemSelectedListener(this);
 
         Calendar currentDate = Calendar.getInstance();
@@ -98,16 +110,14 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
             @Override
             public void onDateSelected(Calendar cal, int position) {
 
-                Date date = cal.getTime();
+                Date calDate = cal.getTime();
                 SimpleDateFormat format1 = new SimpleDateFormat("dd-MMMM-yyyy");
-                String date1 = format1.format(date);
-                Toast.makeText(getContext(), date1, Toast.LENGTH_SHORT).show();
+                date = format1.format(calDate);
+
+                showExpenses(date);
 
             }
         });
-
-        userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
-        expenseReference = FirebaseDatabase.getInstance().getReference().child("Expenses");
 
         userReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -117,27 +127,27 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                     currentGroupId = dataSnapshot.child("group_id").getValue().toString();
                     currentUserName = dataSnapshot.child("user_name").getValue().toString();
 
-                    userListReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members");
-                    userListReference.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                    userListReference.child(currentGroupId).child("members")
+                            .addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                            for (DataSnapshot ds: dataSnapshot.getChildren()) {
-                                String name = ds.child("name").getValue().toString();
-                                userList.add(name);
-                            }
+                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                        String name = ds.child("name").getValue().toString();
+                                        userList.add(name);
+                                    }
 
-                            userList.add("All Members");
-                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, userList);
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            mSpinner.setAdapter(adapter);
-                        }
+                                    userList.add("All Members");
+                                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, userList);
+                                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                    mSpinner.setAdapter(adapter);
+                                }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                        }
-                    });
+                                }
+                            });
                 }
             }
 
@@ -152,7 +162,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
             public void onClick(View view) {
                 final MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
                         .title("Add Expense")
-                        .customView(R.layout.add_expense,true)
+                        .customView(R.layout.add_expense, true)
                         .positiveText("Add Expense")
                         .negativeText("Close")
                         .positiveColor(getResources().getColor(R.color.green))
@@ -180,18 +190,56 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
 
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+    private void showExpenses(final String date) {
+        expenseReference.child(currentGroupId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        String expenseDate = ds.getKey();
+                        for (DataSnapshot de : ds.getChildren()) {
+                            String userName = de.child("name").getValue().toString();
+                            if (expenseDate.equals(date)) {
+                                if (userName.equals(selectedUser)) {
+                                    displayAllCurrentExpense();
 
-        String item = adapterView.getItemAtPosition(i).toString();
+                                } else {
+                                    Toast.makeText(getContext(), "not selected", Toast.LENGTH_SHORT).show();
+                                }
+
+
+                            } else {
+                                Toast.makeText(getContext(), "not matched", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void displayAllCurrentExpense() {
 
     }
 
-    public void onNothingSelected(AdapterView<?> arg0) { }
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+        selectedUser = adapterView.getSelectedItem().toString();
+    }
+
+    public void onNothingSelected(AdapterView<?> arg0) {
+    }
 
     private void addExpenseToDB() {
 
-        calender =  Calendar.getInstance();
+        calender = Calendar.getInstance();
         day = calender.get(Calendar.DAY_OF_MONTH);
         month = calender.get(Calendar.MONTH);
         year = calender.get(Calendar.YEAR);
@@ -206,10 +254,10 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
         final String title = expenseTitle.getText().toString();
         final String amt = expenseAmount.getText().toString();
 
-        if (TextUtils.isEmpty(title)){
+        if (TextUtils.isEmpty(title)) {
             expenseTitle.setError("Please enter expense expenseTitle!");
             expenseTitle.requestFocus();
-        }else if (TextUtils.isEmpty(amt)){
+        } else if (TextUtils.isEmpty(amt)) {
             expenseAmount.setError("Please enter expense expenseAmount!");
             expenseAmount.requestFocus();
         } else {
@@ -225,7 +273,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                     .addOnCompleteListener(new OnCompleteListener() {
                         @Override
                         public void onComplete(@NonNull Task task) {
-                            if (task.isSuccessful()){
+                            if (task.isSuccessful()) {
                                 HashMap userExpenseMap = new HashMap();
                                 userExpenseMap.put("amount", amount);
                                 expenseReference.child(currentGroupId).child(date).child(currentUserId).child("expense")

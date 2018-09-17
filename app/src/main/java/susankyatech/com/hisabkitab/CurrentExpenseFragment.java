@@ -15,10 +15,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -59,7 +62,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
 
     private int day, month, year, totalAmt;
 
-    private String currentUserId, currentUserName, currentGroupId, date, selectedUser;
+    private String currentUserId, currentUserName, currentGroupId, date, selectedUser, token;
 
     private View mView;
 
@@ -85,7 +88,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
         currentUserId = mAuth.getCurrentUser().getUid();
 
         userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
-        expenseReference = FirebaseDatabase.getInstance().getReference().child("Expenses");
+        expenseReference = FirebaseDatabase.getInstance().getReference().child("UserExpenses");
         userListReference = FirebaseDatabase.getInstance().getReference().child("Group");
 
         currentExpenseList.setHasFixedSize(true);
@@ -93,6 +96,11 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
         currentExpenseList.setLayoutManager(linearLayoutManager);
 
         mSpinner.setOnItemSelectedListener(this);
+
+        String easy = RandomString.digits + "ACEFGHJKLMNPQRUVWXYabcdefhijkprstuvwx";
+        RandomString tickets = new RandomString(6, new SecureRandom(), easy);
+
+        token = tickets.nextString();
 
         Calendar currentDate = Calendar.getInstance();
         currentDate.add(Calendar.MONTH, 0);
@@ -105,6 +113,8 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                 .datesNumberOnScreen(5)
                 .defaultSelectedDate(currentDate)
                 .build();
+
+
 
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
@@ -127,6 +137,8 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                     currentGroupId = dataSnapshot.child("group_id").getValue().toString();
                     currentUserName = dataSnapshot.child("user_name").getValue().toString();
 
+
+
                     userListReference.child(currentGroupId).child("members")
                             .addValueEventListener(new ValueEventListener() {
                                 @Override
@@ -141,6 +153,12 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, userList);
                                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                                     mSpinner.setAdapter(adapter);
+
+                                    Calendar startDate = Calendar.getInstance();
+                                    Date calDate = startDate.getTime();
+                                    SimpleDateFormat format1 = new SimpleDateFormat("dd-MMMM-yyyy");
+                                    date = format1.format(calDate);
+                                    showExpenses(date);
                                 }
 
                                 @Override
@@ -148,6 +166,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
 
                                 }
                             });
+
                 }
             }
 
@@ -198,17 +217,26 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         String expenseDate = ds.getKey();
                         for (DataSnapshot de : ds.getChildren()) {
+                            String userId = de.getKey();
                             String userName = de.child("name").getValue().toString();
                             if (expenseDate.equals(date)) {
+                                Log.d("armaan", "onDataChange: "+userName);
+                                Log.d("armaan", "sel: "+selectedUser);
                                 if (userName.equals(selectedUser)) {
-                                    displayAllCurrentExpense();
+                                    Log.d("armaan", "onDataChange: hiiiiiii");
+                                    currentExpenseList.setVisibility(View.VISIBLE);
+                                    DatabaseReference userExpenseRef = expenseReference.child(currentGroupId).child(expenseDate).child(userId).child("products");
+                                    displayAllCurrentExpense(userExpenseRef);
 
                                 } else {
+                                    Log.d("armaan", "onDataChange:  yeeeeeeee");
+                                    currentExpenseList.setVisibility(View.GONE);
                                     Toast.makeText(getContext(), "not selected", Toast.LENGTH_SHORT).show();
                                 }
 
 
                             } else {
+                                currentExpenseList.setVisibility(View.GONE);
                                 Toast.makeText(getContext(), "not matched", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -224,14 +252,11 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
         });
     }
 
-    private void displayAllCurrentExpense() {
-
-    }
-
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
         selectedUser = adapterView.getSelectedItem().toString();
+        showExpenses(date);
     }
 
     public void onNothingSelected(AdapterView<?> arg0) {
@@ -275,9 +300,10 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                         public void onComplete(@NonNull Task task) {
                             if (task.isSuccessful()) {
                                 HashMap userExpenseMap = new HashMap();
+                                userExpenseMap.put("product_name", title);
                                 userExpenseMap.put("amount", amount);
-                                expenseReference.child(currentGroupId).child(date).child(currentUserId).child("expense")
-                                        .child(title).updateChildren(userExpenseMap)
+                                expenseReference.child(currentGroupId).child(date).child(currentUserId).child("products")
+                                        .child(token).updateChildren(userExpenseMap)
                                         .addOnCompleteListener(new OnCompleteListener() {
                                             @Override
                                             public void onComplete(@NonNull Task task) {
@@ -290,6 +316,54 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                             }
                         }
                     });
+        }
+    }
+
+    private void displayAllCurrentExpense(DatabaseReference userExpenseRef) {
+        Log.d("armaan", "displayAllCurrentExpense: " + userExpenseRef);
+        FirebaseRecyclerAdapter<UserExpenses, CurrentExpenseViewHolder> firebaseRecyclerAdapter =
+                new FirebaseRecyclerAdapter<UserExpenses, CurrentExpenseViewHolder>(
+                        UserExpenses.class,
+                        R.layout.all_user_expense_layout,
+                        CurrentExpenseViewHolder.class,
+                        userExpenseRef
+                ) {
+                    @Override
+                    protected void populateViewHolder(CurrentExpenseViewHolder viewHolder, UserExpenses model, int position) {
+                        viewHolder.setAmount(model.getAmount());
+                        viewHolder.setProduct_name(model.getProduct_name());
+                        viewHolder.setProductId(position);
+                    }
+                };
+        currentExpenseList.setAdapter(firebaseRecyclerAdapter);
+    }
+
+    public static class CurrentExpenseViewHolder extends RecyclerView.ViewHolder{
+        View mView;
+
+        public CurrentExpenseViewHolder(@NonNull View itemView) {
+            super(itemView);
+            mView = itemView;
+        }
+
+        public void setProductId(int position){
+            TextView extId = mView.findViewById(R.id.all_current_expense_id);
+            String id = String.valueOf(position + 1);
+            extId.setText(id);
+
+
+        }
+
+        public void setAmount(int amount){
+            Log.d("armaan", "setAmount: "+amount);
+            TextView expAmt = mView.findViewById(R.id.all_current_expense_product_price);
+            String expenseAmount = String.valueOf(amount);
+            expAmt.setText(expenseAmount);
+        }
+
+        public void setProduct_name(String product_name){
+            TextView extName = mView.findViewById(R.id.all_current_expense_product_name);
+            extName.setText(product_name);
         }
     }
 }

@@ -49,7 +49,7 @@ public class ManageGroupFragment extends Fragment {
     private DatabaseReference userReference, groupReference;
     private StorageReference groupImageReference;
 
-    String currentUserId, currentGroupId, currentUserName;
+    String currentUserId, currentGroupId, currentUserName, downloadUrl;
 
     public ManageGroupFragment() { }
 
@@ -82,6 +82,7 @@ public class ManageGroupFragment extends Fragment {
 
         userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
         groupImageReference = FirebaseStorage.getInstance().getReference().child("Group Images");
+        groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
 
         userReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -92,7 +93,7 @@ public class ManageGroupFragment extends Fragment {
                     currentUserName = dataSnapshot.child("user_name").getValue().toString();
                     displayUserName_TV.setText(currentUserName);
 
-                    groupReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId);
+                    groupReference = groupReference.child(currentGroupId);
                     groupReference.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -287,7 +288,7 @@ public class ManageGroupFragment extends Fragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        String token = dataSnapshot.child("token").getValue().toString();
+                        String token = dataSnapshot.child("groupToken").getValue().toString();
                         displayGroupToken_TV.setText(token);
                     }
 
@@ -329,9 +330,20 @@ public class ManageGroupFragment extends Fragment {
                         newGroupImagePath.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                             @Override
                             public void onComplete(@NonNull Task<Uri> task) {
+                                if (task.isSuccessful()){
+                                    downloadUrl = task.getResult().toString();
+                                    groupReference.child("group_image").setValue(downloadUrl)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()){
+                                                        Picasso.get().load(downloadUrl).placeholder(R.drawable.ic_photo_camera).into(displayGroupImage);
+                                                    }
+                                                }
+                                            });
 
-                                String newGroupImageUrl = task.getResult().toString();
-                                Picasso.get().load(newGroupImageUrl).placeholder(R.drawable.ic_photo_camera).into(displayGroupImage);
+                                }
+
                             }
                         });
 

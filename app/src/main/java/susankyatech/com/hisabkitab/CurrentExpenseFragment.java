@@ -226,7 +226,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                             String userId = de.getKey();
                             String userName = de.child("name").getValue().toString();
                             if (expenseDate.equals(date)) {
-                                Toast.makeText(getContext(), "hiii", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "hii", Toast.LENGTH_SHORT).show();
                                 if (userName.equals(selectedUser)) {
                                     currentExpenseList.setVisibility(View.VISIBLE);
                                     Query query = FirebaseDatabase.getInstance()

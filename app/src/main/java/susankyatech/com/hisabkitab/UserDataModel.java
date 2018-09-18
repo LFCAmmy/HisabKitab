@@ -4,8 +4,9 @@ public class UserDataModel {
 
     private String user_name;
 
-    public UserDataModel() {}
+    public UserDataModel(){
 
+    }
 
     public UserDataModel(String user_name) {
         this.user_name = user_name;

@@ -2,6 +2,7 @@ package susankyatech.com.hisabkitab;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,13 +22,16 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.security.SecureRandom;
@@ -42,6 +46,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
+
+import static android.content.ContentValues.TAG;
 
 public class CurrentExpenseFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
@@ -222,15 +228,14 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                                 if (userName.equals(selectedUser)) {
                                     Log.d("armaan", "onDataChange: hiiiiiii");
                                     currentExpenseList.setVisibility(View.VISIBLE);
+                                    Query query = FirebaseDatabase.getInstance()
+                                            .getReference()
+                                            .child("UserExpenses").child(currentGroupId).child(expenseDate).child(userId).child("products")
+                                            .limitToLast(50);
                                     DatabaseReference userExpenseRef = expenseReference.child(currentGroupId).child(expenseDate).child(userId).child("products");
-                                    //displayAllCurrentExpense(userExpenseRef);
+                                    displayAllCurrentExpense(query);
 
-                                } else {
-                                    Log.d("armaan", "onDataChange:  yeeeeeeee");
-                                    currentExpenseList.setVisibility(View.GONE);
-                                    Toast.makeText(getContext(), "not selected", Toast.LENGTH_SHORT).show();
                                 }
-
 
                             } else {
                                 currentExpenseList.setVisibility(View.GONE);
@@ -315,53 +320,99 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                     });
         }
     }
-}
 
-//    private void displayAllCurrentExpense(DatabaseReference userExpenseRef) {
-//        Log.d("armaan", "displayAllCurrentExpense: " + userExpenseRef);
-//        FirebaseRecyclerAdapter<UserExpenses, CurrentExpenseViewHolder> firebaseRecyclerAdapter =
-//                new FirebaseRecyclerAdapter<UserExpenses, CurrentExpenseViewHolder>(
-//                        UserExpenses.class,
-//                        R.layout.all_user_expense_layout,
-//                        CurrentExpenseViewHolder.class,
-//                        userExpenseRef
-//                ) {
-//                    @Override
-//                    protected void populateViewHolder(CurrentExpenseViewHolder viewHolder, UserExpenses model, int position) {
-//                        viewHolder.setAmount(model.getAmount());
-//                        viewHolder.setProduct_name(model.getProduct_name());
-//                        viewHolder.setProductId(position);
-//                    }
-//                };
-//        currentExpenseList.setAdapter(firebaseRecyclerAdapter);
-//    }
-//
-//    public static class CurrentExpenseViewHolder extends RecyclerView.ViewHolder{
-//        View mView;
-//
-//        public CurrentExpenseViewHolder(@NonNull View itemView) {
-//            super(itemView);
-//            mView = itemView;
-//        }
-//
-//        public void setProductId(int position){
-//            TextView extId = mView.findViewById(R.id.all_current_expense_id);
-//            String id = String.valueOf(position + 1);
-//            extId.setText(id);
-//
-//
-//        }
-//
-//        public void setAmount(int amount){
-//            Log.d("armaan", "setAmount: "+amount);
-//            TextView expAmt = mView.findViewById(R.id.all_current_expense_product_price);
-//            String expenseAmount = String.valueOf(amount);
-//            expAmt.setText(expenseAmount);
-//        }
-//
-//        public void setProduct_name(String product_name){
-//            TextView extName = mView.findViewById(R.id.all_current_expense_product_name);
-//            extName.setText(product_name);
-//        }
-//    }
-//}
+    private void displayAllCurrentExpense(Query query) {
+        ChildEventListener childEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        query.addChildEventListener(childEventListener);
+
+        FirebaseRecyclerOptions<UserExpenses> options =
+                new FirebaseRecyclerOptions.Builder<UserExpenses>()
+                .setQuery(query, UserExpenses.class)
+                .build();
+
+        FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<UserExpenses, CurrentExpenseViewHolder>(options) {
+            @NonNull
+            @Override
+            public CurrentExpenseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.all_user_expense_layout, parent, false);
+                return new CurrentExpenseViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull CurrentExpenseViewHolder holder, int position, @NonNull UserExpenses model) {
+                Log.d("TAG", "onBindViewHolder: "+model.getProduct_name());
+                holder.setProduct_name(model.getProduct_name());
+            }
+
+        };
+        adapter.startListening();
+        currentExpenseList.setAdapter(adapter);
+    }
+
+    public static class CurrentExpenseViewHolder extends RecyclerView.ViewHolder{
+        View mView;
+
+        public CurrentExpenseViewHolder(@NonNull View itemView) {
+            super(itemView);
+            mView = itemView;
+        }
+
+        public void setProductId(int position){
+            TextView extId = mView.findViewById(R.id.all_current_expense_id);
+            String id = String.valueOf(position + 1);
+            extId.setText(id);
+
+
+        }
+
+        public void setAmount(int amount){
+            Log.d("armaan", "setAmount: "+amount);
+            TextView expAmt = mView.findViewById(R.id.all_current_expense_product_price);
+            String expenseAmount = String.valueOf(amount);
+            expAmt.setText(expenseAmount);
+        }
+
+        public void setProduct_name(String product_name){
+            TextView extName = mView.findViewById(R.id.all_current_expense_product_name);
+            extName.setText(product_name);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+    }
+}

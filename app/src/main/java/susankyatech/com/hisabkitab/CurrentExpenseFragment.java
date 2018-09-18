@@ -98,10 +98,6 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
         expenseReference = FirebaseDatabase.getInstance().getReference().child("UserExpenses");
         userListReference = FirebaseDatabase.getInstance().getReference().child("Group");
 
-        currentExpenseList.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        currentExpenseList.setLayoutManager(linearLayoutManager);
-
         mSpinner.setOnItemSelectedListener(this);
 
         String easy = RandomString.digits + "ACEFGHJKLMNPQRUVWXYabcdefhijkprstuvwx";
@@ -157,6 +153,8 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, userList);
                                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                                     mSpinner.setAdapter(adapter);
+
+
 
                                     Calendar startDate = Calendar.getInstance();
                                     Date calDate = startDate.getTime();
@@ -214,6 +212,9 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
     }
 
     private void showExpenses(final String date) {
+        currentExpenseList.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        currentExpenseList.setLayoutManager(linearLayoutManager);
         Log.d(TAG, "showExpenses: "+date);
         expenseReference.child(currentGroupId).addValueEventListener(new ValueEventListener() {
             @Override
@@ -225,6 +226,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                             String userId = de.getKey();
                             String userName = de.child("name").getValue().toString();
                             if (expenseDate.equals(date)) {
+                                Toast.makeText(getContext(), "hiii", Toast.LENGTH_SHORT).show();
                                 if (userName.equals(selectedUser)) {
                                     currentExpenseList.setVisibility(View.VISIBLE);
                                     Query query = FirebaseDatabase.getInstance()
@@ -232,6 +234,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                                             .child("UserExpenses").child(currentGroupId).child(expenseDate).child(userId).child("products")
                                             .limitToLast(50);
 //                                    DatabaseReference userExpenseRef = expenseReference.child(currentGroupId).child(expenseDate).child(userId).child("products");
+
                                     displayAllCurrentExpense(query);
 
                                 }

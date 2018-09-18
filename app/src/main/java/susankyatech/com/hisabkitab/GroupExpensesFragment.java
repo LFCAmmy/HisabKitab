@@ -44,7 +44,7 @@ public class GroupExpensesFragment extends Fragment {
         currentUserId = mAuth.getCurrentUser().getUid();
         userReference = FirebaseDatabase.getInstance().getReference().child("Users");
 
-        displayUserList();
+//        displayUserList();
 
         clearDueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,22 +56,22 @@ public class GroupExpensesFragment extends Fragment {
         return mView;
     }
 
-    private void displayUserList() {
-
-
-        FirebaseRecyclerAdapter<UserDataModel, UserListHolder> adapter = new FirebaseRecyclerAdapter<UserDataModel, UserListHolder>
-                (UserDataModel.class, R.layout.group_expenses_recycler_view_layout, UserListHolder.class, userReference) {
-
-            @Override
-            protected void populateViewHolder(UserListHolder viewHolder, UserDataModel model, int position) {
-
-                Log.d("TAG", "populateViewHolder: " + model.toString());
-                viewHolder.setUser_name(model.getUser_name());
-            }
-        };
-
-        recyclerView.setAdapter(adapter);
-    }
+//    private void displayUserList() {
+//
+//
+//        FirebaseRecyclerAdapter<UserDataModel, UserListHolder> adapter = new FirebaseRecyclerAdapter<UserDataModel, UserListHolder>
+//                (UserDataModel.class, R.layout.group_expenses_recycler_view_layout, UserListHolder.class, userReference) {
+//
+//            @Override
+//            protected void populateViewHolder(UserListHolder viewHolder, UserDataModel model, int position) {
+//
+//                Log.d("TAG", "populateViewHolder: " + model.toString());
+//                viewHolder.setUser_name(model.getUser_name());
+//            }
+//        };
+//
+//        recyclerView.setAdapter(adapter);
+//    }
 
     public static class UserListHolder extends RecyclerView.ViewHolder {
 

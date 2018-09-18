@@ -103,6 +103,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
         currentExpenseList.setLayoutManager(linearLayoutManager);
 
         mSpinner.setOnItemSelectedListener(this);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, userList);
 
         String easy = RandomString.digits + "ACEFGHJKLMNPQRUVWXYabcdefhijkprstuvwx";
         RandomString tickets = new RandomString(6, new SecureRandom(), easy);
@@ -137,24 +138,22 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
 
         userReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 if (dataSnapshot.exists()) {
                     currentGroupId = dataSnapshot.child("group_id").getValue().toString();
                     currentUserName = dataSnapshot.child("user_name").getValue().toString();
 
-
                     userListReference.child(currentGroupId).child("members")
                             .addValueEventListener(new ValueEventListener() {
                                 @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                         String name = ds.child("name").getValue().toString();
                                         userList.add(name);
                                     }
 
-                                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, userList);
                                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                                     mSpinner.setAdapter(adapter);
 
@@ -166,7 +165,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                                 }
 
                                 @Override
-                                public void onCancelled(DatabaseError databaseError) {
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                 }
                             });
@@ -175,7 +174,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
@@ -217,7 +216,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
         Log.d(TAG, "showExpenses: "+date);
         expenseReference.child(currentGroupId).addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         String expenseDate = ds.getKey();
@@ -247,7 +246,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
@@ -387,8 +386,6 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
             TextView extId = mView.findViewById(R.id.all_current_expense_id);
             String id = String.valueOf(position + 1);
             extId.setText(id);
-
-
         }
 
         public void setAmount(int amount){
@@ -416,7 +413,6 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
     @Override
     public void onStop() {
         super.onStop();
-        adapter.stopListening();
 
     }
 }

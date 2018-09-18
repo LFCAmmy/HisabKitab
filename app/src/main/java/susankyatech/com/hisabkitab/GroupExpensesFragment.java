@@ -31,7 +31,7 @@ public class GroupExpensesFragment extends Fragment {
 
     private DatabaseReference userReference, groupReference;
 
-    private RecyclerView recyclerView;
+    RecyclerView recyclerView;
 
     private String currentUserId, groupId;
 
@@ -164,6 +164,7 @@ public class GroupExpensesFragment extends Fragment {
         public GroupManageViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
+
         }
 
         public void setName(String name){

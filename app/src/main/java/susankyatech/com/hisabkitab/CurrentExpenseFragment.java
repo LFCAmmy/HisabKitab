@@ -65,6 +65,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
 
     private FirebaseAuth mAuth;
     private DatabaseReference userReference, expenseReference, userListReference;
+    private  FirebaseRecyclerAdapter adapter;
 
     private int day, month, year, totalAmt;
 
@@ -213,6 +214,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
     }
 
     private void showExpenses(final String date) {
+        Log.d(TAG, "showExpenses: "+date);
         expenseReference.child(currentGroupId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -223,23 +225,20 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                             String userId = de.getKey();
                             String userName = de.child("name").getValue().toString();
                             if (expenseDate.equals(date)) {
-                                Log.d("armaan", "onDataChange: " + userName);
-                                Log.d("armaan", "sel: " + selectedUser);
                                 if (userName.equals(selectedUser)) {
-                                    Log.d("armaan", "onDataChange: hiiiiiii");
                                     currentExpenseList.setVisibility(View.VISIBLE);
                                     Query query = FirebaseDatabase.getInstance()
                                             .getReference()
                                             .child("UserExpenses").child(currentGroupId).child(expenseDate).child(userId).child("products")
                                             .limitToLast(50);
-                                    DatabaseReference userExpenseRef = expenseReference.child(currentGroupId).child(expenseDate).child(userId).child("products");
+//                                    DatabaseReference userExpenseRef = expenseReference.child(currentGroupId).child(expenseDate).child(userId).child("products");
                                     displayAllCurrentExpense(query);
 
                                 }
 
                             } else {
                                 currentExpenseList.setVisibility(View.GONE);
-                                Toast.makeText(getContext(), "not matched", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getContext(), "No Data on this date", Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -355,7 +354,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                 .setQuery(query, UserExpenses.class)
                 .build();
 
-        FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<UserExpenses, CurrentExpenseViewHolder>(options) {
+        adapter = new FirebaseRecyclerAdapter<UserExpenses, CurrentExpenseViewHolder>(options) {
             @NonNull
             @Override
             public CurrentExpenseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
@@ -366,8 +365,9 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
 
             @Override
             protected void onBindViewHolder(@NonNull CurrentExpenseViewHolder holder, int position, @NonNull UserExpenses model) {
-                Log.d("TAG", "onBindViewHolder: "+model.getProduct_name());
                 holder.setProduct_name(model.getProduct_name());
+                holder.setProductId(position);
+                holder.setAmount(model.getAmount());
             }
 
         };
@@ -392,7 +392,6 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
         }
 
         public void setAmount(int amount){
-            Log.d("armaan", "setAmount: "+amount);
             TextView expAmt = mView.findViewById(R.id.all_current_expense_product_price);
             String expenseAmount = String.valueOf(amount);
             expAmt.setText(expenseAmount);
@@ -407,12 +406,17 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
     @Override
     public void onStart() {
         super.onStart();
+        if (adapter != null)
+        {
+            adapter.startListening();
 
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        adapter.stopListening();
 
     }
 }

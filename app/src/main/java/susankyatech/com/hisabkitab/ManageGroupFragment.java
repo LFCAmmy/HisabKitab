@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,11 +41,9 @@ public class ManageGroupFragment extends Fragment {
     private CircleImageView displayGroupImage;
     private TextView displayUserName_TV, displayGroupName_TV, displayGroupToken_TV;
     private EditText changeGroupName_ET, changeMaxGroupMembers_ET;
-    private Button displayGroupInfo_Btn, changeGroupName_Btn, changeGroupImage_Btn, changeGroupMaxMembers_Btn, displayGroupIdToken_Btn;
+    private Button changeGroupName_Btn, changeGroupImage_Btn, changeGroupMaxMembers_Btn, updateGroupMembersBtn, displayGroupIdToken_Btn;
     private ProgressDialog loadingBar;
-    private View mView;
 
-    private FirebaseAuth mAuth;
     private DatabaseReference userReference, groupReference;
     private StorageReference groupImageReference;
 
@@ -59,34 +57,32 @@ public class ManageGroupFragment extends Fragment {
 
         displayGroupImage = view.findViewById(R.id.group_manage_display_group_image);
         displayUserName_TV = view.findViewById(R.id.group_manage_display_user_name_et);
-        //displayGroupInfo_Btn = view.findViewById(R.id.group_manage_view_group_info_btn);
         displayGroupName_TV = view.findViewById(R.id.group_manage_display_group_name_tv);
         changeGroupName_Btn = view.findViewById(R.id.group_manage_change_group_name_btn);
         changeGroupImage_Btn = view.findViewById(R.id.group_manage_change_group_image_btn);
         changeGroupMaxMembers_Btn = view.findViewById(R.id.group_manage_change_group_max_members_btn);
+        updateGroupMembersBtn = view.findViewById(R.id.group_manage_update_group_members);
         displayGroupIdToken_Btn = view.findViewById(R.id.group_manage_show_group_id_token_btn);
 
         loadingBar = new ProgressDialog(getContext());
 
-        mView = view;
-
-        init();
-
-        return mView;
-    }
-
-    private void init() {
-
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
 
         userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
         groupImageReference = FirebaseStorage.getInstance().getReference().child("Group Images");
         groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
 
+        init();
+
+        return view;
+    }
+
+    private void init() {
+
         userReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 if (dataSnapshot.exists()) {
                     currentGroupId = dataSnapshot.child("group_id").getValue().toString();
@@ -96,17 +92,16 @@ public class ManageGroupFragment extends Fragment {
                     groupReference = groupReference.child(currentGroupId);
                     groupReference.addValueEventListener(new ValueEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                             String currentGroupName = dataSnapshot.child("name").getValue().toString();
                             String currentGroupImageUrl = dataSnapshot.child("group_image").getValue().toString();
                             displayGroupName_TV.setText(currentGroupName);
-                            Log.d("Pratik", "" + currentGroupImageUrl);
                             Picasso.get().load(currentGroupImageUrl).placeholder(R.drawable.ic_photo_camera).into(displayGroupImage);
                         }
 
                         @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
                         }
                     });
@@ -114,30 +109,10 @@ public class ManageGroupFragment extends Fragment {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
-
-//        displayGroupInfo_Btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                final MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
-//                        .title("Group Info")
-//                        .customView(R.layout.manage_group_group_info_dialog_layout, true)
-//                        .positiveText("Dismiss")
-//                        .positiveColor(getResources().getColor(R.color.green))
-//                        .show();
-//
-//                materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        materialDialog.dismiss();
-//                    }
-//                });
-//            }
-//        });
 
         changeGroupName_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,7 +143,7 @@ public class ManageGroupFragment extends Fragment {
                                         if (task.isSuccessful()) {
                                             groupReference.addValueEventListener(new ValueEventListener() {
                                                 @Override
-                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                                                     String newGroupName = dataSnapshot.child("name").getValue().toString();
                                                     changeGroupName_ET.setText(newGroupName);
@@ -176,7 +151,7 @@ public class ManageGroupFragment extends Fragment {
                                                 }
 
                                                 @Override
-                                                public void onCancelled(DatabaseError databaseError) {
+                                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                                 }
                                             });
@@ -239,7 +214,7 @@ public class ManageGroupFragment extends Fragment {
                                         if (task.isSuccessful()) {
                                             groupReference.addValueEventListener(new ValueEventListener() {
                                                 @Override
-                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                                                     String newGroupMaxMembers = dataSnapshot.child("max_members").getValue().toString();
                                                     changeMaxGroupMembers_ET.setText(newGroupMaxMembers);
@@ -247,7 +222,7 @@ public class ManageGroupFragment extends Fragment {
                                                 }
 
                                                 @Override
-                                                public void onCancelled(DatabaseError databaseError) {
+                                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                                 }
                                             });
@@ -271,6 +246,17 @@ public class ManageGroupFragment extends Fragment {
             }
         });
 
+        updateGroupMembersBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = new UpdateGroupMembersFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.content_main_frame, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+
         displayGroupIdToken_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -286,14 +272,14 @@ public class ManageGroupFragment extends Fragment {
 
                  groupReference.addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                         String token = dataSnapshot.child("groupToken").getValue().toString();
                         displayGroupToken_TV.setText(token);
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     }
                 });

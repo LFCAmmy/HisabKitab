@@ -115,7 +115,6 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                 .build();
 
 
-
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Calendar cal, int position) {
@@ -138,7 +137,6 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                     currentUserName = dataSnapshot.child("user_name").getValue().toString();
 
 
-
                     userListReference.child(currentGroupId).child("members")
                             .addValueEventListener(new ValueEventListener() {
                                 @Override
@@ -149,7 +147,6 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                                         userList.add(name);
                                     }
 
-                                    userList.add("All Members");
                                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, userList);
                                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                                     mSpinner.setAdapter(adapter);
@@ -220,13 +217,13 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                             String userId = de.getKey();
                             String userName = de.child("name").getValue().toString();
                             if (expenseDate.equals(date)) {
-                                Log.d("armaan", "onDataChange: "+userName);
-                                Log.d("armaan", "sel: "+selectedUser);
+                                Log.d("armaan", "onDataChange: " + userName);
+                                Log.d("armaan", "sel: " + selectedUser);
                                 if (userName.equals(selectedUser)) {
                                     Log.d("armaan", "onDataChange: hiiiiiii");
                                     currentExpenseList.setVisibility(View.VISIBLE);
                                     DatabaseReference userExpenseRef = expenseReference.child(currentGroupId).child(expenseDate).child(userId).child("products");
-                                    displayAllCurrentExpense(userExpenseRef);
+                                    //displayAllCurrentExpense(userExpenseRef);
 
                                 } else {
                                     Log.d("armaan", "onDataChange:  yeeeeeeee");
@@ -318,52 +315,53 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                     });
         }
     }
-
-    private void displayAllCurrentExpense(DatabaseReference userExpenseRef) {
-        Log.d("armaan", "displayAllCurrentExpense: " + userExpenseRef);
-        FirebaseRecyclerAdapter<UserExpenses, CurrentExpenseViewHolder> firebaseRecyclerAdapter =
-                new FirebaseRecyclerAdapter<UserExpenses, CurrentExpenseViewHolder>(
-                        UserExpenses.class,
-                        R.layout.all_user_expense_layout,
-                        CurrentExpenseViewHolder.class,
-                        userExpenseRef
-                ) {
-                    @Override
-                    protected void populateViewHolder(CurrentExpenseViewHolder viewHolder, UserExpenses model, int position) {
-                        viewHolder.setAmount(model.getAmount());
-                        viewHolder.setProduct_name(model.getProduct_name());
-                        viewHolder.setProductId(position);
-                    }
-                };
-        currentExpenseList.setAdapter(firebaseRecyclerAdapter);
-    }
-
-    public static class CurrentExpenseViewHolder extends RecyclerView.ViewHolder{
-        View mView;
-
-        public CurrentExpenseViewHolder(@NonNull View itemView) {
-            super(itemView);
-            mView = itemView;
-        }
-
-        public void setProductId(int position){
-            TextView extId = mView.findViewById(R.id.all_current_expense_id);
-            String id = String.valueOf(position + 1);
-            extId.setText(id);
-
-
-        }
-
-        public void setAmount(int amount){
-            Log.d("armaan", "setAmount: "+amount);
-            TextView expAmt = mView.findViewById(R.id.all_current_expense_product_price);
-            String expenseAmount = String.valueOf(amount);
-            expAmt.setText(expenseAmount);
-        }
-
-        public void setProduct_name(String product_name){
-            TextView extName = mView.findViewById(R.id.all_current_expense_product_name);
-            extName.setText(product_name);
-        }
-    }
 }
+
+//    private void displayAllCurrentExpense(DatabaseReference userExpenseRef) {
+//        Log.d("armaan", "displayAllCurrentExpense: " + userExpenseRef);
+//        FirebaseRecyclerAdapter<UserExpenses, CurrentExpenseViewHolder> firebaseRecyclerAdapter =
+//                new FirebaseRecyclerAdapter<UserExpenses, CurrentExpenseViewHolder>(
+//                        UserExpenses.class,
+//                        R.layout.all_user_expense_layout,
+//                        CurrentExpenseViewHolder.class,
+//                        userExpenseRef
+//                ) {
+//                    @Override
+//                    protected void populateViewHolder(CurrentExpenseViewHolder viewHolder, UserExpenses model, int position) {
+//                        viewHolder.setAmount(model.getAmount());
+//                        viewHolder.setProduct_name(model.getProduct_name());
+//                        viewHolder.setProductId(position);
+//                    }
+//                };
+//        currentExpenseList.setAdapter(firebaseRecyclerAdapter);
+//    }
+//
+//    public static class CurrentExpenseViewHolder extends RecyclerView.ViewHolder{
+//        View mView;
+//
+//        public CurrentExpenseViewHolder(@NonNull View itemView) {
+//            super(itemView);
+//            mView = itemView;
+//        }
+//
+//        public void setProductId(int position){
+//            TextView extId = mView.findViewById(R.id.all_current_expense_id);
+//            String id = String.valueOf(position + 1);
+//            extId.setText(id);
+//
+//
+//        }
+//
+//        public void setAmount(int amount){
+//            Log.d("armaan", "setAmount: "+amount);
+//            TextView expAmt = mView.findViewById(R.id.all_current_expense_product_price);
+//            String expenseAmount = String.valueOf(amount);
+//            expAmt.setText(expenseAmount);
+//        }
+//
+//        public void setProduct_name(String product_name){
+//            TextView extName = mView.findViewById(R.id.all_current_expense_product_name);
+//            extName.setText(product_name);
+//        }
+//    }
+//}

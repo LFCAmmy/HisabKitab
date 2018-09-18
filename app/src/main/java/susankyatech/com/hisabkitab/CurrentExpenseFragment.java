@@ -387,8 +387,6 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
             TextView extId = mView.findViewById(R.id.all_current_expense_id);
             String id = String.valueOf(position + 1);
             extId.setText(id);
-
-
         }
 
         public void setAmount(int amount){
@@ -416,7 +414,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
     @Override
     public void onStop() {
         super.onStop();
-        adapter.stopListening();
+//        adapter.stopListening();
 
     }
 }

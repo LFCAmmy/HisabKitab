@@ -23,14 +23,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import static android.content.ContentValues.TAG;
 
 public class GroupExpensesFragment extends Fragment {
 
-    private DatabaseReference userReference;
+    private DatabaseReference userReference, groupReference;
 
     private RecyclerView recyclerView;
 
-    private String currentUserId;
+    private String currentUserId, groupId;
 
     public GroupExpensesFragment() {
     }
@@ -44,7 +47,13 @@ public class GroupExpensesFragment extends Fragment {
 
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
-        userReference = FirebaseDatabase.getInstance().getReference().child("Users");
+
+        userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+        groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
+
+        showUsers();
+
+
 
         clearDueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,14 +61,41 @@ public class GroupExpensesFragment extends Fragment {
                 Toast.makeText(getContext(), "Due cleared!", Toast.LENGTH_SHORT).show();
             }
         });
-
-        getAllUserName();
         return view;
     }
 
-    private void getAllUserName() {
-        Query query = FirebaseDatabase.getInstance().getReference().child("Users").limitToLast(50);
+    private void showUsers() {
+        userReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    groupId = dataSnapshot.child("group_id").getValue().toString();
+                    groupReference.child(groupId).child("members").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()){
+                                Query query = FirebaseDatabase.getInstance().getReference()
+                                        .child("Group").child(groupId).child("members")
+                                        .limitToLast(50);
+                                getAllUserName(query);
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getAllUserName(Query query) {
         ChildEventListener childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -89,21 +125,25 @@ public class GroupExpensesFragment extends Fragment {
         query.addChildEventListener(childEventListener);
 
 
-        FirebaseRecyclerOptions<UserDataModel> options = new FirebaseRecyclerOptions.Builder<UserDataModel>().setQuery(query, UserDataModel.class).build();
+        FirebaseRecyclerOptions<UserDataModel> options = new FirebaseRecyclerOptions.Builder<UserDataModel>()
+                .setQuery(query, UserDataModel.class)
+                .build();
 
         FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<UserDataModel, GroupManageViewHolder>(options) {
 
             @NonNull
             @Override
-            public GroupManageViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.group_expenses_recycler_view_layout, viewGroup, false);
+            public GroupManageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.group_expenses_recycler_view_layout, parent, false);
+
                 return new GroupManageViewHolder(view);
             }
 
             @Override
             protected void onBindViewHolder(@NonNull GroupManageViewHolder holder, int position, @NonNull UserDataModel model) {
-                Log.d("ARA", "onBindViewHolder: "+model.getUser_name());
-                holder.setUser_name(model.getUser_name());
+                Log.d(TAG, "onBindViewHolder: "+model.getName());
+                holder.setName(model.getName());
             }
         };
         adapter.startListening();
@@ -126,9 +166,9 @@ public class GroupExpensesFragment extends Fragment {
             mView = itemView;
         }
 
-        public void setUser_name(String user_name) {
+        public void setName(String name){
             TextView displayUserName_TV = mView.findViewById(R.id.group_expenses_user_name_tv);
-            displayUserName_TV.setText(user_name);
+            displayUserName_TV.setText(name);
         }
     }
 }

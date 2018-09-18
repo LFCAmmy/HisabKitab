@@ -368,6 +368,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
 
             @Override
             protected void onBindViewHolder(@NonNull CurrentExpenseViewHolder holder, int position, @NonNull UserExpenses model) {
+                Log.d(TAG, "onBindViewHolder: "+model.getProduct_name());
                 holder.setProduct_name(model.getProduct_name());
                 holder.setProductId(position);
                 holder.setAmount(model.getAmount());

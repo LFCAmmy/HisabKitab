@@ -43,6 +43,8 @@ import butterknife.ButterKnife;
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
 
+import static android.support.constraint.Constraints.TAG;
+
 public class CurrentExpenseFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     @BindView(R.id.fab)
@@ -123,7 +125,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                 Date calDate = cal.getTime();
                 SimpleDateFormat format1 = new SimpleDateFormat("dd-MMMM-yyyy");
                 date = format1.format(calDate);
-
+                Log.d(TAG, "onDateSelected: "+ date);
                 showExpenses(date);
 
             }
@@ -209,7 +211,8 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
 
     }
 
-    private void showExpenses(final String date) {
+    private void showExpenses(final String date1) {
+        Log.d(TAG, "showExpenses: " + date1);
         expenseReference.child(currentGroupId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -217,22 +220,23 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         String expenseDate = ds.getKey();
                         for (DataSnapshot de : ds.getChildren()) {
-                            String userId = de.getKey();
                             String userName = de.child("name").getValue().toString();
-                            if (expenseDate.equals(date)) {
-                                Log.d("armaan", "onDataChange: "+userName);
-                                Log.d("armaan", "sel: "+selectedUser);
+                            if (expenseDate.equals(date1)) {
                                 if (userName.equals(selectedUser)) {
-                                    Log.d("armaan", "onDataChange: hiiiiiii");
-                                    currentExpenseList.setVisibility(View.VISIBLE);
+                                    String userId = de.getKey();
+                                    Log.d("armaan", "onDataChange: if "+userId);
+                                    Log.d(TAG, "onDataChange: "+currentGroupId+ " "+expenseDate+ " "+userId);
                                     DatabaseReference userExpenseRef = expenseReference.child(currentGroupId).child(expenseDate).child(userId).child("products");
+                                    Log.d(TAG, "onDataChange: "+userExpenseRef);
                                     displayAllCurrentExpense(userExpenseRef);
 
-                                } else {
-                                    Log.d("armaan", "onDataChange:  yeeeeeeee");
-                                    currentExpenseList.setVisibility(View.GONE);
-                                    Toast.makeText(getContext(), "not selected", Toast.LENGTH_SHORT).show();
                                 }
+//                                else {
+//                                    String userId = de.getKey();
+//                                    Log.d("armaan", "onDataChange: else "+userName);
+//                                    DatabaseReference userExpenseRef = expenseReference.child(currentGroupId).child(expenseDate).child(userId).child("products");
+//                                    displayAllCurrentExpense(userExpenseRef);
+//                                }
 
 
                             } else {
@@ -256,6 +260,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
         selectedUser = adapterView.getSelectedItem().toString();
+        Log.d(TAG, "onItemSelected: "+ date);
         showExpenses(date);
     }
 
@@ -320,7 +325,6 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
     }
 
     private void displayAllCurrentExpense(DatabaseReference userExpenseRef) {
-        Log.d("armaan", "displayAllCurrentExpense: " + userExpenseRef);
         FirebaseRecyclerAdapter<UserExpenses, CurrentExpenseViewHolder> firebaseRecyclerAdapter =
                 new FirebaseRecyclerAdapter<UserExpenses, CurrentExpenseViewHolder>(
                         UserExpenses.class,
@@ -330,6 +334,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
                 ) {
                     @Override
                     protected void populateViewHolder(CurrentExpenseViewHolder viewHolder, UserExpenses model, int position) {
+                        Log.d(TAG, "populateViewHolder: "+model.product_name);
                         viewHolder.setAmount(model.getAmount());
                         viewHolder.setProduct_name(model.getProduct_name());
                         viewHolder.setProductId(position);
@@ -355,7 +360,6 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
         }
 
         public void setAmount(int amount){
-            Log.d("armaan", "setAmount: "+amount);
             TextView expAmt = mView.findViewById(R.id.all_current_expense_product_price);
             String expenseAmount = String.valueOf(amount);
             expAmt.setText(expenseAmount);

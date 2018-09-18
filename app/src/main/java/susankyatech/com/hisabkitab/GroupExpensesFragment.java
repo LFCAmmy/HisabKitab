@@ -44,7 +44,7 @@ public class GroupExpensesFragment extends Fragment {
         currentUserId = mAuth.getCurrentUser().getUid();
         userReference = FirebaseDatabase.getInstance().getReference().child("Users");
 
-//        displayUserList();
+        displayUserList();
 
         clearDueBtn.setOnClickListener(new View.OnClickListener() {
             @Override

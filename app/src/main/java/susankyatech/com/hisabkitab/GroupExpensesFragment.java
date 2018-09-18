@@ -102,7 +102,7 @@ public class GroupExpensesFragment extends Fragment {
 
             @Override
             protected void onBindViewHolder(@NonNull GroupManageViewHolder holder, int position, @NonNull UserDataModel model) {
-                Log.d("ARA", "onBindViewHolder: "+model.getUser_name());
+                //Log.d("ARA", "onBindViewHolder: "+model.getUser_name());
                 holder.setUser_name(model.getUser_name());
             }
         };

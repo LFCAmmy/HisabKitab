@@ -61,7 +61,7 @@ public class GroupExpensesFragment extends Fragment {
         clearDueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "Due cleared!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Due cleared!!", Toast.LENGTH_SHORT).show();
             }
         });
         return view;

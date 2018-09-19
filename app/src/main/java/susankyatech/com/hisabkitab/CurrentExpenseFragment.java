@@ -324,6 +324,7 @@ public class CurrentExpenseFragment extends Fragment implements AdapterView.OnIt
     }
 
     private void displayAllCurrentExpense(Query query) {
+        Log.d(TAG, "displayAllCurrentExpense: "+query);
         ChildEventListener childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {

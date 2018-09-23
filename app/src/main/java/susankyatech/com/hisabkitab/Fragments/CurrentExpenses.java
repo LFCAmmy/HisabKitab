@@ -228,6 +228,8 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                             .limitToLast(50);
 
                                     displayAllCurrentExpense(query);
+                                } else {
+                                    recyclerView.setVisibility(View.GONE);
                                 }
                             } else {
                                 recyclerView.setVisibility(View.GONE);

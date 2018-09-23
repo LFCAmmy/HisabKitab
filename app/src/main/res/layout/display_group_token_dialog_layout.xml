@@ -2,15 +2,15 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/manage_group_change_max_members_dialog_et"
+    <TextView
+        android:id="@+id/group_token_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
         android:padding="15dp"
-        android:hint="@string/maximum_member"
+        android:gravity="center"
+        android:textSize="18sp"
         android:background="@drawable/button_layout"/>
 
 </RelativeLayout>

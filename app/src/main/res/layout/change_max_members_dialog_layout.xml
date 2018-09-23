@@ -5,12 +5,12 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/manage_group_change_group_name_dialog_et"
+        android:id="@+id/max_members_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text"
+        android:inputType="number"
         android:padding="15dp"
-        android:hint="@string/group_name"
+        android:hint="@string/maximum_member"
         android:background="@drawable/button_layout"/>
 
 </RelativeLayout>

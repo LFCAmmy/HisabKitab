@@ -1,16 +1,13 @@
 package susankyatech.com.hisabkitab;
 
-import java.util.List;
+public class CurrentExpensesUserDataModel {
 
-public class UserExpenses {
     public int amount;
     public String product_name;
 
-    public UserExpenses(){
+    public CurrentExpensesUserDataModel(){ }
 
-    }
-
-    public UserExpenses(int amount, String product_name) {
+    public CurrentExpensesUserDataModel(int amount, String product_name) {
         this.amount = amount;
         this.product_name = product_name;
     }

@@ -1,36 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <RelativeLayout
+        android:id="@+id/relative_layout_one"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="15dp">
 
         <TextView
-            android:id="@+id/group_expenses_user_name_tv"
+            android:id="@+id/all_current_expense_product_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="@string/username"
+            android:text="@string/product_name"
             android:textSize="16sp"/>
 
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="200dp"
+        android:layout_toEndOf="@id/relative_layout_one"
+        android:layout_marginStart="70dp"
         android:layout_marginTop="15dp">
 
         <TextView
-            android:id="@+id/group_expenses_due_amount_tv"
+            android:id="@+id/all_current_expense_product_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="@string/due_amount"
+            android:text="@string/amount"
             android:textSize="16sp"/>
 
     </RelativeLayout>

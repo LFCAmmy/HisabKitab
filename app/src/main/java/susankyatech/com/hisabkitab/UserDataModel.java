@@ -4,8 +4,7 @@ public class UserDataModel {
 
     public String name, role, status;
 
-    public UserDataModel() {
-    }
+    public UserDataModel() {}
 
     public UserDataModel(String name, String role, String status) {
         this.name = name;

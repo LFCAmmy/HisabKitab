@@ -1,69 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".AdminMainActivity">
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/group_manage_display_group_image"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="30dp"
-        android:src="@drawable/ic_launcher_background"/>
+    android:layout_height="match_parent">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="120dp"
-        android:layout_toEndOf="@id/group_manage_display_group_image"
-        android:layout_marginTop="65dp">
+        android:id="@+id/relative_layout"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/display_group_image"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:src="@drawable/ic_launcher_background"/>
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/group_name_tv"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_below="@id/display_group_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:text="@string/group_name"
+            android:textSize="16sp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="150dp"
+        android:layout_height="140dp"
+        android:layout_toEndOf="@id/relative_layout">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:text="@string/signed_as"
             android:textSize="16sp"/>
 
         <TextView
-            android:id="@+id/group_manage_display_user_name_et"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="22dp"
-            android:gravity="center"
-            android:text="@string/username"
-            android:textSize="16sp"/>
-
-        <!-- <Button
-            android:id="@+id/group_manage_view_group_info_btn"
+            android:id="@+id/user_name_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/group_manage_display_user_name_et"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:padding="10dp"
-            android:text="Group Info"
-            android:background="@drawable/button_layout"/>
-        -->
+            android:layout_marginTop="80dp"
+            android:text="@string/username"
+            android:textSize="16sp"/>
 
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/group_manage_display_group_name_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/group_manage_display_group_image"
-        android:layout_marginStart="55dp"
-        android:layout_marginTop="15dp"
-        android:text="@string/group_name"
-        android:textSize="16sp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/group_manage_display_group_name_tv"
+        android:layout_below="@id/relative_layout"
         android:layout_marginStart="10dp"
         android:layout_marginTop="40dp"
         android:padding="10dp"
@@ -72,11 +65,11 @@
         android:background="@drawable/button_layout"/>
 
     <Button
-        android:id="@+id/group_manage_change_group_name_btn"
-        android:layout_width="50dp"
-        android:layout_height="40dp"
+        android:id="@+id/change_group_name_btn"
+        android:layout_width="45dp"
+        android:layout_height="35dp"
         android:layout_alignParentEnd="true"
-        android:layout_below="@id/group_manage_display_group_name_tv"
+        android:layout_below="@id/relative_layout"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="10dp"
         android:padding="10dp"
@@ -86,7 +79,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/group_manage_change_group_name_btn"
+        android:layout_below="@id/change_group_name_btn"
         android:layout_marginTop="16dp"
         android:layout_marginStart="10dp"
         android:padding="10dp"
@@ -95,11 +88,11 @@
         android:background="@drawable/button_layout"/>
 
     <Button
-        android:id="@+id/group_manage_change_group_image_btn"
+        android:id="@+id/change_group_image_btn"
         android:layout_width="50dp"
         android:layout_height="40dp"
         android:layout_alignParentEnd="true"
-        android:layout_below="@id/group_manage_change_group_name_btn"
+        android:layout_below="@id/change_group_name_btn"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="10dp"
         android:padding="10dp"
@@ -109,7 +102,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/group_manage_change_group_image_btn"
+        android:layout_below="@id/change_group_image_btn"
         android:layout_marginTop="16dp"
         android:layout_marginStart="10dp"
         android:padding="10dp"
@@ -118,11 +111,11 @@
         android:background="@drawable/button_layout"/>
 
     <Button
-        android:id="@+id/group_manage_change_group_max_members_btn"
+        android:id="@+id/change_max_members_btn"
         android:layout_width="50dp"
         android:layout_height="40dp"
         android:layout_alignParentEnd="true"
-        android:layout_below="@id/group_manage_change_group_image_btn"
+        android:layout_below="@id/change_group_image_btn"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="10dp"
         android:padding="10dp"
@@ -132,7 +125,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/group_manage_change_group_max_members_btn"
+        android:layout_below="@id/change_max_members_btn"
         android:layout_marginTop="16dp"
         android:layout_marginStart="10dp"
         android:padding="10dp"
@@ -141,11 +134,11 @@
         android:background="@drawable/button_layout"/>
 
     <Button
-        android:id="@+id/group_manage_update_group_members"
+        android:id="@+id/update_group_members_btn"
         android:layout_width="50dp"
         android:layout_height="40dp"
         android:layout_alignParentEnd="true"
-        android:layout_below="@id/group_manage_change_group_max_members_btn"
+        android:layout_below="@id/change_max_members_btn"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="10dp"
         android:padding="10dp"
@@ -153,7 +146,7 @@
         android:drawableEnd="@drawable/ic_edit"/>
 
     <Button
-        android:id="@+id/group_manage_show_group_id_token_btn"
+        android:id="@+id/group_token_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

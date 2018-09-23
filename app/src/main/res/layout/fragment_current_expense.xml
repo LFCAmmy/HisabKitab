@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
-    tools:context=".CurrentExpenseFragment">
+    android:background="@color/colorBackground">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -22,7 +20,7 @@
         </devs.mulham.horizontalcalendar.HorizontalCalendarView>
 
         <Spinner
-            android:id="@+id/current_expense_spinner"
+            android:id="@+id/spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -31,52 +29,46 @@
 
         </Spinner>
 
-        <TableLayout
-            android:id="@+id/current_expense_table_layout"
-            android:layout_width="match_parent"
+        <RelativeLayout
+            android:id="@+id/relative_layout_one"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/current_expense_spinner"
-            android:layout_marginTop="40dp">
+            android:layout_below="@id/spinner"
+            android:layout_marginTop="30dp">
 
-            <TableRow>
-                <TableLayout
-                    android:layout_weight="1">
-                    <TextView
-                        android:padding="10dp"
-                        android:gravity="center"
-                        android:text="@string/id"
-                        android:textSize="18sp"/>
-                </TableLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="@string/username"
+                android:textSize="18sp"/>
 
-                <TableLayout
-                    android:layout_weight="1">
-                    <TextView
-                        android:padding="10dp"
-                        android:text="@string/product_name"
-                        android:textSize="18sp"/>
-                </TableLayout>
+        </RelativeLayout>
 
-                <TableLayout
-                    android:layout_weight="1">
-                    <TextView
-                        android:padding="10dp"
-                        android:gravity="center"
-                        android:text="@string/amount"
-                        android:textSize="18sp"/>
-                </TableLayout>
+        <RelativeLayout
+            android:id="@+id/relative_layout_two"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spinner"
+            android:layout_toEndOf="@id/relative_layout_one"
+            android:layout_marginStart="70dp"
+            android:layout_marginTop="30dp">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="@string/amount"
+                android:textSize="18sp"/>
 
-
-            </TableRow>
-
-
-        </TableLayout>
+        </RelativeLayout>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/current_expense_recycler_view"
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/current_expense_table_layout">
+            android:layout_below="@id/relative_layout_two"
+            android:layout_marginTop="20dp">
 
         </android.support.v7.widget.RecyclerView>
 
@@ -86,9 +78,11 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:src="@drawable/ic_add"
-        android:background="#efefef"
-        android:layout_margin="16dp" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
+        android:src="@drawable/ic_floating_add_expenses"/>
 
-</FrameLayout>
+</RelativeLayout>
+

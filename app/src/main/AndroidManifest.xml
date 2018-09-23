@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity">
+        <activity android:name=".Activity.Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,11 +20,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RegisterActivity"
-            android:parentActivityName=".LoginActivity" />
-        <activity android:name=".WelcomeActivity" />
-        <activity android:name=".AdminMainActivity"/>
-        <activity android:name=".MemberMainActivity"/>
+            android:name=".Activity.Register"
+            android:parentActivityName=".Activity.Login" />
+        <activity android:name=".Activity.Welcome" />
+        <activity android:name=".Activity.AdminMain"/>
+        <activity android:name=".Activity.MemberMain"/>
     </application>
 
 </manifest>

@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <EditText
         android:id="@+id/add_expense_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Expense Title"
-        android:padding="5dp"
-        android:background="@drawable/text"/>
+        android:inputType="text"
+        android:padding="15dp"
+        android:hint="@string/product_name"
+        android:background="@drawable/text_layout"
+        android:textSize="18sp"/>
 
     <EditText
         android:id="@+id/add_expense_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Amount"
-        android:padding="5dp"
+        android:inputType="number"
+        android:layout_below="@id/add_expense_title"
         android:layout_marginTop="10dp"
-        android:background="@drawable/text"
-        android:inputType="number"/>
+        android:padding="15dp"
+        android:hint="@string/amount"
+        android:background="@drawable/text_layout"/>
 
-
-
-</LinearLayout>
+</RelativeLayout>

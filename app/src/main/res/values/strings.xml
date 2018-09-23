@@ -1,25 +1,25 @@
 <resources>
     <string name="app_name">HisabKitab</string>
 
-    <!-- Login & Register -->
+    <!-- Login/Register -->
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Log in</string>
+    <string name="need_new_account"><u>Need new Account?</u></string>
     <string name="username">Name</string>
     <string name="register">Register</string>
-    <string name="need_new_account"><u>Need new Account?</u></string>
 
     <!-- Join/Create Group -->
     <string name="join_group_remainder">Please join a group.</string>
     <string name="enter_group_code">Enter group code</string>
     <string name="join_group">Join Group</string>
-    <string name="need_group_remainder"><u>Need a new group?</u></string>
+    <string name="need_new_group_remainder"><u>Need a new group?</u></string>
+    <string name="create_group_title">Create Group</string>
     <string name="group_name">Group Name</string>
     <string name="maximum_member">Max members</string>
-    <string name="join_automatically">Join automatically</string>
     <string name="create_group">Create</string>
 
-    <!-- Navigation Drawer/Menu -->
+    <!-- Navigation Drawer/Header/Menu -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="current_expenses">Current Expenses</string>
@@ -32,7 +32,7 @@
     <string name="faq">FAQ?</string>
     <string name="report_bug">Report Bug</string>
 
-    <!-- Current UserExpenses -->
+    <!-- Current CurrentExpenses -->
     <string name="id">ID</string>
     <string name="product_name">Product Name</string>
     <string name="amount">Amount</string>
@@ -48,6 +48,10 @@
     <string name="change_max_members">Change Max Members</string>
     <string name="update_group_members">Update Group Members</string>
     <string name="display_group_token">Group Token</string>
+
+    <!-- Manage Group -->
+    <string name="group_members">Group Members</string>
+    <string name="action">Action</string>
 
 
     <string name="hello_blank_fragment">Hello blank fragment</string>

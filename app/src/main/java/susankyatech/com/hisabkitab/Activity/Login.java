@@ -119,6 +119,7 @@ public class Login extends AppCompatActivity {
                                             memberReference.addValueEventListener(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                                                     if (dataSnapshot.exists()){
                                                         String status = dataSnapshot.child("role").getValue().toString();
 

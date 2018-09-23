@@ -110,9 +110,11 @@ public class GettingStarted extends Fragment {
                                                             @Override
                                                             public void onComplete(@NonNull Task<Void> task) {
 
-                                                                Intent intent = new Intent(getContext(), MemberMain.class);
-                                                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                                startActivity(intent);
+                                                                if (task.isSuccessful()) {
+                                                                    Intent intent = new Intent(getActivity(), MemberMain.class);
+                                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                                    startActivity(intent);
+                                                                }
                                                             }
                                                         });
                                                     }

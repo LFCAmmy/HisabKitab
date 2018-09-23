@@ -79,11 +79,14 @@ public class AdminMain extends AppCompatActivity implements NavigationView.OnNav
                 groupReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()){
+                                String groupImageUrl = dataSnapshot.child("group_image").getValue().toString();
+                                String groupNameUrl = dataSnapshot.child("group_name").getValue().toString();
+                                Picasso.get().load(groupImageUrl).into(navGroupImageDisplay);
+                                navGroupNameDisplay.setText(groupNameUrl);
+                            }
 
-                            String groupImageUrl = dataSnapshot.child("group_image").getValue().toString();
-                            String groupNameUrl = dataSnapshot.child("group_name").getValue().toString();
-                            Picasso.get().load(groupImageUrl).into(navGroupImageDisplay);
-                            navGroupNameDisplay.setText(groupNameUrl);
+
                     }
 
                     @Override

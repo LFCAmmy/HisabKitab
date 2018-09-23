@@ -39,6 +39,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
@@ -46,6 +47,9 @@ import susankyatech.com.hisabkitab.CurrentExpensesUserDataModel;
 import susankyatech.com.hisabkitab.R;
 
 public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelectedListener {
+
+    private static final String string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final Random random = new Random();
 
     private EditText expenseTitle, expenseAmount;
     private Spinner mSpinner;
@@ -85,7 +89,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
-        expenseReference = FirebaseDatabase.getInstance().getReference().child("CurrentExpensesUserDataModel");
+        expenseReference = FirebaseDatabase.getInstance().getReference().child("Expenses");
         userListReference = FirebaseDatabase.getInstance().getReference().child("Group");
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -217,11 +221,9 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                             String userName = de.child("name").getValue().toString();
 
                             if (expenseDate.equals(date)) {
-                                Toast.makeText(getContext(), "hii", Toast.LENGTH_SHORT).show();
-
                                 if (userName.equals(selectedUser)) {
                                     recyclerView.setVisibility(View.VISIBLE);
-                                    Query query = FirebaseDatabase.getInstance().getReference().child("CurrentExpensesUserDataModel").child(currentGroupId)
+                                    Query query = FirebaseDatabase.getInstance().getReference().child("Expenses").child(currentGroupId)
                                             .child(expenseDate).child(userId).child("products")
                                             .limitToLast(50);
 
@@ -293,6 +295,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                 HashMap userExpenseMap = new HashMap();
                                 userExpenseMap.put("product_name", title);
                                 userExpenseMap.put("amount", amount);
+                                token = generateGroupToken();
                                 expenseReference.child(currentGroupId).child(date).child(currentUserId).child("products")
                                         .child(token).updateChildren(userExpenseMap)
                                         .addOnCompleteListener(new OnCompleteListener() {
@@ -385,6 +388,15 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
             TextView extName = mView.findViewById(R.id.all_current_expense_product_name);
             extName.setText(product_name);
         }
+    }
+
+    public String generateGroupToken() {
+
+        StringBuilder token = new StringBuilder(6);
+        for (int i=0; i<6; i++) {
+            token.append(string.charAt(random.nextInt(string.length())));
+        }
+        return token.toString();
     }
 
     @Override

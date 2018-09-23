@@ -119,19 +119,20 @@ public class Login extends AppCompatActivity {
                                             memberReference.addValueEventListener(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                    if (dataSnapshot.exists()){
+                                                        String status = dataSnapshot.child("role").getValue().toString();
 
-                                                    String status = dataSnapshot.child("role").getValue().toString();
+                                                        if (status.equals("admin")) {
+                                                            Intent intent = new Intent(Login.this, AdminMain.class);
+                                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                            startActivity(intent);
+                                                        }
 
-                                                    if (status.equals("admin")) {
-                                                        Intent intent = new Intent(Login.this, AdminMain.class);
-                                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                        startActivity(intent);
-                                                    }
-
-                                                    if (status.equals("member")) {
-                                                        Intent intent = new Intent(Login.this, MemberMain.class);
-                                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                        startActivity(intent);
+                                                        if (status.equals("member")) {
+                                                            Intent intent = new Intent(Login.this, MemberMain.class);
+                                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                            startActivity(intent);
+                                                        }
                                                     }
                                                 }
 

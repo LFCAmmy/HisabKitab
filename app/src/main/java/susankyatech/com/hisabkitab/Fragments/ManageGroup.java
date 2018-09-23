@@ -93,11 +93,13 @@ public class ManageGroup extends Fragment {
                 groupReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()){
+                            String currentGroupName = dataSnapshot.child("group_name").getValue().toString();
+                            String currentGroupImageUrl = dataSnapshot.child("group_image").getValue().toString();
+                            displayGroupNameTV.setText(currentGroupName);
+                            Picasso.get().load(currentGroupImageUrl).placeholder(R.drawable.ic_photo_camera).into(displayGroupImage);
+                        }
 
-                        String currentGroupName = dataSnapshot.child("group_name").getValue().toString();
-                        String currentGroupImageUrl = dataSnapshot.child("group_image").getValue().toString();
-                        displayGroupNameTV.setText(currentGroupName);
-                        Picasso.get().load(currentGroupImageUrl).placeholder(R.drawable.ic_photo_camera).into(displayGroupImage);
                     }
 
                     @Override

@@ -89,23 +89,23 @@ public class GettingStarted extends Fragment {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                            if (dataSnapshot.hasChild(code)) {
+                            if (dataSnapshot.exists()) {
 
                                 groupMembersCount = dataSnapshot.child(code).child("members").getChildrenCount();
                                 maxMembersAllowed = Integer.valueOf(dataSnapshot.child(code).child("max_members").getValue().toString());
 
-                                if (maxMembersAllowed >= groupMembersCount) {
+                                if (maxMembersAllowed > groupMembersCount) {
 
-                                    HashMap memberMap = new HashMap();
-                                    memberMap.put("name", userName);
-                                    memberMap.put("role","member");
-                                    memberMap.put("status", "active");
-                                    groupReference.child(code).child("members").child(currentUserId).updateChildren(memberMap)
-                                            .addOnCompleteListener(new OnCompleteListener() {
+                                    DatabaseReference addMemberReference = FirebaseDatabase.getInstance().getReference().child("Group").child(code).child("members");
+                                    addMemberReference.child(currentUserId).child("name").setValue(userName);
+                                    addMemberReference.child(currentUserId).child("role").setValue("member");
+                                    addMemberReference.child(currentUserId).child("status").setValue("active")
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
-                                                public void onComplete(@NonNull Task task) {
+                                                public void onComplete(@NonNull Task<Void> task) {
 
                                                     if (task.isSuccessful()) {
+
                                                         userReference.child("group_id").setValue(code).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                             @Override
                                                             public void onComplete(@NonNull Task<Void> task) {
@@ -114,7 +114,10 @@ public class GettingStarted extends Fragment {
                                                                     Intent intent = new Intent(getActivity(), MemberMain.class);
                                                                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                                     startActivity(intent);
+
+                                                                    Toast.makeText(getActivity(), "Group joined!", Toast.LENGTH_SHORT).show();
                                                                 }
+
                                                             }
                                                         });
                                                     }

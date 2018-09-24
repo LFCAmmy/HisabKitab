@@ -158,20 +158,72 @@ public class UpdateGroupMembers extends Fragment {
                                     .neutralColor(getResources().getColor(R.color.colorPrimary))
                                     .canceledOnTouchOutside(false)
                                     .show();
-                            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
 
-                                    materialDialog.dismiss();
-                                }
-                            });
+//                            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//
+//                                    groupMembersReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members");
+//                                    groupMembersReference.addValueEventListener(new ValueEventListener() {
+//                                        @Override
+//                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//                                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+//
+//                                                String name = ds.child("name").getValue().toString();
+//
+//                                                if (name.equals(enteredName)) {
+//
+//                                                    String role = ds.child("role").getValue().toString();
+//
+//                                                    if (role.equals("member")) {
+//
+//                                                        String status = ds.child("status").getValue().toString();
+//
+//                                                        if (status.equals("active")) {
+//
+//                                                            String userId = ds.getKey();
+//
+//                                                            DatabaseReference disableReference = FirebaseDatabase.getInstance().getReference().child("Group")
+//                                                                    .child(currentGroupId).child("members").child(userId);
+//                                                            disableReference.child("status").setValue("inactive")
+//                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                                                        @Override
+//                                                                        public void onComplete(@NonNull Task<Void> task) {
+//
+//                                                                            if (task.isSuccessful()) {
+//                                                                                Toast.makeText(getActivity(), "Account is deactivated!", Toast.LENGTH_SHORT).show();
+//                                                                            }
+//                                                                        }
+//                                                                    });
+//                                                        }
+//                                                    }
+//                                                    else {
+//                                                        Toast.makeText(getActivity(), "You cannot disable yourself.", Toast.LENGTH_SHORT).show();
+//                                                    }
+//                                                }
+//                                                else {
+//                                                    Toast.makeText(getActivity(), "Username not found!", Toast.LENGTH_SHORT).show();
+//                                                }
+//
+//                                            }
+//                                        }
+//
+//                                        @Override
+//                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                                        }
+//                                    });
+//
+//                                    materialDialog.dismiss();
+//                                }
+//                            });
 
                             materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
 
-                                    groupMembersReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members");
-                                    groupMembersReference.addValueEventListener(new ValueEventListener() {
+                                    groupReference.child(currentGroupId).child("members").addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -181,17 +233,21 @@ public class UpdateGroupMembers extends Fragment {
 
                                                 if (name.equals(enteredName)) {
 
-                                                    String userId = ds.getKey();
-                                                    DatabaseReference deleteReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId)
-                                                            .child("members").child(userId);
-
-                                                    deleteReference.removeValue();
+                                                    final String userId = ds.getKey();
 
                                                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
                                                     reference.child("group_id").setValue("none").addOnCompleteListener(new OnCompleteListener<Void>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<Void> task) {
 
+                                                            if (task.isSuccessful()) {
+                                                                DatabaseReference deleteReference = FirebaseDatabase.getInstance().getReference().child("Group")
+                                                                        .child(currentGroupId).child("members").child(userId);
+
+                                                                deleteReference.removeValue();
+                                                                materialDialog.dismiss();
+                                                                Toast.makeText(getActivity(), "Member deleted successfully!", Toast.LENGTH_SHORT).show();
+                                                            }
                                                         }
                                                     });
                                                 }
@@ -203,9 +259,6 @@ public class UpdateGroupMembers extends Fragment {
 
                                         }
                                     });
-
-                                    materialDialog.dismiss();
-                                    Toast.makeText(getContext(), "Member deleted successfully!", Toast.LENGTH_SHORT).show();
                                 }
                             });
 

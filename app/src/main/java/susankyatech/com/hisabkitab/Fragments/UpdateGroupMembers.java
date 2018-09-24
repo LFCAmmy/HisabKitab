@@ -196,9 +196,7 @@ public class UpdateGroupMembers extends Fragment {
                                                                     }
                                                                 }
                                                             });
-                                                        }
-
-                                                        if (status.equals("inactive")) {
+                                                        } else {
 
                                                             DatabaseReference disableReference = FirebaseDatabase.getInstance().getReference().child("Group")
                                                                     .child(currentGroupId).child("members").child(ds.getKey());

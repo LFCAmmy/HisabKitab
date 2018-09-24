@@ -164,10 +164,10 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                                 startDate.add(groupDate.getDate(),0);
 
 
-                                               horizontalCalendar = calanderbuilder.range(startDate, currentDate)
-                                                        .datesNumberOnScreen(5)
-                                                        .defaultSelectedDate(currentDate)
-                                                        .build();
+//                                               horizontalCalendar = calanderbuilder.range(startDate, currentDate)
+//                                                        .datesNumberOnScreen(5)
+//                                                        .defaultSelectedDate(currentDate)
+//                                                        .build();
 
                                                 horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
                                                     @Override

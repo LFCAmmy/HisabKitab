@@ -61,7 +61,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
     private List<String> userList = new ArrayList<>();
     private  HorizontalCalendar horizontalCalendar;
     private HorizontalCalendar.Builder calanderbuilder;
-    private DatabaseReference expenseReference, userListReference;
+    private DatabaseReference expenseReference, userListReference, totalExpenditureRef;
     private FirebaseRecyclerAdapter adapter;
 
     private int totalAmount;
@@ -99,6 +99,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
         DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
         expenseReference = FirebaseDatabase.getInstance().getReference().child("Expenses");
         userListReference = FirebaseDatabase.getInstance().getReference().child("Group");
+        totalExpenditureRef = FirebaseDatabase.getInstance().getReference().child("Total_Expenditures");
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -317,7 +318,6 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 
             HashMap expenseMap = new HashMap();
             expenseMap.put("name", currentUserName);
-            expenseMap.put("total_amount", totalAmount);
             expenseReference.child(currentGroupId).child(date).child(currentUserId).updateChildren(expenseMap)
                     .addOnCompleteListener(new OnCompleteListener() {
                         @Override
@@ -333,10 +333,24 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                         .addOnCompleteListener(new OnCompleteListener() {
                                             @Override
                                             public void onComplete(@NonNull Task task) {
+                                                totalExpenditureRef.child(currentGroupId).child(currentUserId)
+                                                        .addValueEventListener(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                                if (dataSnapshot.exists()){
+                                                                    String total_amount = dataSnapshot.child("total_amount").getValue().toString();
+                                                                    int totalAmt = Integer.valueOf(total_amount);
 
-                                                totalAmount = totalAmount + amount;
-                                                expenseReference.child(currentGroupId).child(date).child(currentUserId)
-                                                        .child("total_amount").setValue(totalAmount);
+                                                                    totalAmt = totalAmt + amount;
+                                                                    totalExpenditureRef.child(currentGroupId).child(currentUserId).child("total_amount").setValue(totalAmt);
+                                                                }
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                            }
+                                                        });
                                             }
                                         });
                             }

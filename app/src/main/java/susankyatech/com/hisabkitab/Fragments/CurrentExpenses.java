@@ -167,7 +167,6 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                                         .defaultSelectedDate(currentDate)
                                                         .build();
 
-
                                                 horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
                                                     @Override
                                                     public void onDateSelected(Calendar cal, int position) {

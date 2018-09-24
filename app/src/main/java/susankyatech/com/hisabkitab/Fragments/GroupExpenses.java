@@ -29,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import susankyatech.com.hisabkitab.DueAmount;
 import susankyatech.com.hisabkitab.R;
 import susankyatech.com.hisabkitab.UserDataModel;
 
@@ -40,7 +41,8 @@ public class GroupExpenses extends Fragment {
 
     private String currentGroupId;
     private int totalExpenses;
-    private List<Integer> userExpenses = new ArrayList<>();
+    private long memberCount, dueAmount;
+    private List<DueAmount> userExpenses = new ArrayList<>();
 
     public GroupExpenses() {
 
@@ -70,7 +72,7 @@ public class GroupExpenses extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                            final long count = dataSnapshot.getChildrenCount();
+                            memberCount = dataSnapshot.getChildrenCount();
 
                             expenseRef.child(currentGroupId).addValueEventListener(new ValueEventListener() {
                                 @Override
@@ -79,10 +81,15 @@ public class GroupExpenses extends Fragment {
                                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                             for (DataSnapshot de : ds.getChildren()) {
                                                 String userId = de.getKey();
-                                                int userTotalExpenseAmount = Integer.valueOf(de.child("total_amount").getValue().toString());
+                                                int userAmount = Integer.valueOf(de.child("total_amount").getValue().toString());
+                                                totalExpenses += userAmount;
 
+                                                userExpenses.add(new DueAmount(userId,userAmount));
 
+                                                Query query = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members").limitToLast(50);
+                                                getAllUserName(query);
                                             }
+                                            Log.d("asd", "onDataChange: " + totalExpenses);
                                         }
                                     }
                                 }
@@ -93,8 +100,7 @@ public class GroupExpenses extends Fragment {
                                 }
                             });
 
-                            Query query = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members").limitToLast(50);
-                            getAllUserName(query);
+
                         }
                     }
 
@@ -169,6 +175,13 @@ public class GroupExpenses extends Fragment {
             protected void onBindViewHolder(@NonNull GroupExpensesViewHolder holder, int position, @NonNull UserDataModel model) {
                 holder.setName(model.getName());
 
+                for (int i = 0; i < userExpenses.size(); i++){
+                    Log.d("asd", "onBindViewHolder: "+userExpenses.get(0).dueAmount);
+//                    dueAmount = userExpenses.get(i) - (totalExpenses/memberCount);
+//                    holder.setAmount(dueAmount);
+                }
+
+
             }
         };
 
@@ -189,6 +202,12 @@ public class GroupExpenses extends Fragment {
         public GroupExpensesViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
+        }
+
+        public void setAmount(long amount){
+            TextView displayDueAmount = mView.findViewById(R.id.group_expenses_due_amount_tv);
+            String dueAmount = String.valueOf(amount);
+            displayDueAmount.setText(dueAmount);
         }
 
         public void setName(String name){

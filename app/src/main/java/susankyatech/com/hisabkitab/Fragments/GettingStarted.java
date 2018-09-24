@@ -97,6 +97,7 @@ public class GettingStarted extends Fragment {
                                 if (maxMembersAllowed >= groupMembersCount) {
 
                                     HashMap memberMap = new HashMap();
+                                    memberMap.put("user_id", currentUserId);
                                     memberMap.put("name", userName);
                                     memberMap.put("role","member");
                                     memberMap.put("status", "active");

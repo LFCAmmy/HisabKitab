@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,9 +41,9 @@ public class UpdateGroupMembers extends Fragment {
 
     private RecyclerView recyclerView;
 
-    private DatabaseReference userReference, groupReference;
+    private DatabaseReference groupReference;
 
-    private String currentGroupId;
+    private String currentGroupId, userStatus = "enable";
 
     public UpdateGroupMembers() {}
 
@@ -59,7 +60,7 @@ public class UpdateGroupMembers extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
 
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+        DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
         groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
 
         userReference.addValueEventListener(new ValueEventListener() {
@@ -144,7 +145,7 @@ public class UpdateGroupMembers extends Fragment {
                         final String enteredName = userNameET.getText().toString();
 
                         if (TextUtils.isEmpty(enteredName)) {
-                            userNameET.setError("Please enter the username before proceeding! ");
+                            userNameET.setError("Please enter the username before proceeding!");
                             userNameET.requestFocus();
                         } else {
                             final MaterialDialog materialDialog = new MaterialDialog.Builder(getContext())
@@ -163,75 +164,142 @@ public class UpdateGroupMembers extends Fragment {
                                 @Override
                                 public void onClick(View view) {
 
-                                    groupReference.child(currentGroupId).child("members").addValueEventListener(new ValueEventListener() {
+                                    final MaterialDialog dialog = new MaterialDialog.Builder(getContext())
+                                            .title("Warning!")
+                                            .customView(R.layout.deactivate_member_dialog_layout, true)
+                                            .neutralText("Cancel")
+                                            .negativeText("Reactivate")
+                                            .positiveText("Deactivate")
+                                            .neutralColor(getResources().getColor(R.color.colorPrimary))
+                                            .negativeColor(getResources().getColor(R.color.green))
+                                            .positiveColor(getResources().getColor(R.color.red))
+                                            .canceledOnTouchOutside(false)
+                                            .show();
+
+                                    dialog.getActionButton(DialogAction.NEUTRAL).setOnClickListener(new View.OnClickListener() {
                                         @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                                                String name = ds.child("name").getValue().toString();
-
-                                                if (name.equals(enteredName)) {
-
-                                                    String role = ds.child("role").getValue().toString();
-
-                                                    if (!role.equals("admin")) {
-
-                                                        String status = ds.child("status").getValue().toString();
-
-                                                        if (status.equals("active")) {
-
-                                                            DatabaseReference disableReference = FirebaseDatabase.getInstance().getReference().child("Group")
-                                                                    .child(currentGroupId).child("members").child(ds.getKey());
-
-                                                            disableReference.child("status").setValue("inactive").addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-
-                                                                    if (task.isSuccessful()) {
-
-                                                                        materialDialog.dismiss();
-                                                                        Toast.makeText(getActivity(), "Member account deactivated successfully!", Toast.LENGTH_SHORT)
-                                                                                .show();
-                                                                    }
-                                                                }
-                                                            });
-                                                        } else {
-
-                                                            DatabaseReference disableReference = FirebaseDatabase.getInstance().getReference().child("Group")
-                                                                    .child(currentGroupId).child("members").child(ds.getKey());
-
-                                                            disableReference.child("status").setValue("active").addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-
-                                                                    if (task.isSuccessful()) {
-
-                                                                        materialDialog.dismiss();
-                                                                        Toast.makeText(getActivity(), "Member account deactivated successfully!", Toast.LENGTH_SHORT)
-                                                                                .show();
-                                                                    }
-                                                                }
-                                                            });
-                                                        }
-                                                    }
-                                                    else {
-                                                        Toast.makeText(getActivity(), "You cannot disable yourself!", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                }
-                                                else {
-                                                    Toast.makeText(getActivity(), "Please enter a valid group member", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                                        public void onClick(View view) {
+                                            dialog.dismiss();
+                                            materialDialog.dismiss();
                                         }
                                     });
 
-                                    materialDialog.dismiss();
+                                    dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+
+                                            groupReference.child(currentGroupId).child("members").addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                                    for (DataSnapshot ds: dataSnapshot.getChildren()) {
+
+                                                        String name = ds.child("name").getValue().toString();
+
+                                                        if (name.equals(enteredName)) {
+
+                                                            String role = ds.child("role").getValue().toString();
+
+                                                            if (!role.equals("admin")) {
+
+                                                                String status = ds.child("status").getValue().toString();
+
+                                                                if (status.equals("inactive")) {
+                                                                    Toast.makeText(getActivity(), "This account is already deactivated!", Toast.LENGTH_SHORT).show();
+                                                                    dialog.dismiss();
+                                                                    materialDialog.dismiss();
+                                                                }
+                                                                else {
+                                                                    groupReference.child(currentGroupId).child("members").child(ds.getKey()).child("status")
+                                                                            .setValue("inactive").addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> task) {
+
+                                                                            if (task.isSuccessful()) {
+                                                                                dialog.dismiss();
+                                                                                materialDialog.dismiss();
+                                                                                Toast.makeText(getActivity(), "Account deactivated successfully!", Toast.LENGTH_SHORT).show();
+                                                                            }
+                                                                        }
+                                                                    });
+                                                                }
+                                                            } else {
+                                                                dialog.dismiss();
+                                                                materialDialog.dismiss();
+                                                                Toast.makeText(getActivity(), "You cannot deactivated yourself!", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                }
+                                            });
+                                        }
+                                    });
+
+                                    dialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+
+                                            groupReference.child(currentGroupId).child("members").addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                                    for (DataSnapshot ds: dataSnapshot.getChildren()) {
+
+                                                        String name = ds.child("name").getValue().toString();
+
+                                                        if (name.equals(enteredName)) {
+
+                                                            String role = ds.child("role").getValue().toString();
+
+                                                            if (!role.equals("admin")) {
+
+                                                                String status = ds.child("status").getValue().toString();
+
+                                                                if (status.equals("active")) {
+                                                                    Toast.makeText(getActivity(), "This account is already active!", Toast.LENGTH_SHORT).show();
+                                                                    dialog.dismiss();
+                                                                    materialDialog.dismiss();
+                                                                }
+                                                                else {
+                                                                    groupReference.child(currentGroupId).child("members").child(ds.getKey()).child("status")
+                                                                            .setValue("inactive").addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> task) {
+
+                                                                            if (task.isSuccessful()) {
+                                                                                dialog.dismiss();
+                                                                                materialDialog.dismiss();
+                                                                                Toast.makeText(getActivity(), "Account reactivated successfully!", Toast.LENGTH_SHORT).show();
+                                                                            }
+                                                                        }
+                                                                    });
+                                                                }
+                                                            } else {
+                                                                dialog.dismiss();
+                                                                materialDialog.dismiss();
+                                                                Toast.makeText(getActivity(), "You cannot deactivated yourself!", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                        else {
+                                                            dialog.dismiss();
+                                                            materialDialog.dismiss();
+                                                            Toast.makeText(getActivity(), "Please enter a valid group member!", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                }
+                                            });
+                                        }
+                                    });
                                 }
                             });
 

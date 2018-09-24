@@ -130,8 +130,6 @@ public class GroupExpenses extends Fragment {
         return view;
     }
 
-
-
     private void getAllUserName(Query query) {
 
         ChildEventListener childEventListener = new ChildEventListener() {

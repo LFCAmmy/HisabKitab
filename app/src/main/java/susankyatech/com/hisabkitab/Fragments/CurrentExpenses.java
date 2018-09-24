@@ -107,12 +107,6 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
         mSpinner.setOnItemSelectedListener(this);
         final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, userList);
 
-//        String easy = RandomString.digits + "ACEFGHJKLMNPQRUVWXYabcdefhijkprstuvwx";
-//        RandomString tickets = new RandomString(6, new SecureRandom(), easy);
-//
-//        token = tickets.nextString();
-
-
         userReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -165,10 +159,10 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                                 startDate.add(groupDate.getDate(),0);
 
 
-//                                               horizontalCalendar = calanderbuilder.range(startDate, currentDate)
-//                                                        .datesNumberOnScreen(5)
-//                                                        .defaultSelectedDate(currentDate)
-//                                                        .build();
+                                               horizontalCalendar = calanderbuilder.range(startDate, currentDate)
+                                                        .datesNumberOnScreen(5)
+                                                        .defaultSelectedDate(currentDate)
+                                                        .build();
 
                                                 horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
                                                     @Override

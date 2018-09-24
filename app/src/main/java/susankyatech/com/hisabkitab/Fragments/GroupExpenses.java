@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import susankyatech.com.hisabkitab.R;
 import susankyatech.com.hisabkitab.UserDataModel;
 
@@ -32,11 +36,15 @@ public class GroupExpenses extends Fragment {
 
     private RecyclerView recyclerView;
 
-    private DatabaseReference groupReference;
+    private DatabaseReference groupReference, userReference, expenseRef;
 
     private String currentGroupId;
+    private int totalExpenses;
+    private List<Integer> userExpenses = new ArrayList<>();
 
-    public GroupExpenses() {}
+    public GroupExpenses() {
+
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -49,8 +57,9 @@ public class GroupExpenses extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
 
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+        userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
         groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
+        expenseRef = FirebaseDatabase.getInstance().getReference().child("Expenses");
 
         userReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -60,9 +69,33 @@ public class GroupExpenses extends Fragment {
                 groupReference.child(currentGroupId).child("members").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            final long count = dataSnapshot.getChildrenCount();
 
-                        Query query = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members").limitToLast(50);
-                        getAllUserName(query);
+                            expenseRef.child(currentGroupId).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                            for (DataSnapshot de : ds.getChildren()) {
+                                                String userId = de.getKey();
+                                                int userTotalExpenseAmount = Integer.valueOf(de.child("total_amount").getValue().toString());
+
+
+                                            }
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
+                            Query query = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members").limitToLast(50);
+                            getAllUserName(query);
+                        }
                     }
 
                     @Override
@@ -70,6 +103,7 @@ public class GroupExpenses extends Fragment {
 
                     }
                 });
+
             }
 
             @Override
@@ -87,6 +121,8 @@ public class GroupExpenses extends Fragment {
 
         return view;
     }
+
+
 
     private void getAllUserName(Query query) {
 

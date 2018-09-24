@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -63,11 +65,12 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 
     private int totalAmount;
 
-    private String currentUserId, currentUserName, currentGroupId, date, selectedUser, token;
+    private String currentUserId, currentUserName, currentGroupId, date, selectedUser, token, groupCreatedDate;
 
     private View mView;
 
     public CurrentExpenses() {
+
     }
 
     @Override
@@ -80,12 +83,16 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 
         mView = view;
 
-        init();
+        try {
+            init();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         return mView;
     }
 
-    private void init() {
+    private void init() throws ParseException {
 
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
@@ -103,31 +110,6 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 //
 //        token = tickets.nextString();
 
-        Calendar currentDate = Calendar.getInstance();
-        currentDate.add(Calendar.MONTH, 0);
-
-        Calendar startDate = Calendar.getInstance();
-        startDate.add(Calendar.MONTH, -1);
-
-        HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(mView, R.id.calendarView)
-                .range(startDate, currentDate)
-                .datesNumberOnScreen(5)
-                .defaultSelectedDate(currentDate)
-                .build();
-
-
-        horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
-            @Override
-            public void onDateSelected(Calendar cal, int position) {
-
-                Date calDate = cal.getTime();
-                SimpleDateFormat format1 = new SimpleDateFormat("dd-MMMM-yyyy");
-                date = format1.format(calDate);
-
-                showExpenses(date);
-
-            }
-        });
 
         userReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -155,6 +137,57 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                     SimpleDateFormat format1 = new SimpleDateFormat("dd-MMMM-yyyy");
                                     date = format1.format(calDate);
                                     showExpenses(date);
+
+                                    userListReference.child(currentGroupId).addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.exists()){
+                                                groupCreatedDate = dataSnapshot.child("group_created_date").getValue().toString();
+
+                                                Calendar currentDate = Calendar.getInstance();
+                                                currentDate.add(Calendar.MONTH, 0);
+                                                currentDate.add(Calendar.DATE, 0);
+
+                                                SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy");
+                                                Date groupDate = null;
+                                                try {
+                                                    groupDate = sdf.parse(groupCreatedDate);
+                                                    Log.d("asd", "onDataChange: "+groupDate);
+                                                } catch (ParseException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                Calendar startDate = Calendar.getInstance();
+                                                startDate.setTime(groupDate);
+                                                startDate.add(groupDate.getMonth(),0);
+                                                startDate.add(groupDate.getDate(),0);
+
+                                                HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(mView, R.id.calendarView)
+                                                        .range(startDate, currentDate)
+                                                        .datesNumberOnScreen(5)
+                                                        .defaultSelectedDate(currentDate)
+                                                        .build();
+
+
+                                                horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
+                                                    @Override
+                                                    public void onDateSelected(Calendar cal, int position) {
+                                                        Date calDate = cal.getTime();
+                                                        SimpleDateFormat format1 = new SimpleDateFormat("dd-MMMM-yyyy");
+                                                        date = format1.format(calDate);
+
+                                                        showExpenses(date);
+
+                                                    }
+                                                });
+
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
                                 }
 
                                 @Override
@@ -171,6 +204,9 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 
             }
         });
+
+
+
 
         addExpense.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -228,8 +264,6 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                             .limitToLast(50);
 
                                     displayAllCurrentExpense(query);
-                                } else {
-                                    recyclerView.setVisibility(View.GONE);
                                 }
                             } else {
                                 recyclerView.setVisibility(View.GONE);

@@ -144,7 +144,7 @@ public class UpdateGroupMembers extends Fragment {
                         final String enteredName = userNameET.getText().toString();
 
                         if (TextUtils.isEmpty(enteredName)) {
-                            userNameET.setError("Please enter the username before proceeding!");
+                            userNameET.setError("Please enter the username before proceeding! ");
                             userNameET.requestFocus();
                         } else {
                             final MaterialDialog materialDialog = new MaterialDialog.Builder(getContext())

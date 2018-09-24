@@ -177,6 +177,10 @@ public class GroupExpenses extends Fragment {
 
                 for (int i = 0; i < userExpenses.size(); i++){
                     Log.d("asd", "onBindViewHolder: "+userExpenses.get(0).dueAmount);
+                    if (userExpenses.get(i).userId.equals(model.getUser_id())){
+                        dueAmount = userExpenses.get(i).dueAmount - (totalExpenses/memberCount);
+                        holder.setAmount(dueAmount);
+                    }
 //                    dueAmount = userExpenses.get(i) - (totalExpenses/memberCount);
 //                    holder.setAmount(dueAmount);
                 }

@@ -179,7 +179,6 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 
                                                     }
                                                 });
-
                                             }
                                         }
 
@@ -195,7 +194,6 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 
                                 }
                             });
-
                 }
             }
 
@@ -204,9 +202,6 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 
             }
         });
-
-
-
 
         addExpense.setOnClickListener(new View.OnClickListener() {
             @Override

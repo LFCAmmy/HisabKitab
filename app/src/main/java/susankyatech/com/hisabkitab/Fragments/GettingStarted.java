@@ -91,55 +91,55 @@ public class GettingStarted extends Fragment {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                             if (dataSnapshot.exists()) {
+                                if (dataSnapshot.hasChild(code)){
+                                    groupMembersCount = dataSnapshot.child(code).child("members").getChildrenCount();
+                                    maxMembersAllowed = Integer.valueOf(dataSnapshot.child(code).child("max_members").getValue().toString());
 
-                                groupMembersCount = dataSnapshot.child(code).child("members").getChildrenCount();
-                                maxMembersAllowed = Integer.valueOf(dataSnapshot.child(code).child("max_members").getValue().toString());
+                                    if (maxMembersAllowed > groupMembersCount) {
 
-                                if (maxMembersAllowed > groupMembersCount) {
+                                        DatabaseReference addMemberReference = FirebaseDatabase.getInstance().getReference().child("Group").child(code).child("members");
+                                        addMemberReference.child(currentUserId).child("user_id").setValue(currentUserId);
+                                        addMemberReference.child(currentUserId).child("name").setValue(userName);
+                                        addMemberReference.child(currentUserId).child("role").setValue("member");
+                                        addMemberReference.child(currentUserId).child("status").setValue("active")
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
 
-                                    DatabaseReference addMemberReference = FirebaseDatabase.getInstance().getReference().child("Group").child(code).child("members");
-                                    addMemberReference.child(currentUserId).child("user_name").setValue(currentUserId);
-                                    addMemberReference.child(currentUserId).child("name").setValue(userName);
-                                    addMemberReference.child(currentUserId).child("role").setValue("member");
-                                    addMemberReference.child(currentUserId).child("status").setValue("active")
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
 
-                                                    if (task.isSuccessful()) {
+                                                            userReference.child("group_id").setValue(code).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<Void> task) {
 
-                                                        userReference.child("group_id").setValue(code).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Void> task) {
-
-                                                                if (task.isSuccessful()) {
-                                                                    HashMap totalExp = new HashMap();
-                                                                    totalExp.put("user_id", currentUserId);
-                                                                    totalExp.put("name", userName);
-                                                                    totalExp.put("total_amount",0);
-                                                                    totalExpenditureRef.child("group_id").child(currentUserId).updateChildren(totalExp)
-                                                                            .addOnCompleteListener(new OnCompleteListener() {
-                                                                                @Override
-                                                                                public void onComplete(@NonNull Task task) {
-                                                                                    Intent intent = new Intent(getActivity(), MemberMain.class);
-                                                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                                                    startActivity(intent);
-                                                                                }
-                                                                            });
+                                                                    if (task.isSuccessful()) {
+                                                                        HashMap totalExp = new HashMap();
+                                                                        totalExp.put("user_id", currentUserId);
+                                                                        totalExp.put("name", userName);
+                                                                        totalExp.put("total_amount",0);
+                                                                        totalExpenditureRef.child(code).child(currentUserId).updateChildren(totalExp)
+                                                                                .addOnCompleteListener(new OnCompleteListener() {
+                                                                                    @Override
+                                                                                    public void onComplete(@NonNull Task task) {
+                                                                                        Intent intent = new Intent(getActivity(), MemberMain.class);
+                                                                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                                                        startActivity(intent);
+                                                                                    }
+                                                                                });
+                                                                    }
                                                                 }
-                                                            }
-                                                        });
+                                                            });
+                                                        }
                                                     }
-                                                }
-                                            });
-                                }
-                                else {
-                                    Toast.makeText(getActivity(), "Sorry, this group has already its maximum members joined in the group!", Toast.LENGTH_SHORT).show();
+                                                });
+                                    }else {
+                                        Toast.makeText(getActivity(), "Sorry, this group has already its maximum members joined in the group!", Toast.LENGTH_SHORT).show();
+                                    }
+                                }else {
+                                    Toast.makeText(getActivity(), "No group found. Please enter a valid group code to join!", Toast.LENGTH_SHORT).show();
                                 }
                             }
-                            else {
-                                Toast.makeText(getActivity(), "No group found. Please enter a valid group code to join!", Toast.LENGTH_SHORT).show();
-                            }
+
                         }
 
                         @Override

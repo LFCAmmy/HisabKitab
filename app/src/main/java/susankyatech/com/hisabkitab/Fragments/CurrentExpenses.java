@@ -59,7 +59,8 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
     private RecyclerView recyclerView;
 
     private List<String> userList = new ArrayList<>();
-
+    private  HorizontalCalendar horizontalCalendar;
+    private HorizontalCalendar.Builder calanderbuilder;
     private DatabaseReference expenseReference, userListReference;
     private FirebaseRecyclerAdapter adapter;
 
@@ -125,6 +126,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                        Log.d("TAG", "onDataChange: "+ds.child("name").getValue());
                                         String name = ds.child("name").getValue().toString();
                                         userList.add(name);
                                     }
@@ -137,7 +139,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                     SimpleDateFormat format1 = new SimpleDateFormat("dd-MMMM-yyyy");
                                     date = format1.format(calDate);
                                     showExpenses(date);
-
+                                    calanderbuilder = new HorizontalCalendar.Builder(mView, R.id.calendarView);
                                     userListReference.child(currentGroupId).addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -161,8 +163,8 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                                 startDate.add(groupDate.getMonth(),0);
                                                 startDate.add(groupDate.getDate(),0);
 
-                                                HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(mView, R.id.calendarView)
-                                                        .range(startDate, currentDate)
+
+                                               horizontalCalendar = calanderbuilder.range(startDate, currentDate)
                                                         .datesNumberOnScreen(5)
                                                         .defaultSelectedDate(currentDate)
                                                         .build();

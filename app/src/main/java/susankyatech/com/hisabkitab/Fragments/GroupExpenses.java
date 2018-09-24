@@ -33,6 +33,8 @@ import susankyatech.com.hisabkitab.DueAmount;
 import susankyatech.com.hisabkitab.R;
 import susankyatech.com.hisabkitab.UserDataModel;
 
+import static android.content.ContentValues.TAG;
+
 public class GroupExpenses extends Fragment {
 
     private RecyclerView recyclerView;
@@ -175,14 +177,23 @@ public class GroupExpenses extends Fragment {
             protected void onBindViewHolder(@NonNull GroupExpensesViewHolder holder, int position, @NonNull UserDataModel model) {
                 holder.setName(model.getName());
 
+//                if (userExpenses.get(position).userId.equals(model.getUser_id())){
+//                    dueAmount = userExpenses.get(position).dueAmount - (totalExpenses/memberCount);
+//                    holder.setAmount(dueAmount);
+//                } else {
+//                    dueAmount = 0 - (totalExpenses/memberCount);
+//                    holder.setAmount(dueAmount);
+//                }
+
                 for (int i = 0; i < userExpenses.size(); i++){
-                    Log.d("asd", "onBindViewHolder: "+userExpenses.get(0).dueAmount);
+                    Log.d("asd", "onBindViewHolder: "+userExpenses.get(i));
                     if (userExpenses.get(i).userId.equals(model.getUser_id())){
                         dueAmount = userExpenses.get(i).dueAmount - (totalExpenses/memberCount);
                         holder.setAmount(dueAmount);
+                    }else {
+                        dueAmount = 0 - (totalExpenses/memberCount);
+                        holder.setAmount(dueAmount);
                     }
-//                    dueAmount = userExpenses.get(i) - (totalExpenses/memberCount);
-//                    holder.setAmount(dueAmount);
                 }
 
 

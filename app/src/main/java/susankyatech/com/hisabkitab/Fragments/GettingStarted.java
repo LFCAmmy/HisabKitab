@@ -34,7 +34,7 @@ public class GettingStarted extends Fragment {
     private Button joinGroupBtn;
     private TextView createGroupTV;
 
-    private DatabaseReference userReference, groupReference;
+    private DatabaseReference userReference, groupReference, totalExpenditureRef;
 
     private String currentUserId, userName;
     private int maxMembersAllowed;
@@ -60,6 +60,7 @@ public class GettingStarted extends Fragment {
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
         groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
+        totalExpenditureRef = FirebaseDatabase.getInstance().getReference().child("Total_Expenditures");
 
         userReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -112,13 +113,20 @@ public class GettingStarted extends Fragment {
                                                             public void onComplete(@NonNull Task<Void> task) {
 
                                                                 if (task.isSuccessful()) {
-                                                                    Intent intent = new Intent(getActivity(), MemberMain.class);
-                                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                                    startActivity(intent);
-
-                                                                    Toast.makeText(getActivity(), "Group joined!", Toast.LENGTH_SHORT).show();
+                                                                    HashMap totalExp = new HashMap();
+                                                                    totalExp.put("user_id", currentUserId);
+                                                                    totalExp.put("name", userName);
+                                                                    totalExp.put("total_amount",0);
+                                                                    totalExpenditureRef.child("group_id").child(currentUserId).updateChildren(totalExp)
+                                                                            .addOnCompleteListener(new OnCompleteListener() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task task) {
+                                                                                    Intent intent = new Intent(getActivity(), MemberMain.class);
+                                                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                                                    startActivity(intent);
+                                                                                }
+                                                                            });
                                                                 }
-
                                                             }
                                                         });
                                                     }

@@ -51,7 +51,7 @@ public class CreateGroup extends Fragment {
     private ProgressDialog loadingBar;
     private Uri imageUri;
 
-    private DatabaseReference userReference, groupReference;
+    private DatabaseReference userReference, groupReference, totalExpenditureRef;
     private StorageReference groupImageStoreReference;
 
     private String currentUserId, userName, groupToken, downloadGroupImageUrl = "none";
@@ -79,7 +79,10 @@ public class CreateGroup extends Fragment {
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
         groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
+        totalExpenditureRef = FirebaseDatabase.getInstance().getReference().child("Total_Expenditures");
+
         groupImageStoreReference = FirebaseStorage.getInstance().getReference().child("Group Images");
+
 
         userReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -163,41 +166,54 @@ public class CreateGroup extends Fragment {
                                                                    public void onComplete(@NonNull Task<Void> task) {
 
                                                                        if (task.isSuccessful()) {
+                                                                           HashMap totalExp = new HashMap();
+                                                                           totalExp.put("user_id", currentUserId);
+                                                                           totalExp.put("name", userName);
+                                                                           totalExp.put("total_amount",0);
+                                                                           totalExpenditureRef.child(groupToken).child(currentUserId).updateChildren(totalExp)
+                                                                                   .addOnCompleteListener(new OnCompleteListener() {
+                                                                                       @Override
+                                                                                       public void onComplete(@NonNull Task task) {
+                                                                                           if (task.isSuccessful()){
+                                                                                               if (imageUri != null) {
+                                                                                                   final StorageReference imagePath = groupImageStoreReference.child(groupToken + ".jpg");
+                                                                                                   imagePath.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                                                                                       @Override
+                                                                                                       public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> taskSnapshot) {
 
-                                                                           if (imageUri != null) {
-                                                                               final StorageReference imagePath = groupImageStoreReference.child(groupToken + ".jpg");
-                                                                               imagePath.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                                                                   @Override
-                                                                                   public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> taskSnapshot) {
+                                                                                                           if (taskSnapshot.isSuccessful()) {
+                                                                                                               imagePath.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                                                                                   @Override
+                                                                                                                   public void onComplete(@NonNull Task<Uri> task) {
 
-                                                                                       if (taskSnapshot.isSuccessful()) {
-                                                                                           imagePath.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                                                               @Override
-                                                                                               public void onComplete(@NonNull Task<Uri> task) {
+                                                                                                                       downloadGroupImageUrl = task.getResult().toString();
+                                                                                                                       groupReference.child(groupToken).child("group_image")
+                                                                                                                               .setValue(downloadGroupImageUrl)
+                                                                                                                               .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                   @Override
+                                                                                                                                   public void onComplete(@NonNull Task<Void> task) {
 
-                                                                                                   downloadGroupImageUrl = task.getResult().toString();
-                                                                                                   groupReference.child(groupToken).child("group_image")
-                                                                                                           .setValue(downloadGroupImageUrl)
-                                                                                                           .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                                               @Override
-                                                                                                               public void onComplete(@NonNull Task<Void> task) {
-
-                                                                                                               }
-                                                                                                           });
+                                                                                                                                   }
+                                                                                                                               });
+                                                                                                                   }
+                                                                                                               });
+                                                                                                           } else {
+                                                                                                               Toast.makeText(getContext(), "Error Occurred, please try again!", Toast.LENGTH_SHORT).show();
+                                                                                                           }
+                                                                                                       }
+                                                                                                   });
                                                                                                }
-                                                                                           });
-                                                                                       } else {
-                                                                                           Toast.makeText(getContext(), "Error Occurred, please try again!", Toast.LENGTH_SHORT).show();
+
+                                                                                               Intent intent = new Intent(getActivity(), AdminMain.class);
+                                                                                               intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                                                               startActivity(intent);
+
+                                                                                               loadingBar.dismiss();
+                                                                                           }
                                                                                        }
-                                                                                   }
-                                                                               });
-                                                                           }
+                                                                                   });
 
-                                                                           Intent intent = new Intent(getActivity(), AdminMain.class);
-                                                                           intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                                           startActivity(intent);
 
-                                                                           loadingBar.dismiss();
                                                                        }
                                                                    }
                                                                });

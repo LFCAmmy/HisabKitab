@@ -39,7 +39,7 @@ public class GroupExpenses extends Fragment {
 
     private RecyclerView recyclerView;
 
-    private DatabaseReference groupReference, userReference, expenseRef;
+    private DatabaseReference groupReference, userReference, totalExpenseRef;
 
     private String currentGroupId;
     private int totalExpenses;
@@ -63,7 +63,7 @@ public class GroupExpenses extends Fragment {
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
         groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
-        expenseRef = FirebaseDatabase.getInstance().getReference().child("Expenses");
+        totalExpenseRef = FirebaseDatabase.getInstance().getReference().child("Total_Expenditures");
 
         userReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -76,23 +76,21 @@ public class GroupExpenses extends Fragment {
                         if (dataSnapshot.exists()) {
                             memberCount = dataSnapshot.getChildrenCount();
 
-                            expenseRef.child(currentGroupId).addValueEventListener(new ValueEventListener() {
+                            totalExpenseRef.child(currentGroupId).addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
                                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                            for (DataSnapshot de : ds.getChildren()) {
-                                                String userId = de.getKey();
-                                                int userAmount = Integer.valueOf(de.child("total_amount").getValue().toString());
-                                                totalExpenses += userAmount;
+                                            String userId = ds.getKey();
+                                            int userAmount = Integer.valueOf(ds.child("total_amount").getValue().toString());
+                                            totalExpenses += userAmount;
 
-                                                userExpenses.add(new DueAmount(userId,userAmount));
+                                            userExpenses.add(new DueAmount(userId, userAmount));
 
-                                                Query query = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members").limitToLast(50);
-                                                getAllUserName(query);
-                                            }
-                                            Log.d("asd", "onDataChange: " + totalExpenses);
+                                            Query query = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members").limitToLast(50);
+                                            getAllUserName(query);
                                         }
+                                        Log.d("asd", "onDataChange: " + totalExpenses);
                                     }
                                 }
 
@@ -131,7 +129,6 @@ public class GroupExpenses extends Fragment {
     }
 
 
-
     private void getAllUserName(Query query) {
 
         ChildEventListener childEventListener = new ChildEventListener() {
@@ -165,7 +162,7 @@ public class GroupExpenses extends Fragment {
 
         FirebaseRecyclerOptions<UserDataModel> options = new FirebaseRecyclerOptions.Builder<UserDataModel>().setQuery(query, UserDataModel.class).build();
 
-        FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<UserDataModel, GroupExpensesViewHolder> (options) {
+        FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<UserDataModel, GroupExpensesViewHolder>(options) {
 
             @Override
             public GroupExpensesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
@@ -185,13 +182,10 @@ public class GroupExpenses extends Fragment {
 //                    holder.setAmount(dueAmount);
 //                }
 
-                for (int i = 0; i < userExpenses.size(); i++){
-                    Log.d("asd", "onBindViewHolder: "+userExpenses.get(i));
-                    if (userExpenses.get(i).userId.equals(model.getUser_id())){
-                        dueAmount = userExpenses.get(i).dueAmount - (totalExpenses/memberCount);
-                        holder.setAmount(dueAmount);
-                    }else {
-                        dueAmount = 0 - (totalExpenses/memberCount);
+                for (int i = 0; i < userExpenses.size(); i++) {
+                    Log.d("asd", "onBindViewHolder: " + userExpenses.get(i));
+                    if (userExpenses.get(i).userId.equals(model.getUser_id())) {
+                        dueAmount = userExpenses.get(i).dueAmount - (totalExpenses / memberCount);
                         holder.setAmount(dueAmount);
                     }
                 }
@@ -219,13 +213,13 @@ public class GroupExpenses extends Fragment {
             mView = itemView;
         }
 
-        public void setAmount(long amount){
+        public void setAmount(long amount) {
             TextView displayDueAmount = mView.findViewById(R.id.group_expenses_due_amount_tv);
             String dueAmount = String.valueOf(amount);
             displayDueAmount.setText(dueAmount);
         }
 
-        public void setName(String name){
+        public void setName(String name) {
             TextView displayUserName_TV = mView.findViewById(R.id.group_expenses_user_name_tv);
             displayUserName_TV.setText(name);
         }

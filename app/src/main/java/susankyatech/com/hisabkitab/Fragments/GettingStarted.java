@@ -96,18 +96,18 @@ public class GettingStarted extends Fragment {
 
                                 if (maxMembersAllowed > groupMembersCount) {
 
-                                    DatabaseReference addMemberReference = FirebaseDatabase.getInstance().getReference().child("Group").child(code).child("members");
-                                    addMemberReference.child(currentUserId).child("user_name").setValue(currentUserId);
-                                    addMemberReference.child(currentUserId).child("name").setValue(userName);
-                                    addMemberReference.child(currentUserId).child("role").setValue("member");
-                                    addMemberReference.child(currentUserId).child("status").setValue("active")
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
+                                    userReference.child("group_id").setValue(code).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
 
-                                                    if (task.isSuccessful()) {
+                                            if (task.isSuccessful()) {
 
-                                                        userReference.child("group_id").setValue(code).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                DatabaseReference addMemberReference = FirebaseDatabase.getInstance().getReference().child("Group").child(code).child("members");
+                                                addMemberReference.child(currentUserId).child("user_name").setValue(currentUserId);
+                                                addMemberReference.child(currentUserId).child("name").setValue(userName);
+                                                addMemberReference.child(currentUserId).child("role").setValue("member");
+                                                addMemberReference.child(currentUserId).child("status").setValue("active")
+                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                             @Override
                                                             public void onComplete(@NonNull Task<Void> task) {
 
@@ -118,7 +118,6 @@ public class GettingStarted extends Fragment {
 
                                                                     Toast.makeText(getActivity(), "Group joined!", Toast.LENGTH_SHORT).show();
                                                                 }
-
                                                             }
                                                         });
                                                     }

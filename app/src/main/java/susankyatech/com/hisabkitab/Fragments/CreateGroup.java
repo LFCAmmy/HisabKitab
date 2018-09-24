@@ -142,6 +142,7 @@ public class CreateGroup extends Fragment {
 
                            if (task.isSuccessful()) {
                                HashMap membersMap = new HashMap();
+                               membersMap.put("user_id", currentUserId);
                                membersMap.put("name", userName);
                                membersMap.put("role","admin");
                                groupReference.child(groupToken).child("members").child(currentUserId).updateChildren(membersMap)

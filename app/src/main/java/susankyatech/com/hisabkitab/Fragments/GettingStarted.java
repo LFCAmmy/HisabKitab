@@ -97,6 +97,7 @@ public class GettingStarted extends Fragment {
                                 if (maxMembersAllowed > groupMembersCount) {
 
                                     DatabaseReference addMemberReference = FirebaseDatabase.getInstance().getReference().child("Group").child(code).child("members");
+                                    addMemberReference.child(currentUserId).child("user_name").setValue(currentUserId);
                                     addMemberReference.child(currentUserId).child("name").setValue(userName);
                                     addMemberReference.child(currentUserId).child("role").setValue("member");
                                     addMemberReference.child(currentUserId).child("status").setValue("active")

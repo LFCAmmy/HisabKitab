@@ -47,6 +47,8 @@ public class GroupExpenses extends Fragment {
     private long memberCount, dueAmount;
     private List<DueAmount> userExpenses = new ArrayList<>();
 
+    private TextView totalAmountTV, eachAmountTV;
+
     public GroupExpenses() {
 
     }
@@ -57,6 +59,8 @@ public class GroupExpenses extends Fragment {
 
         Button clearDueBtn = view.findViewById(R.id.clear_due_btn);
         recyclerView = view.findViewById(R.id.recycler_view);
+        totalAmountTV = view.findViewById(R.id.group_exp_total_amt);
+        eachAmountTV = view.findViewById(R.id.group_exp_each_amt);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -85,6 +89,8 @@ public class GroupExpenses extends Fragment {
                                             String userId = ds.getKey();
                                             int userAmount = Integer.valueOf(ds.child("total_amount").getValue().toString());
                                             totalExpenses += userAmount;
+
+
 
                                             userExpenses.add(new DueAmount(userId, userAmount));
 
@@ -204,6 +210,13 @@ public class GroupExpenses extends Fragment {
         };
 
         query.addChildEventListener(childEventListener);
+        String totalAmount = String.valueOf(totalExpenses);
+        totalAmountTV.setText(totalAmount);
+
+        long each = totalExpenses/memberCount;
+        String eachAmount = String.valueOf(each);
+        eachAmountTV.setText(eachAmount);
+
 
         FirebaseRecyclerOptions<UserDataModel> options = new FirebaseRecyclerOptions.Builder<UserDataModel>().setQuery(query, UserDataModel.class).build();
 
@@ -223,6 +236,7 @@ public class GroupExpenses extends Fragment {
                     if (userExpenses.get(i).userId.equals(model.getUser_id())) {
                         dueAmount = userExpenses.get(i).dueAmount - (totalExpenses / memberCount);
                         holder.setAmount(dueAmount);
+                        holder.setTotalSpentAmount(userExpenses.get(i).dueAmount);
                     }
                 }
 
@@ -246,6 +260,12 @@ public class GroupExpenses extends Fragment {
         public GroupExpensesViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
+        }
+
+        public void setTotalSpentAmount(int amount){
+            TextView displayTotalSpent = mView.findViewById(R.id.group_expenses_each_total_spent_tv);
+            String totalSpent = String.valueOf(amount);
+            displayTotalSpent.setText(totalSpent);
         }
 
         public void setAmount(long amount) {

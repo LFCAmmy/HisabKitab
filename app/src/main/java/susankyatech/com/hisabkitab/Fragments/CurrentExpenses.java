@@ -107,7 +107,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
         mSpinner.setOnItemSelectedListener(this);
         final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, userList);
 
-        userReference.addValueEventListener(new ValueEventListener() {
+        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -116,7 +116,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                     currentUserName = dataSnapshot.child("user_name").getValue().toString();
 
                     expenseReference.child(currentGroupId)
-                            .addValueEventListener(new ValueEventListener() {
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
@@ -141,7 +141,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                         date = format1.format(calDate);
                                         showExpenses(date);
                                         calanderbuilder = new HorizontalCalendar.Builder(mView, R.id.calendarView);
-                                        userListReference.child(currentGroupId).addValueEventListener(new ValueEventListener() {
+                                        userListReference.child(currentGroupId).addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                 if (dataSnapshot.exists()) {
@@ -163,7 +163,6 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                                     startDate.setTime(groupDate);
                                                     startDate.add(groupDate.getMonth(), 0);
                                                     startDate.add(groupDate.getDate(), 0);
-
 
                                                     horizontalCalendar = calanderbuilder.range(startDate, currentDate)
                                                             .datesNumberOnScreen(5)

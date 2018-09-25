@@ -270,7 +270,7 @@ public class UpdateGroupMembers extends Fragment {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                            for (final DataSnapshot ds : dataSnapshot.getChildren()) {
 
                                                 String name = ds.child("name").getValue().toString();
 
@@ -280,21 +280,47 @@ public class UpdateGroupMembers extends Fragment {
 
                                                     if (role.equals("member")) {
 
-                                                        DatabaseReference deleteReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId)
-                                                                .child("members").child(ds.getKey());
-                                                        deleteReference.removeValue();
-
-                                                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users").child(ds.getKey());
-                                                        reference.child("group_id").setValue("none").addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        DatabaseReference expenditures = FirebaseDatabase.getInstance().getReference().child("Total_Expenditures")
+                                                                .child(currentGroupId).child(ds.getKey());
+                                                        expenditures.addListenerForSingleValueEvent(new ValueEventListener() {
                                                             @Override
-                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                                                if (task.isSuccessful()) {
+                                                                String string = dataSnapshot.child("total_amount").getValue().toString();
+
+                                                                if (string.equals("0")) {
+
+                                                                    DatabaseReference deleteReference = FirebaseDatabase.getInstance().getReference().child("Group")
+                                                                            .child(currentGroupId).child("members").child(ds.getKey());
+
+                                                                    deleteReference.removeValue();
+
+                                                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users")
+                                                                            .child(ds.getKey());
+                                                                    reference.child("group_id").setValue("none").addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> task) {
+
+                                                                            if (task.isSuccessful()) {
+                                                                                dialog.dismiss();
+                                                                                materialDialog.dismiss();
+                                                                                Toast.makeText(getActivity(), "Member deleted from the group successfully!",
+                                                                                        Toast.LENGTH_SHORT).show();
+                                                                            }
+                                                                        }
+                                                                    });
+                                                                }
+                                                                else {
+                                                                    Toast.makeText(getActivity(), "Due amount has to be cleared of the member before deleting!",
+                                                                            Toast.LENGTH_SHORT).show();
                                                                     dialog.dismiss();
                                                                     materialDialog.dismiss();
-                                                                    Toast.makeText(getActivity(), "Member deleted from the group successfully!", Toast.LENGTH_SHORT)
-                                                                            .show();
                                                                 }
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
                                                             }
                                                         });
                                                     }

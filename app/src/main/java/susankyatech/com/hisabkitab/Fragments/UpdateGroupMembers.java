@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,7 @@ public class UpdateGroupMembers extends Fragment {
 
     private RecyclerView recyclerView;
 
-    private DatabaseReference userReference, groupReference;
+    private DatabaseReference groupReference;
 
     private String currentGroupId;
 
@@ -52,14 +53,13 @@ public class UpdateGroupMembers extends Fragment {
 
         userNameET = view.findViewById(R.id.user_name_et);
         proceedBtn = view.findViewById(R.id.proceed_button);
-
         recyclerView = view.findViewById(R.id.recycler_view);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(linearLayoutManager);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
 
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+        DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
         groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
 
         userReference.addValueEventListener(new ValueEventListener() {
@@ -144,7 +144,7 @@ public class UpdateGroupMembers extends Fragment {
                         final String enteredName = userNameET.getText().toString();
 
                         if (TextUtils.isEmpty(enteredName)) {
-                            userNameET.setError("Please enter the username before proceeding! ");
+                            userNameET.setError("Please enter the username before proceeding!");
                             userNameET.requestFocus();
                         } else {
                             final MaterialDialog materialDialog = new MaterialDialog.Builder(getContext())
@@ -167,7 +167,7 @@ public class UpdateGroupMembers extends Fragment {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                            for (DataSnapshot ds: dataSnapshot.getChildren()) {
 
                                                 String name = ds.child("name").getValue().toString();
 
@@ -175,54 +175,30 @@ public class UpdateGroupMembers extends Fragment {
 
                                                     String role = ds.child("role").getValue().toString();
 
-                                                    if (!role.equals("admin")) {
+                                                    if (role.equals("member")) {
 
                                                         String status = ds.child("status").getValue().toString();
 
                                                         if (status.equals("active")) {
 
-                                                            DatabaseReference disableReference = FirebaseDatabase.getInstance().getReference().child("Group")
-                                                                    .child(currentGroupId).child("members").child(ds.getKey());
+                                                            groupReference.child(currentGroupId).child("members").child(ds.getKey()).child("status").setValue("inactive")
+                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> task) {
 
-                                                            disableReference.child("status").setValue("inactive").addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-
-                                                                    if (task.isSuccessful()) {
-
-                                                                        materialDialog.dismiss();
-                                                                        Toast.makeText(getActivity(), "Member account deactivated successfully!", Toast.LENGTH_SHORT)
-                                                                                .show();
-                                                                    }
-                                                                }
-                                                            });
-                                                        } else {
-
-                                                            DatabaseReference disableReference = FirebaseDatabase.getInstance().getReference().child("Group")
-                                                                    .child(currentGroupId).child("members").child(ds.getKey());
-
-                                                            disableReference.child("status").setValue("active").addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-
-                                                                    if (task.isSuccessful()) {
-
-                                                                        materialDialog.dismiss();
-                                                                        Toast.makeText(getActivity(), "Member account deactivated successfully!", Toast.LENGTH_SHORT)
-                                                                                .show();
-                                                                    }
-                                                                }
-                                                            });
+                                                                            if (task.isSuccessful()) {
+                                                                                Toast.makeText(getActivity(), "Account deactivated!", Toast.LENGTH_SHORT).show();
+                                                                            }
+                                                                        }
+                                                                    });
+                                                        }
+                                                        else if (status.equals("inactive")) {
+                                                            Toast.makeText(getActivity(), "Is inactive", Toast.LENGTH_SHORT).show();
                                                         }
                                                     }
-                                                    else {
-                                                        Toast.makeText(getActivity(), "You cannot disable yourself!", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                }
-                                                else {
-                                                    Toast.makeText(getActivity(), "Please enter a valid group member", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
+
                                         }
 
                                         @Override
@@ -231,7 +207,8 @@ public class UpdateGroupMembers extends Fragment {
                                         }
                                     });
 
-                                    materialDialog.dismiss();
+
+
                                 }
                             });
 

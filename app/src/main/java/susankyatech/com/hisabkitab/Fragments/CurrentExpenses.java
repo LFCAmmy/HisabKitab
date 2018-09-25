@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -56,7 +57,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
     private Spinner mSpinner;
     private FloatingActionButton addExpense;
     private RecyclerView recyclerView;
-    private String old_total_amount, user, user_id;
+
     private List<String> userList = new ArrayList<>();
     private  HorizontalCalendar horizontalCalendar;
     private HorizontalCalendar.Builder calanderbuilder;
@@ -315,6 +316,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                     .addOnCompleteListener(new OnCompleteListener() {
                         @Override
                         public void onComplete(@NonNull Task task) {
+
                             if (task.isSuccessful()) {
                                 HashMap userExpenseMap = new HashMap();
                                 userExpenseMap.put("product_name", title);
@@ -325,34 +327,24 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                         .addOnCompleteListener(new OnCompleteListener() {
                                             @Override
                                             public void onComplete(@NonNull Task task) {
-                                                if (task.isSuccessful()){
-//                                                    String prevtotle = totalExpenditureRef.child(currentGroupId).child(currentUserId).child("total_amount");
-//                                                    Log.d("TAG", "onComplete: "+prevtotle);
-                                                    totalExpenditureRef.child(currentGroupId).child(currentUserId)
-                                                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                @Override
-                                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                                    if (dataSnapshot.exists()){
-                                                                        old_total_amount = dataSnapshot.child("total_amount").getValue().toString();
-                                                                        user = dataSnapshot.child("name").getValue().toString();
-                                                                        user_id = dataSnapshot.child("user_id").getValue().toString();
+                                                totalExpenditureRef.child(currentGroupId).child(currentUserId)
+                                                        .addValueEventListener(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                                if (dataSnapshot.exists()){
+                                                                    String total_amount = dataSnapshot.child("total_amount").getValue().toString();
+                                                                    int totalAmt = Integer.valueOf(total_amount);
 
-                                                                        int new_total_amt = Integer.valueOf(old_total_amount)+amount;
-                                                                        HashMap total_expense_map = new HashMap();
-                                                                        total_expense_map.put("name", user);
-                                                                        total_expense_map.put("user_id", user_id);
-                                                                        total_expense_map.put("total_amount", new_total_amt);
-                                                                        totalExpenditureRef.child(currentGroupId).child(currentUserId).updateChildren(total_expense_map);
-                                                                    }
+                                                                    totalAmt = totalAmt + amount;
+                                                                    totalExpenditureRef.child(currentGroupId).child(currentUserId).child("total_amount").setValue(totalAmt);
                                                                 }
+                                                            }
 
-                                                                @Override
-                                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                                                }
-                                                            });
-                                                }
-
+                                                            }
+                                                        });
                                             }
                                         });
                             }

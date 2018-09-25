@@ -62,7 +62,7 @@ public class GettingStarted extends Fragment {
         groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
         totalExpenditureRef = FirebaseDatabase.getInstance().getReference().child("Total_Expenditures");
 
-        userReference.addValueEventListener(new ValueEventListener() {
+        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -86,7 +86,7 @@ public class GettingStarted extends Fragment {
                     groupCodeET.requestFocus();
                 }
                 else {
-                    groupReference.addValueEventListener(new ValueEventListener() {
+                    groupReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 

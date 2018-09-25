@@ -295,6 +295,11 @@ public class UpdateGroupMembers extends Fragment {
 
                                                                     deleteReference.removeValue();
 
+                                                                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Total_Expenditures")
+                                                                            .child(currentGroupId).child(ds.getKey());
+
+                                                                    ref.removeValue();
+
                                                                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users")
                                                                             .child(ds.getKey());
                                                                     reference.child("group_id").setValue("none").addOnCompleteListener(new OnCompleteListener<Void>() {

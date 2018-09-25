@@ -37,8 +37,6 @@ import susankyatech.com.hisabkitab.UserDataModel;
 public class UpdateGroupMembers extends Fragment {
 
     private EditText userNameET;
-    private Button proceedBtn;
-
     private RecyclerView recyclerView;
 
     private DatabaseReference groupReference;
@@ -52,13 +50,13 @@ public class UpdateGroupMembers extends Fragment {
         View view = inflater.inflate(R.layout.fragment_update_group_members, container, false);
 
         userNameET = view.findViewById(R.id.user_name_et);
-        proceedBtn = view.findViewById(R.id.proceed_button);
+        Button proceedBtn = view.findViewById(R.id.proceed_button);
         recyclerView = view.findViewById(R.id.recycler_view);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
 
-        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        final String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
         groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
 
@@ -85,6 +83,255 @@ public class UpdateGroupMembers extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+
+        proceedBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                final String enteredName = userNameET.getText().toString();
+
+                if (TextUtils.isEmpty(enteredName)) {
+                    userNameET.setError("Please enter the username before proceeding!");
+                    userNameET.requestFocus();
+                } else {
+                    final MaterialDialog materialDialog = new MaterialDialog.Builder(getContext())
+                            .title("Update Members")
+                            .customView(R.layout.proceed_dialog_layout, true)
+                            .positiveText("Deactivate Account")
+                            .negativeText("Delete Account")
+                            .neutralText("Cancel")
+                            .positiveColor(getResources().getColor(R.color.green))
+                            .negativeColor(getResources().getColor(R.color.red))
+                            .neutralColor(getResources().getColor(R.color.colorPrimary))
+                            .canceledOnTouchOutside(false)
+                            .show();
+
+                    materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            final MaterialDialog dialog = new MaterialDialog.Builder(getContext())
+                                    .title("Warning!")
+                                    .customView(R.layout.deactivate_account_dialog_layout, true)
+                                    .neutralText("Cancel")
+                                    .negativeText("Reactivate")
+                                    .positiveText("Deactivate")
+                                    .neutralColor(getResources().getColor(R.color.colorPrimary))
+                                    .negativeColor(getResources().getColor(R.color.green))
+                                    .positiveColor(getResources().getColor(R.color.red))
+                                    .canceledOnTouchOutside(false)
+                                    .show();
+
+                            dialog.getActionButton(DialogAction.NEUTRAL).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    dialog.dismiss();
+                                    materialDialog.dismiss();
+                                }
+                            });
+
+                            dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                    groupReference.child(currentGroupId).child("members").addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                                                String name = ds.child("name").getValue().toString();
+
+                                                if (name.equals(enteredName)) {
+
+                                                    String role = ds.child("role").getValue().toString();
+
+                                                    if (role.equals("member")) {
+
+                                                        String status = ds.child("status").getValue().toString();
+
+                                                        if (status.equals("active")) {
+
+                                                            groupReference.child(currentGroupId).child("members").child(ds.getKey()).child("status").setValue("inactive")
+                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> task) {
+
+                                                                            if (task.isSuccessful()) {
+                                                                                dialog.dismiss();
+                                                                                materialDialog.dismiss();
+                                                                                Toast.makeText(getActivity(), "Account Deactivated!", Toast.LENGTH_SHORT).show();
+                                                                            }
+                                                                        }
+                                                                    });
+                                                        } else {
+                                                            dialog.dismiss();
+                                                            materialDialog.dismiss();
+                                                            Toast.makeText(getActivity(), "This account is already deactivated!", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                    else {
+                                                        dialog.dismiss();
+                                                        materialDialog.dismiss();
+                                                        Toast.makeText(getActivity(), "You cannot disable yourself!", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+                            });
+
+                            dialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                    groupReference.child(currentGroupId).child("members").addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                                                String name = ds.child("name").getValue().toString();
+
+                                                if (name.equals(enteredName)) {
+
+                                                    String role = ds.child("role").getValue().toString();
+
+                                                    if (role.equals("member")) {
+
+                                                        String status = ds.child("status").getValue().toString();
+
+                                                        if (status.equals("inactive")) {
+
+                                                            groupReference.child(currentGroupId).child("members").child(ds.getKey()).child("status").setValue("active")
+                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> task) {
+
+                                                                            if (task.isSuccessful()) {
+                                                                                dialog.dismiss();
+                                                                                materialDialog.dismiss();
+                                                                                Toast.makeText(getActivity(), "Account Reactivated!", Toast.LENGTH_SHORT).show();
+                                                                            }
+                                                                        }
+                                                                    });
+                                                        } else {
+                                                            dialog.dismiss();
+                                                            materialDialog.dismiss();
+                                                            Toast.makeText(getActivity(), "This account is already active!", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                    else {
+                                                        dialog.dismiss();
+                                                        materialDialog.dismiss();
+                                                        Toast.makeText(getActivity(), "You are always active!", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+
+                    materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            final MaterialDialog dialog = new MaterialDialog.Builder(getContext())
+                                    .title("Warning!")
+                                    .customView(R.layout.deactivate_account_dialog_layout, true)
+                                    .negativeText("Cancel")
+                                    .positiveText("Delete")
+                                    .negativeColor(getResources().getColor(R.color.red))
+                                    .positiveColor(getResources().getColor(R.color.green))
+                                    .canceledOnTouchOutside(false)
+                                    .show();
+
+                            dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                    groupReference.child(currentGroupId).child("members").addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                                                String name = ds.child("name").getValue().toString();
+
+                                                if (name.equals(enteredName)) {
+
+                                                    String role = ds.child("role").getValue().toString();
+
+                                                    if (role.equals("member")) {
+
+                                                        DatabaseReference deleteReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId)
+                                                                .child("members").child(ds.getKey());
+                                                        deleteReference.removeValue();
+
+                                                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users").child(ds.getKey());
+                                                        reference.child("group_id").setValue("none").addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+
+                                                                if (task.isSuccessful()) {
+                                                                    dialog.dismiss();
+                                                                    materialDialog.dismiss();
+                                                                    Toast.makeText(getActivity(), "Member deleted from the group successfully!", Toast.LENGTH_SHORT)
+                                                                            .show();
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+                                                    else {
+                                                        dialog.dismiss();
+                                                        materialDialog.dismiss();
+                                                        Toast.makeText(getActivity(), "You are always active!", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+                            });
+
+                            dialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    dialog.dismiss();
+                                    materialDialog.dismiss();
+                                }
+                            });
+                        }
+                    });
+
+                    materialDialog.getActionButton(DialogAction.NEUTRAL).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            materialDialog.dismiss();
+                        }
+                    });
+                }
             }
         });
 
@@ -136,134 +383,6 @@ public class UpdateGroupMembers extends Fragment {
             @Override
             protected void onBindViewHolder(@NonNull UpdateGroupMembersViewHolder holder, int position, @NonNull UserDataModel model) {
                 holder.setName(model.getName());
-
-                proceedBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        final String enteredName = userNameET.getText().toString();
-
-                        if (TextUtils.isEmpty(enteredName)) {
-                            userNameET.setError("Please enter the username before proceeding!");
-                            userNameET.requestFocus();
-                        } else {
-                            final MaterialDialog materialDialog = new MaterialDialog.Builder(getContext())
-                                    .title("Update Members")
-                                    .customView(R.layout.proceed_dialog_layout, true)
-                                    .positiveText("Deactivate Account")
-                                    .negativeText("Delete Account")
-                                    .neutralText("Cancel")
-                                    .positiveColor(getResources().getColor(R.color.green))
-                                    .negativeColor(getResources().getColor(R.color.red))
-                                    .neutralColor(getResources().getColor(R.color.colorPrimary))
-                                    .canceledOnTouchOutside(false)
-                                    .show();
-
-                            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-
-                                    groupReference.child(currentGroupId).child("members").addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                                            for (DataSnapshot ds: dataSnapshot.getChildren()) {
-
-                                                String name = ds.child("name").getValue().toString();
-
-                                                if (name.equals(enteredName)) {
-
-                                                    String role = ds.child("role").getValue().toString();
-
-                                                    if (role.equals("member")) {
-
-                                                        String status = ds.child("status").getValue().toString();
-
-                                                        if (status.equals("active")) {
-
-                                                            groupReference.child(currentGroupId).child("members").child(ds.getKey()).child("status").setValue("inactive")
-                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                        @Override
-                                                                        public void onComplete(@NonNull Task<Void> task) {
-
-                                                                            if (task.isSuccessful()) {
-                                                                                Toast.makeText(getActivity(), "Account deactivated!", Toast.LENGTH_SHORT).show();
-                                                                            }
-                                                                        }
-                                                                    });
-                                                        }
-                                                        else if (status.equals("inactive")) {
-                                                            Toast.makeText(getActivity(), "Is inactive", Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    }
-                                                }
-                                            }
-
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                        }
-                                    });
-
-
-
-                                }
-                            });
-
-                            materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-
-                                    groupReference.child(currentGroupId).child("members").addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                                            for (DataSnapshot ds: dataSnapshot.getChildren()) {
-
-                                                String name = ds.child("name").getValue().toString();
-
-                                                if (name.equals(enteredName)) {
-
-                                                    final String userId = ds.getKey();
-
-                                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
-                                                    reference.child("group_id").setValue("none").addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-
-                                                            if (task.isSuccessful()) {
-                                                                DatabaseReference deleteReference = FirebaseDatabase.getInstance().getReference().child("Group")
-                                                                        .child(currentGroupId).child("members").child(userId);
-
-                                                                deleteReference.removeValue();
-                                                                materialDialog.dismiss();
-                                                                Toast.makeText(getActivity(), "Member deleted successfully!", Toast.LENGTH_SHORT).show();
-                                                            }
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                        }
-                                    });
-                                }
-                            });
-
-                            materialDialog.getActionButton(DialogAction.NEUTRAL).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    materialDialog.dismiss();
-                                }
-                            });
-                        }
-                    }
-                });
             }
         };
 

@@ -59,7 +59,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
     private RecyclerView recyclerView;
 
     private List<String> userList = new ArrayList<>();
-    private  HorizontalCalendar horizontalCalendar;
+    private HorizontalCalendar horizontalCalendar;
     private HorizontalCalendar.Builder calanderbuilder;
     private DatabaseReference expenseReference, userListReference, totalExpenditureRef;
     private FirebaseRecyclerAdapter adapter;
@@ -115,74 +115,80 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                     currentGroupId = dataSnapshot.child("group_id").getValue().toString();
                     currentUserName = dataSnapshot.child("user_name").getValue().toString();
 
-                    userListReference.child(currentGroupId).child("members")
+                    expenseReference.child(currentGroupId)
                             .addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                        Log.d("TAG", "onDataChange: "+ds.child("name").getValue());
-                                        String name = ds.child("name").getValue().toString();
-                                        userList.add(name);
-                                    }
-
-                                    spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                    mSpinner.setAdapter(spinnerAdapter);
-
-                                    Calendar startDate = Calendar.getInstance();
-                                    Date calDate = startDate.getTime();
-                                    SimpleDateFormat format1 = new SimpleDateFormat("dd-MMMM-yyyy");
-                                    date = format1.format(calDate);
-                                    showExpenses(date);
-                                    calanderbuilder = new HorizontalCalendar.Builder(mView, R.id.calendarView);
-                                    userListReference.child(currentGroupId).addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            if (dataSnapshot.exists()){
-                                                groupCreatedDate = dataSnapshot.child("group_created_date").getValue().toString();
-
-                                                Calendar currentDate = Calendar.getInstance();
-                                                currentDate.add(Calendar.MONTH, 0);
-                                                currentDate.add(Calendar.DATE, 0);
-
-                                                SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy");
-                                                Date groupDate = null;
-                                                try {
-                                                    groupDate = sdf.parse(groupCreatedDate);
-                                                    Log.d("asd", "onDataChange: "+groupDate);
-                                                } catch (ParseException e) {
-                                                    e.printStackTrace();
+                                    if (dataSnapshot.exists()) {
+                                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                            for (DataSnapshot de : ds.getChildren()){
+                                                Log.d("TAG", "onDataChange: " + de.child("name").getValue());
+                                                String name = de.child("name").getValue().toString();
+                                                if (!userList.contains(name)){
+                                                    userList.add(name);
                                                 }
-                                                Calendar startDate = Calendar.getInstance();
-                                                startDate.setTime(groupDate);
-                                                startDate.add(groupDate.getMonth(),0);
-                                                startDate.add(groupDate.getDate(),0);
 
-
-                                               horizontalCalendar = calanderbuilder.range(startDate, currentDate)
-                                                        .datesNumberOnScreen(5)
-                                                        .defaultSelectedDate(currentDate)
-                                                        .build();
-
-                                                horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
-                                                    @Override
-                                                    public void onDateSelected(Calendar cal, int position) {
-                                                        Date calDate = cal.getTime();
-                                                        SimpleDateFormat format1 = new SimpleDateFormat("dd-MMMM-yyyy");
-                                                        date = format1.format(calDate);
-
-                                                        showExpenses(date);
-
-                                                    }
-                                                });
                                             }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                         }
-                                    });
+
+                                        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                        mSpinner.setAdapter(spinnerAdapter);
+
+                                        Calendar startDate = Calendar.getInstance();
+                                        Date calDate = startDate.getTime();
+                                        SimpleDateFormat format1 = new SimpleDateFormat("dd-MMMM-yyyy");
+                                        date = format1.format(calDate);
+                                        showExpenses(date);
+                                        calanderbuilder = new HorizontalCalendar.Builder(mView, R.id.calendarView);
+                                        userListReference.child(currentGroupId).addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                if (dataSnapshot.exists()) {
+                                                    groupCreatedDate = dataSnapshot.child("group_created_date").getValue().toString();
+
+                                                    Calendar currentDate = Calendar.getInstance();
+                                                    currentDate.add(Calendar.MONTH, 0);
+                                                    currentDate.add(Calendar.DATE, 0);
+
+                                                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy");
+                                                    Date groupDate = null;
+                                                    try {
+                                                        groupDate = sdf.parse(groupCreatedDate);
+                                                        Log.d("asd", "onDataChange: " + groupDate);
+                                                    } catch (ParseException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                    Calendar startDate = Calendar.getInstance();
+                                                    startDate.setTime(groupDate);
+                                                    startDate.add(groupDate.getMonth(), 0);
+                                                    startDate.add(groupDate.getDate(), 0);
+
+
+                                                    horizontalCalendar = calanderbuilder.range(startDate, currentDate)
+                                                            .datesNumberOnScreen(5)
+                                                            .defaultSelectedDate(currentDate)
+                                                            .build();
+
+                                                    horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
+                                                        @Override
+                                                        public void onDateSelected(Calendar cal, int position) {
+                                                            Date calDate = cal.getTime();
+                                                            SimpleDateFormat format1 = new SimpleDateFormat("dd-MMMM-yyyy");
+                                                            date = format1.format(calDate);
+
+                                                            showExpenses(date);
+                                                        }
+                                                    });
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+                                    }
                                 }
 
                                 @Override
@@ -278,7 +284,8 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
         showExpenses(date);
     }
 
-    public void onNothingSelected(AdapterView<?> arg0) {}
+    public void onNothingSelected(AdapterView<?> arg0) {
+    }
 
     private void addExpenseToDB() {
 
@@ -328,10 +335,10 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                             @Override
                                             public void onComplete(@NonNull Task task) {
                                                 totalExpenditureRef.child(currentGroupId).child(currentUserId)
-                                                        .addValueEventListener(new ValueEventListener() {
+                                                        .addListenerForSingleValueEvent(new ValueEventListener() {
                                                             @Override
                                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                                if (dataSnapshot.exists()){
+                                                                if (dataSnapshot.exists()) {
                                                                     String total_amount = dataSnapshot.child("total_amount").getValue().toString();
                                                                     int totalAmt = Integer.valueOf(total_amount);
 
@@ -418,13 +425,13 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
             mView = itemView;
         }
 
-        public void setAmount(int amount){
+        public void setAmount(int amount) {
             TextView expAmt = mView.findViewById(R.id.all_current_expense_product_price);
             String expenseAmount = String.valueOf(amount);
             expAmt.setText(expenseAmount);
         }
 
-        public void setProduct_name(String product_name){
+        public void setProduct_name(String product_name) {
             TextView extName = mView.findViewById(R.id.all_current_expense_product_name);
             extName.setText(product_name);
         }
@@ -433,7 +440,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
     public String generateGroupToken() {
 
         StringBuilder token = new StringBuilder(6);
-        for (int i=0; i<6; i++) {
+        for (int i = 0; i < 6; i++) {
             token.append(string.charAt(random.nextInt(string.length())));
         }
         return token.toString();
@@ -443,8 +450,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
     public void onStart() {
         super.onStart();
 
-        if (adapter != null)
-        {
+        if (adapter != null) {
             adapter.startListening();
         }
     }

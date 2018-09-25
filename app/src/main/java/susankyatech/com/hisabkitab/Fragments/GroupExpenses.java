@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,6 +17,8 @@ import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.database.ChildEventListener;
@@ -32,8 +35,6 @@ import java.util.List;
 import susankyatech.com.hisabkitab.DueAmount;
 import susankyatech.com.hisabkitab.R;
 import susankyatech.com.hisabkitab.UserDataModel;
-
-import static android.content.ContentValues.TAG;
 
 public class GroupExpenses extends Fragment {
 
@@ -90,7 +91,6 @@ public class GroupExpenses extends Fragment {
                                             Query query = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members").limitToLast(50);
                                             getAllUserName(query);
                                         }
-                                        Log.d("asd", "onDataChange: " + totalExpenses);
                                     }
                                 }
 
@@ -121,11 +121,56 @@ public class GroupExpenses extends Fragment {
         clearDueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "Due cleared!!", Toast.LENGTH_SHORT).show();
+                clearExpenditureDue();
             }
         });
 
         return view;
+    }
+
+    private void clearExpenditureDue() {
+        userReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    currentGroupId = dataSnapshot.child("group_id").getValue().toString();
+
+                    totalExpenseRef.child(currentGroupId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()){
+                                for (DataSnapshot ds: dataSnapshot.getChildren()){
+                                    String userId = ds.getKey();
+                                    totalExpenseRef.child(currentGroupId).child(userId).child("total_amount").setValue(0)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()){
+                                                        Fragment fragment = new GroupExpenses();
+                                                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                                        transaction.replace(R.id.content_main_frame, fragment);
+                                                        transaction.addToBackStack(null);
+                                                        transaction.commit();
+                                                    }
+                                                }
+                                            });
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
 
@@ -174,22 +219,12 @@ public class GroupExpenses extends Fragment {
             protected void onBindViewHolder(@NonNull GroupExpensesViewHolder holder, int position, @NonNull UserDataModel model) {
                 holder.setName(model.getName());
 
-//                if (userExpenses.get(position).userId.equals(model.getUser_id())){
-//                    dueAmount = userExpenses.get(position).dueAmount - (totalExpenses/memberCount);
-//                    holder.setAmount(dueAmount);
-//                } else {
-//                    dueAmount = 0 - (totalExpenses/memberCount);
-//                    holder.setAmount(dueAmount);
-//                }
-
                 for (int i = 0; i < userExpenses.size(); i++) {
-                    Log.d("asd", "onBindViewHolder: " + userExpenses.get(i));
                     if (userExpenses.get(i).userId.equals(model.getUser_id())) {
                         dueAmount = userExpenses.get(i).dueAmount - (totalExpenses / memberCount);
                         holder.setAmount(dueAmount);
                     }
                 }
-
 
             }
         };

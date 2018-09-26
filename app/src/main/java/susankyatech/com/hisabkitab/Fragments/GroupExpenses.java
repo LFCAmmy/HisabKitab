@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -71,15 +70,21 @@ public class GroupExpenses extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.group_expenses, menu);
+        inflater.inflate(R.menu.group_expenses_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_due_history:
-                Toast.makeText(getContext(), "menu", Toast.LENGTH_SHORT).show();
+            case R.id.menu_due_history: {
+                Fragment fragment = new susankyatech.com.hisabkitab.Fragments.DueHistory();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.content_main_frame, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

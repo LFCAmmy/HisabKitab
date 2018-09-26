@@ -27,6 +27,9 @@
     <string name="manage_group">Manage Group</string>
     <string name="logout">Logout</string>
     <string name="about">About</string>
+    <string name="faq">FAQ?</string>
+    <string name="due_history">Show History</string>
+    <string name="report_bug">Report Bug</string>
 
     <!-- Current CurrentExpenses -->
     <string name="id">ID</string>

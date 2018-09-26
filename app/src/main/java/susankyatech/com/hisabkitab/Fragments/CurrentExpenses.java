@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -223,8 +222,8 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                 materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        addExpenseToDB();
-                        materialDialog.dismiss();
+                        addExpenseToDB(materialDialog);
+//                        materialDialog.dismiss();
                     }
                 });
                 materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
@@ -287,7 +286,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
     public void onNothingSelected(AdapterView<?> arg0) {
     }
 
-    private void addExpenseToDB() {
+    private void addExpenseToDB(final MaterialDialog materialDialog) {
 
         Calendar calender = Calendar.getInstance();
         int day = calender.get(Calendar.DAY_OF_MONTH);
@@ -303,7 +302,6 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 
         final String title = expenseTitle.getText().toString();
         final String amt = expenseAmount.getText().toString();
-
 
         if (TextUtils.isEmpty(title)) {
             expenseTitle.setError("Please enter expense expenseTitle!");
@@ -346,11 +344,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                                                     totalAmt = totalAmt + amount;
                                                                     totalExpenditureRef.child(currentGroupId).child(currentUserId).child("total_amount").setValue(totalAmt);
 
-                                                                    Fragment fragment = new CurrentExpenses();
-                                                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                                                                    transaction.replace(R.id.content_main_frame, fragment);
-                                                                    transaction.addToBackStack(null);
-                                                                    transaction.commit();
+                                                                    materialDialog.dismiss();
                                                                 }
                                                             }
 

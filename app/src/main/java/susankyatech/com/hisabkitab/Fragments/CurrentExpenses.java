@@ -222,8 +222,8 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                 materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        addExpenseToDB();
-                        materialDialog.dismiss();
+                        addExpenseToDB(materialDialog);
+//                        materialDialog.dismiss();
                     }
                 });
                 materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
@@ -286,7 +286,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
     public void onNothingSelected(AdapterView<?> arg0) {
     }
 
-    private void addExpenseToDB() {
+    private void addExpenseToDB(final MaterialDialog materialDialog) {
 
         Calendar calender = Calendar.getInstance();
         int day = calender.get(Calendar.DAY_OF_MONTH);
@@ -343,6 +343,8 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 
                                                                     totalAmt = totalAmt + amount;
                                                                     totalExpenditureRef.child(currentGroupId).child(currentUserId).child("total_amount").setValue(totalAmt);
+
+                                                                    materialDialog.dismiss();
                                                                 }
                                                             }
 

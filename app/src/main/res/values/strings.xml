@@ -30,6 +30,7 @@
     <string name="share">Share app</string>
     <string name="about">About</string>
     <string name="faq">FAQ?</string>
+    <string name="due_history">Show History</string>
     <string name="report_bug">Report Bug</string>
 
     <!-- Current CurrentExpenses -->

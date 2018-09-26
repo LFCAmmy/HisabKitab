@@ -3,11 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_faq"
-        android:title="@string/faq"
-        app:showAsAction="never"/>
-    <item
-        android:id="@+id/menu_report_bug"
-        android:title="@string/report_bug"
+        android:id="@+id/about"
+        android:title="@string/about"
         app:showAsAction="never"/>
 </menu>

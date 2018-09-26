@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -303,6 +304,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
         final String title = expenseTitle.getText().toString();
         final String amt = expenseAmount.getText().toString();
 
+
         if (TextUtils.isEmpty(title)) {
             expenseTitle.setError("Please enter expense expenseTitle!");
             expenseTitle.requestFocus();
@@ -343,6 +345,12 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 
                                                                     totalAmt = totalAmt + amount;
                                                                     totalExpenditureRef.child(currentGroupId).child(currentUserId).child("total_amount").setValue(totalAmt);
+
+                                                                    Fragment fragment = new CurrentExpenses();
+                                                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                                                    transaction.replace(R.id.content_main_frame, fragment);
+                                                                    transaction.addToBackStack(null);
+                                                                    transaction.commit();
                                                                 }
                                                             }
 

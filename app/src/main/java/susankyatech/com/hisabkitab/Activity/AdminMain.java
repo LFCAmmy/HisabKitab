@@ -23,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import susankyatech.com.hisabkitab.Fragments.AboutFragment;
 import susankyatech.com.hisabkitab.Fragments.CurrentExpenses;
 import susankyatech.com.hisabkitab.Fragments.GroupExpenses;
 import susankyatech.com.hisabkitab.Fragments.ManageGroup;
@@ -112,6 +113,15 @@ public class AdminMain extends AppCompatActivity implements NavigationView.OnNav
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
+
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.about: {
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_main_frame, new AboutFragment()).commit();
+                break;
+            }
+        }
 
         return super.onOptionsItemSelected(item);
     }

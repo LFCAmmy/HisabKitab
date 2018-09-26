@@ -38,7 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import susankyatech.com.hisabkitab.DueAmount;
-import susankyatech.com.hisabkitab.DueHistory;
+import susankyatech.com.hisabkitab.DueHistoryDataModel;
 import susankyatech.com.hisabkitab.R;
 import susankyatech.com.hisabkitab.UserDataModel;
 
@@ -54,7 +54,7 @@ public class GroupExpenses extends Fragment {
     private int totalExpenses;
     private long memberCount, dueAmount;
     private List<DueAmount> userExpenses = new ArrayList<>();
-    private List<DueHistory> dueHistoryList = new ArrayList<>();
+    private List<DueHistoryDataModel> dueHistoryList = new ArrayList<>();
 
     private TextView totalAmountTV, eachAmountTV;
 
@@ -189,7 +189,7 @@ public class GroupExpenses extends Fragment {
                                     int userAmount = Integer.valueOf(ds.child("total_amount").getValue().toString());
                                     Log.d(TAG, "onDataChange: "+ userName);
 
-                                    dueHistoryList.add(new DueHistory(userId, userName, userAmount));
+                                    dueHistoryList.add(new DueHistoryDataModel(userId, userName, userAmount));
                                     Log.d(TAG, "onDataChange: "+dueHistoryList.size());
 
                                     addToDueHistory(userId);

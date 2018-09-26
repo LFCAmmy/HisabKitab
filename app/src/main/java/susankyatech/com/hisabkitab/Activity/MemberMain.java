@@ -1,6 +1,7 @@
 package susankyatech.com.hisabkitab.Activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -55,11 +56,16 @@ public class MemberMain extends AppCompatActivity implements NavigationView.OnNa
         View navHeader = navigationView.getHeaderView(0);
         navGroupImage = navHeader.findViewById(R.id.group_image_display);
         navGroupNameTV = navHeader.findViewById(R.id.group_name_tv);
+        TextView navUserNameDisplay = navHeader.findViewById(R.id.user_name_tv);
 
         DrawerLayout drawer = findViewById(R.id.member_drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        SharedPreferences sp = getSharedPreferences("Info", 0);
+        String userName = sp.getString("email", "none");
+        navUserNameDisplay.setText(userName);
 
         mAuth = FirebaseAuth.getInstance();
         String currentUserId = mAuth.getCurrentUser().getUid();
@@ -83,10 +89,10 @@ public class MemberMain extends AppCompatActivity implements NavigationView.OnNa
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                         if (dataSnapshot.exists()) {
-                            String groupImageUrl = dataSnapshot.child("group_image").getValue().toString();
-                            String groupNameUrl = dataSnapshot.child("group_name").getValue().toString();
-                            Picasso.get().load(groupImageUrl).into(navGroupImage);
-                            navGroupNameTV.setText(groupNameUrl);
+                            String groupImage = dataSnapshot.child("group_image").getValue().toString();
+                            String groupName = dataSnapshot.child("group_name").getValue().toString();
+                            Picasso.get().load(groupImage).into(navGroupImage);
+                            navGroupNameTV.setText(groupName);
                         }
                     }
 

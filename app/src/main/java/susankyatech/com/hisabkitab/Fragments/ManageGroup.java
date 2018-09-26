@@ -2,6 +2,7 @@ package susankyatech.com.hisabkitab.Fragments;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -43,7 +44,7 @@ public class ManageGroup extends Fragment {
     private CircleImageView displayGroupImage;
     private TextView displayUserNameTV, displayGroupNameTV, displayGroupTokenTV;
     private EditText changeGroupNameET, changeMaxGroupMembersET;
-    private Button changeGroupNameBtn, changeGroupImageBtn, changeGroupMaxMembersBtn, updateGroupMembersBtn, displayGroupTokenBtn;
+    private Button changeGroupNameBtn, changeGroupImageBtn, changeGroupMaxMembersBtn, updateGroupMembersBtn;
     private ProgressDialog loadingBar;
 
     private DatabaseReference userReference, groupReference;
@@ -60,11 +61,12 @@ public class ManageGroup extends Fragment {
         displayGroupImage = view.findViewById(R.id.display_group_image);
         displayGroupNameTV = view.findViewById(R.id.group_name_tv);
         displayUserNameTV = view.findViewById(R.id.user_name_tv);
+        TextView displayUserEmailTV = view.findViewById(R.id.user_email_tv);
         changeGroupNameBtn = view.findViewById(R.id.change_group_name_btn);
         changeGroupImageBtn = view.findViewById(R.id.change_group_image_btn);
         changeGroupMaxMembersBtn = view.findViewById(R.id.change_max_members_btn);
         updateGroupMembersBtn = view.findViewById(R.id.update_group_members_btn);
-        displayGroupTokenBtn = view.findViewById(R.id.group_token_btn);
+        displayGroupTokenTV = view.findViewById(R.id.token_tv);
 
         loadingBar = new ProgressDialog(getContext());
 
@@ -73,6 +75,10 @@ public class ManageGroup extends Fragment {
         userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
         groupImageReference = FirebaseStorage.getInstance().getReference().child("Group Images");
         groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
+
+        SharedPreferences sp = getActivity().getSharedPreferences("Info", 0);
+        String userName = sp.getString("email", "none");
+        displayUserEmailTV.setText(userName);
 
         init();
 
@@ -88,6 +94,7 @@ public class ManageGroup extends Fragment {
                 currentGroupId = dataSnapshot.child("group_id").getValue().toString();
                 currentUserName = dataSnapshot.child("user_name").getValue().toString();
                 displayUserNameTV.setText(currentUserName);
+                displayGroupTokenTV.setText(currentGroupId);
 
                 groupReference = groupReference.child(currentGroupId);
                 groupReference.addValueEventListener(new ValueEventListener() {
@@ -259,31 +266,6 @@ public class ManageGroup extends Fragment {
                 transaction.replace(R.id.content_main_frame, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
-            }
-        });
-
-        displayGroupTokenBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                final MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
-                        .title("Group Token")
-                        .customView(R.layout.display_group_token_dialog_layout, true)
-                        .positiveText("Dismiss")
-                        .positiveColor(getResources().getColor(R.color.green))
-                        .canceledOnTouchOutside(false)
-                        .show();
-
-                 displayGroupTokenTV = materialDialog.getCustomView().findViewById(R.id.group_token_tv);
-
-                displayGroupTokenTV.setText(currentGroupId);
-
-                materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        materialDialog.dismiss();
-                    }
-                });
             }
         });
     }

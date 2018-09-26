@@ -11,8 +11,8 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/display_group_image"
-            android:layout_width="110dp"
-            android:layout_height="110dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
             android:src="@drawable/ic_launcher_background"/>
@@ -43,12 +43,21 @@
             android:textSize="16sp"/>
 
         <TextView
-            android:id="@+id/user_name_tv"
+            android:id="@+id/user_email_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="80dp"
             android:text="@string/username"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/user_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_email_tv"
+            android:layout_centerHorizontal="true"
+            android:text="@string/email"
             android:textSize="16sp"/>
 
     </RelativeLayout>
@@ -58,7 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/relative_layout"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:padding="10dp"
         android:text="@string/change_group_name"
         android:textSize="15sp"
@@ -145,16 +154,26 @@
         android:background="@drawable/button_layout"
         android:drawableEnd="@drawable/ic_edit"/>
 
-    <Button
-        android:id="@+id/group_token_btn"
+    <TextView
+        android:id="@+id/token"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/update_group_members_btn"
+        android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="60dp"
         android:padding="10dp"
-        android:text="@string/display_group_token"
+        android:text="@string/group_token"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/token_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/token"
+        android:layout_centerHorizontal="true"
+        android:padding="10dp"
+        android:text="ABCDdkjf"
         android:textSize="15sp"
-        android:background="@drawable/button_layout"/>
+        android:background="@drawable/text_layout"/>
 
 </RelativeLayout>

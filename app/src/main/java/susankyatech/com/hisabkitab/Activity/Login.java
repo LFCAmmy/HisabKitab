@@ -2,6 +2,7 @@ package susankyatech.com.hisabkitab.Activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -87,7 +88,7 @@ public class Login extends AppCompatActivity {
 
     }
 
-    private void logInUserAccount(String email, String password) {
+    private void logInUserAccount(final String email, String password) {
 
         if (TextUtils.isEmpty(email)) {
             userEmailET.setError("Please enter your email!");
@@ -124,12 +125,22 @@ public class Login extends AppCompatActivity {
                                                         String status = dataSnapshot.child("role").getValue().toString();
 
                                                         if (status.equals("admin")) {
+                                                            SharedPreferences sp = getSharedPreferences("Info", 0);
+                                                            SharedPreferences.Editor editor = sp.edit();
+                                                            editor.putString("email", email);
+                                                            editor.apply();
+
                                                             Intent intent = new Intent(Login.this, AdminMain.class);
                                                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                             startActivity(intent);
                                                         }
 
                                                         if (status.equals("member")) {
+                                                            SharedPreferences sp = getSharedPreferences("Info", 0);
+                                                            SharedPreferences.Editor editor = sp.edit();
+                                                            editor.putString("email", email);
+                                                            editor.apply();
+
                                                             Intent intent = new Intent(Login.this, MemberMain.class);
                                                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                             startActivity(intent);

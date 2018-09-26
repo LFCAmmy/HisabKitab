@@ -43,12 +43,8 @@
     <string name="change_group_image">Change Image</string>
     <string name="change_max_members">Change Max Members</string>
     <string name="update_group_members">Update Group Members</string>
-    <string name="display_group_token">Group Token</string>
-
-    <!-- Manage Group -->
+    <string name="group_token">Group Token</string>
     <string name="group_members">Group Members</string>
-    <string name="action">Action</string>
-
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

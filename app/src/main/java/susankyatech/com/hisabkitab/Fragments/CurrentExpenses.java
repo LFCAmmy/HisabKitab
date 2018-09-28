@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -55,7 +56,7 @@ import static android.content.ContentValues.TAG;
 
 public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelectedListener {
 
-    private static final String string = "0123456789";
+    private static final String string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final Random random = new Random();
 
     private EditText expenseTitle, expenseAmount;
@@ -70,12 +71,12 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
     private List<String> userList = new ArrayList<>();
     private HorizontalCalendar horizontalCalendar;
     private HorizontalCalendar.Builder calanderbuilder;
-    private DatabaseReference expenseReference, userListReference, totalExpenditureRef;
+    private DatabaseReference expenseReference, userListReference, totalExpenditureRef, dueHistoryRef;
     private FirebaseRecyclerAdapter adapter;
 
     private int totalAmount;
 
-    private String currentUserId, currentUserName, currentGroupId, date, selectedUser, token, groupCreatedDate;
+    private String currentUserId, currentUserName, currentGroupId, date, selectedUser, token, groupCreatedDate, latestDueDate;
 
     private View mView;
 
@@ -115,6 +116,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
         expenseReference = FirebaseDatabase.getInstance().getReference().child("Expenses");
         userListReference = FirebaseDatabase.getInstance().getReference().child("Group");
         totalExpenditureRef = FirebaseDatabase.getInstance().getReference().child("Total_Expenditures");
+        dueHistoryRef = FirebaseDatabase.getInstance().getReference().child("Due_History");
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -161,6 +163,28 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                 if (dataSnapshot.exists()) {
                                                     groupCreatedDate = dataSnapshot.child("group_created_date").getValue().toString();
+                                                    latestDueDate = groupCreatedDate;
+                                                    DatabaseReference db = dueHistoryRef.child(currentGroupId);
+                                                    Query query = db.orderByKey().limitToLast(1);
+                                                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                            if (dataSnapshot.exists()){
+                                                                for (DataSnapshot ds : dataSnapshot.getChildren()){
+                                                                    latestDueDate = ds.getKey();
+                                                                    Log.d(TAG, "onDataChange: if"+latestDueDate);
+                                                                }
+                                                            } else {
+
+                                                                Log.d(TAG, "onDataChange: else"+latestDueDate);
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                        }
+                                                    });
 
                                                     Calendar currentDate = Calendar.getInstance();
                                                     currentDate.add(Calendar.MONTH, 0);
@@ -267,7 +291,6 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 
                         String userId = de.getKey();
                         String userName = de.child("name").getValue().toString();
-                        Log.d(TAG, "onDataChange: if "+date);
                         if (userName.equals(selectedUser)) {
                             noListLayout.setVisibility(View.GONE);
                             recyclerView.setVisibility(View.VISIBLE);
@@ -341,6 +364,12 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
             SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
             final String date = currentDate.format(callForDate.getTime());
 
+            Calendar calForTime = Calendar.getInstance();
+            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
+            String time = currentTime.format(calForTime.getTime());
+
+            final String date_time = date + " " + time;
+
             HashMap expenseMap = new HashMap();
             expenseMap.put("name", currentUserName);
             expenseReference.child(currentGroupId).child(date).child(currentUserId).updateChildren(expenseMap)
@@ -349,10 +378,12 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                         public void onComplete(@NonNull Task task) {
 
                             if (task.isSuccessful()) {
+                                token = generateGroupToken();
                                 HashMap userExpenseMap = new HashMap();
                                 userExpenseMap.put("product_name", title);
                                 userExpenseMap.put("amount", amount);
-                                token = generateGroupToken();
+                                userExpenseMap.put("date", date_time);
+                                userExpenseMap.put("id", token);
                                 expenseReference.child(currentGroupId).child(date).child(currentUserId).child("products")
                                         .child(token).updateChildren(userExpenseMap)
                                         .addOnCompleteListener(new OnCompleteListener() {
@@ -386,7 +417,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
         }
     }
 
-    private void displayAllCurrentExpense(Query query) {
+    private void displayAllCurrentExpense(final Query query) {
 
         ChildEventListener childEventListener = new ChildEventListener() {
             @Override
@@ -431,10 +462,65 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull CurrentExpenseViewHolder holder, int position, @NonNull CurrentExpensesUserDataModel model) {
-                Log.d("asd", "onBindViewHolder: "+ model.getProduct_name());
+            protected void onBindViewHolder(@NonNull final CurrentExpenseViewHolder holder, int position, @NonNull final CurrentExpensesUserDataModel model) {
+
                 holder.setProduct_name(model.getProduct_name());
                 holder.setAmount(model.getAmount());
+                Log.d("asd", "onDataChange: asd "+latestDueDate);
+                Log.d("asd", "onDataChange: asd "+model.getDate());
+                SimpleDateFormat sdtf = new SimpleDateFormat("dd-MMMM-yyyy HH:mm:ss");
+                Date productDate = null;
+                Date latestDate = null;
+                try {
+                    productDate = sdtf.parse(model.getDate());
+                    latestDate = sdtf.parse(latestDueDate);
+                    Log.d("asd", "onDataChange: asd "+latestDueDate);
+                    Log.d(TAG, "onBindViewHolder: groupDate"+ productDate);
+                    Log.d(TAG, "onBindViewHolder: latestDate"+ latestDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+//                if (productDate.after(latestDate)){
+//                    holder.actionLayout.setVisibility(View.VISIBLE);
+//
+//                } else if (productDate.before(latestDate)){
+//                    holder.actionLayout.setVisibility(View.GONE);
+//                }
+
+                holder.editProduct.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        final MaterialDialog materialDialog = new MaterialDialog.Builder(getContext())
+                                .title("Update Members")
+                                .customView(R.layout.edit_product_layout, true)
+                                .positiveText("Save")
+                                .negativeText("Cancel")
+                                .positiveColor(getResources().getColor(R.color.green))
+                                .negativeColor(getResources().getColor(R.color.red))
+                                .canceledOnTouchOutside(true)
+                                .show();
+
+                        View customView = materialDialog.getCustomView();
+                        final EditText productName = customView.findViewById(R.id.product_edit_name);
+                        final EditText productAmount = customView.findViewById(R.id.product_edit_amount);
+
+                        productAmount.setText(String.valueOf(model.getAmount()));
+                        productName.setText(model.getProduct_name());
+
+                        materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                String editProductName = productName.getText().toString();
+                                String editProductAmount = productAmount.getText().toString();
+
+                                Toast.makeText(getContext(), ""+model.id, Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+                    }
+
+                });
             }
 
         };
@@ -445,11 +531,17 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
     public static class CurrentExpenseViewHolder extends RecyclerView.ViewHolder {
 
         View mView;
+        ImageView editProduct, deleteProduct;
+        RelativeLayout actionLayout;
 
         public CurrentExpenseViewHolder(@NonNull View itemView) {
             super(itemView);
 
             mView = itemView;
+            editProduct = mView.findViewById(R.id.all_current_expense_edit);
+            deleteProduct = mView.findViewById(R.id.all_current_expense_delete);
+            actionLayout = mView.findViewById(R.id.all_current_expense_action);
+
         }
 
         public void setAmount(int amount) {

@@ -291,6 +291,12 @@ public class GroupExpenses extends Fragment {
         SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
         final String date = currentDate.format(callForDate.getTime());
 
+        Calendar calForTime = Calendar.getInstance();
+        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
+        String time = currentTime.format(calForTime.getTime());
+
+        final String date_time = date + " " + time;
+
         dueHistoryRef.child(currentGroupId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -303,7 +309,7 @@ public class GroupExpenses extends Fragment {
                             historyMap.put("user_id", dueHistoryList.get(i).userId);
                             historyMap.put("name", dueHistoryList.get(i).userName);
                             historyMap.put("total_amount", dueHistoryList.get(i).dueAmount);
-                            dueHistoryRef.child(currentGroupId).child(date).child(dueHistoryList.get(i).userId).updateChildren(historyMap)
+                            dueHistoryRef.child(currentGroupId).child(date_time).child(dueHistoryList.get(i).userId).updateChildren(historyMap)
                                     .addOnCompleteListener(new OnCompleteListener() {
                                         @Override
                                         public void onComplete(@NonNull Task task) {

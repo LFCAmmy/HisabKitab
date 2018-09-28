@@ -33,7 +33,7 @@
                 android:id="@+id/group_code_et"
                 android:layout_width="220dp"
                 android:layout_height="wrap_content"
-                android:inputType="text"
+                android:inputType="number"
                 android:layout_centerHorizontal="true"
                 android:padding="12dp"
                 android:gravity="center"

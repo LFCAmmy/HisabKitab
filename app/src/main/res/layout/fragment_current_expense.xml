@@ -31,7 +31,7 @@
 
         <RelativeLayout
             android:id="@+id/relative_layout_one"
-            android:layout_width="150dp"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/spinner"
             android:layout_marginTop="30dp">
@@ -51,7 +51,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/spinner"
             android:layout_toEndOf="@id/relative_layout_one"
-            android:layout_marginStart="70dp"
             android:layout_marginTop="30dp">
 
             <TextView
@@ -59,6 +58,24 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:text="@string/amount"
+                android:textSize="18sp"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relative_layout_three"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spinner"
+            android:layout_alignParentEnd="true"
+            android:layout_toEndOf="@id/relative_layout_two"
+            android:layout_marginTop="30dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="Action"
                 android:textSize="18sp"/>
 
         </RelativeLayout>
@@ -132,7 +149,6 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="15dp"
-
         android:src="@drawable/ic_floating_add_expenses"/>
 
 </RelativeLayout>

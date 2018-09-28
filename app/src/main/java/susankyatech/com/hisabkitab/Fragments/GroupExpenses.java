@@ -296,7 +296,7 @@ public class GroupExpenses extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
                     if (dataSnapshot.hasChild(date)){
-                        Toast.makeText(getContext(), "Sorry! Due has already been cleared on " + date, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Due has already been cleared on " + date + "!", Toast.LENGTH_SHORT).show();
                     } else {
                         for (int i = 0; i < dueHistoryList.size(); i++) {
                             HashMap historyMap = new HashMap();

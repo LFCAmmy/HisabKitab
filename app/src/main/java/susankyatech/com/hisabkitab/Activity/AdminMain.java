@@ -57,6 +57,7 @@ public class AdminMain extends AppCompatActivity implements NavigationView.OnNav
         navGroupImageDisplay = navHeader.findViewById(R.id.group_image_display);
         navGroupNameDisplay = navHeader.findViewById(R.id.group_name_tv);
         TextView navUserNameDisplay = navHeader.findViewById(R.id.user_name_tv);
+        final TextView navGroupTokenDisplay = navHeader.findViewById(R.id.group_token);
 
         DrawerLayout drawer = findViewById(R.id.admin_drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -75,6 +76,7 @@ public class AdminMain extends AppCompatActivity implements NavigationView.OnNav
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 currentGroupId = dataSnapshot.child("group_id").getValue().toString();
+                navGroupTokenDisplay.setText(currentGroupId);
 
                 if (currentGroupId.equals("none")) {
                     Intent intent = new Intent(AdminMain.this, Welcome.class);

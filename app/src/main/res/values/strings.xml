@@ -48,6 +48,7 @@
     <string name="update_group_members">Update Group Members</string>
     <string name="group_token">Group Token</string>
     <string name="group_members">Group Members</string>
+    <string name="remove">Remove</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

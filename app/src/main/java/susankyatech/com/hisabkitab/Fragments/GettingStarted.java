@@ -100,8 +100,7 @@ public class GettingStarted extends Fragment {
                                         DatabaseReference addMemberReference = FirebaseDatabase.getInstance().getReference().child("Group").child(code).child("members");
                                         addMemberReference.child(currentUserId).child("user_id").setValue(currentUserId);
                                         addMemberReference.child(currentUserId).child("name").setValue(userName);
-                                        addMemberReference.child(currentUserId).child("role").setValue("member");
-                                        addMemberReference.child(currentUserId).child("status").setValue("active")
+                                        addMemberReference.child(currentUserId).child("role").setValue("member")
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {

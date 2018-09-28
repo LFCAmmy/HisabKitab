@@ -5,7 +5,8 @@
     android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:layout_width="140dp"
+        android:id="@+id/one"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp">
 
@@ -20,10 +21,12 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_width="140dp"
+        android:id="@+id/two"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:layout_marginStart="100dp">
+        android:layout_toEndOf="@id/one"
+        android:layout_marginStart="12dp">
 
         <TextView
             android:id="@+id/group_expenses_each_total_spent_tv"
@@ -31,14 +34,15 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="Total Spent"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="200dp"
+        android:layout_toEndOf="@id/two"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="15dp">
 
         <TextView

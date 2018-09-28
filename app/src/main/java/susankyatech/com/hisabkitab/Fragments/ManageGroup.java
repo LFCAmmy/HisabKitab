@@ -42,7 +42,7 @@ public class ManageGroup extends Fragment {
     private static final int GALLERY_PICK = 1;
 
     private CircleImageView displayGroupImage;
-    private TextView displayUserNameTV, displayGroupNameTV, displayGroupTokenTV;
+    private TextView displayUserNameTV, displayGroupNameTV;
     private EditText changeGroupNameET, changeMaxGroupMembersET;
     private Button changeGroupNameBtn, changeGroupImageBtn, changeGroupMaxMembersBtn, updateGroupMembersBtn;
     private ProgressDialog loadingBar;
@@ -66,7 +66,6 @@ public class ManageGroup extends Fragment {
         changeGroupImageBtn = view.findViewById(R.id.change_group_image_btn);
         changeGroupMaxMembersBtn = view.findViewById(R.id.change_max_members_btn);
         updateGroupMembersBtn = view.findViewById(R.id.update_group_members_btn);
-        displayGroupTokenTV = view.findViewById(R.id.token_tv);
 
         loadingBar = new ProgressDialog(getContext());
 
@@ -94,7 +93,6 @@ public class ManageGroup extends Fragment {
                 currentGroupId = dataSnapshot.child("group_id").getValue().toString();
                 currentUserName = dataSnapshot.child("user_name").getValue().toString();
                 displayUserNameTV.setText(currentUserName);
-                displayGroupTokenTV.setText(currentGroupId);
 
                 groupReference = groupReference.child(currentGroupId);
                 groupReference.addValueEventListener(new ValueEventListener() {

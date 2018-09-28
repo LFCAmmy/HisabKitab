@@ -15,7 +15,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -56,7 +58,11 @@ public class GroupExpenses extends Fragment {
     private List<DueAmount> userExpenses = new ArrayList<>();
     private List<DueHistoryDataModel> dueHistoryList = new ArrayList<>();
 
-    private TextView totalAmountTV, eachAmountTV;
+    private TextView totalAmountTV, eachAmountTV, dueDateTV;
+    private View progressLayout;
+    ProgressBar progressBar;
+    TextView progressTextView;
+    Button clearDueBtn;
 
     public GroupExpenses() {
 
@@ -95,47 +101,109 @@ public class GroupExpenses extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_group_expenses, container, false);
 
-        Button clearDueBtn = view.findViewById(R.id.clear_due_btn);
+
+        clearDueBtn = view.findViewById(R.id.clear_due_btn);
         recyclerView = view.findViewById(R.id.recycler_view);
         totalAmountTV = view.findViewById(R.id.group_exp_total_amt);
         eachAmountTV = view.findViewById(R.id.group_exp_each_amt);
+        dueDateTV = view.findViewById(R.id.group_exp_due_date);
+        progressLayout = view.findViewById(R.id.progressBarLayout);
+        progressBar = view.findViewById(R.id.progressBar);
+        progressTextView = view.findViewById(R.id.progressTV);
+
+        init();
+
+
+        return view;
+    }
+
+    private void init() {
+        progressLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        final String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
         groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
         totalExpenseRef = FirebaseDatabase.getInstance().getReference().child("Total_Expenditures");
         dueHistoryRef = FirebaseDatabase.getInstance().getReference().child("Due_History");
 
         userReference.addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                 currentGroupId = dataSnapshot.child("group_id").getValue().toString();
-                groupReference.child(currentGroupId).child("members").addValueEventListener(new ValueEventListener() {
+                groupReference.child(currentGroupId).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                            memberCount = dataSnapshot.getChildrenCount();
+                            final String groupDate = dataSnapshot.child("group_created_date").getValue().toString();
+                            groupReference.child(currentGroupId).child("members")
+                                    .addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.exists()){
+                                                memberCount = dataSnapshot.getChildrenCount();
+                                                totalExpenseRef.child(currentGroupId).addValueEventListener(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                        if (dataSnapshot.exists()) {
+                                                            progressLayout.setVisibility(View.GONE);
+                                                            progressBar.setVisibility(View.GONE);
+                                                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                                                String userId = ds.getKey();
+                                                                int userAmount = Integer.valueOf(ds.child("total_amount").getValue().toString());
+                                                                totalExpenses += userAmount;
+                                                                Log.d(TAG, "onDataChange: "+ userAmount);
 
-                            totalExpenseRef.child(currentGroupId).addValueEventListener(new ValueEventListener() {
+                                                                userExpenses.add(new DueAmount(userId, userAmount));
+                                                                Log.d(TAG, "onDataChange: "+userExpenses.size());
+
+                                                                Query query = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members").limitToLast(50);
+                                                                getAllUserName(query);
+                                                            }
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                    }
+                                                });
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                            dueHistoryRef.child(currentGroupId).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()) {
-                                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                            String userId = ds.getKey();
-                                            int userAmount = Integer.valueOf(ds.child("total_amount").getValue().toString());
-                                            totalExpenses += userAmount;
-                                            Log.d(TAG, "onDataChange: "+ userAmount);
+                                    if (dataSnapshot.exists()){
+                                        DatabaseReference db = dueHistoryRef.child(currentGroupId);
+                                        Query query = db.orderByKey().limitToLast(1);
+                                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                for (DataSnapshot ds : dataSnapshot.getChildren()){
+                                                    String latestDate = ds.getKey();
+                                                    dueDateTV.setText(latestDate);
+                                                }
+                                            }
 
-                                            userExpenses.add(new DueAmount(userId, userAmount));
-                                            Log.d(TAG, "onDataChange: "+userExpenses.size());
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                            Query query = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members").limitToLast(50);
-                                            getAllUserName(query);
-                                        }
+                                            }
+                                        });
+                                    }else {
+
+                                        dueDateTV.setText(groupDate);
                                     }
                                 }
 
@@ -153,6 +221,8 @@ public class GroupExpenses extends Fragment {
                     }
                 });
 
+
+
             }
 
             @Override
@@ -161,21 +231,24 @@ public class GroupExpenses extends Fragment {
             }
         });
 
+
         clearDueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 clearExpenditureDue();
             }
         });
-
-        return view;
     }
 
     private void clearExpenditureDue() {
+        progressLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
         userReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
+                    progressLayout.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
                     currentGroupId = dataSnapshot.child("group_id").getValue().toString();
                     totalExpenseRef.child(currentGroupId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -217,33 +290,50 @@ public class GroupExpenses extends Fragment {
         Calendar callForDate = Calendar.getInstance();
         SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
         final String date = currentDate.format(callForDate.getTime());
-        for (int i = 0; i < dueHistoryList.size(); i++) {
-            HashMap historyMap = new HashMap();
-            historyMap.put("user_id", dueHistoryList.get(i).userId);
-            historyMap.put("name", dueHistoryList.get(i).userName);
-            historyMap.put("total_amount", dueHistoryList.get(i).dueAmount);
-            dueHistoryRef.child(currentGroupId).child(date).child(dueHistoryList.get(i).userId).updateChildren(historyMap)
-                    .addOnCompleteListener(new OnCompleteListener() {
-                        @Override
-                        public void onComplete(@NonNull Task task) {
-                            if (task.isSuccessful()) {
-                                totalExpenseRef.child(currentGroupId).child(userId).child("total_amount").setValue(0)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    Fragment fragment = new GroupExpenses();
-                                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                                                    transaction.replace(R.id.content_main_frame, fragment);
-                                                    transaction.addToBackStack(null);
-                                                    transaction.commit();
-                                                }
+
+        dueHistoryRef.child(currentGroupId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    if (dataSnapshot.hasChild(date)){
+                        Toast.makeText(getContext(), "Sorry! Due has already been cleared on " + date, Toast.LENGTH_SHORT).show();
+                    } else {
+                        for (int i = 0; i < dueHistoryList.size(); i++) {
+                            HashMap historyMap = new HashMap();
+                            historyMap.put("user_id", dueHistoryList.get(i).userId);
+                            historyMap.put("name", dueHistoryList.get(i).userName);
+                            historyMap.put("total_amount", dueHistoryList.get(i).dueAmount);
+                            dueHistoryRef.child(currentGroupId).child(date).child(dueHistoryList.get(i).userId).updateChildren(historyMap)
+                                    .addOnCompleteListener(new OnCompleteListener() {
+                                        @Override
+                                        public void onComplete(@NonNull Task task) {
+                                            if (task.isSuccessful()) {
+                                                totalExpenseRef.child(currentGroupId).child(userId).child("total_amount").setValue(0)
+                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    Fragment fragment = new GroupExpenses();
+                                                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                                                    transaction.replace(R.id.content_main_frame, fragment);
+                                                                    transaction.addToBackStack(null);
+                                                                    transaction.commit();
+                                                                }
+                                                            }
+                                                        });
                                             }
-                                        });
-                            }
+                                        }
+                                    });
                         }
-                    });
-        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
 

@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,20 +45,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import butterknife.BindView;
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
 import susankyatech.com.hisabkitab.CurrentExpensesUserDataModel;
 import susankyatech.com.hisabkitab.R;
 
+import static android.content.ContentValues.TAG;
+
 public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelectedListener {
 
-    private static final String string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final String string = "0123456789";
     private static final Random random = new Random();
 
     private EditText expenseTitle, expenseAmount;
     private Spinner mSpinner;
     private FloatingActionButton addExpense;
     private RecyclerView recyclerView;
+    private View progressLayout;
+    ProgressBar progressBar;
+    TextView progressTextView;
+    private RelativeLayout noListLayout;
 
     private List<String> userList = new ArrayList<>();
     private HorizontalCalendar horizontalCalendar;
@@ -81,6 +90,10 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
         addExpense = view.findViewById(R.id.fab);
         mSpinner = view.findViewById(R.id.spinner);
         recyclerView = view.findViewById(R.id.recycler_view);
+        progressLayout = view.findViewById(R.id.progressBarLayout);
+        progressBar = view.findViewById(R.id.progressBar);
+        progressTextView = view.findViewById(R.id.progressTV);
+        noListLayout = view.findViewById(R.id.no_list_layout);
 
         mView = view;
 
@@ -94,6 +107,8 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
     }
 
     private void init() throws ParseException {
+        progressLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
 
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
@@ -112,6 +127,8 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 if (dataSnapshot.exists()) {
+                    progressLayout.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
                     currentGroupId = dataSnapshot.child("group_id").getValue().toString();
                     currentUserName = dataSnapshot.child("user_name").getValue().toString();
 
@@ -127,9 +144,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                                 if (!userList.contains(name)){
                                                     userList.add(name);
                                                 }
-
                                             }
-
                                         }
 
                                         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -238,34 +253,40 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
     }
 
     private void showExpenses(final String date) {
-
-        expenseReference.child(currentGroupId).addValueEventListener(new ValueEventListener() {
+        progressLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+        expenseReference.child(currentGroupId).child(date).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 if (dataSnapshot.exists()) {
-                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        String expenseDate = ds.getKey();
+                    progressLayout.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
 
-                        for (DataSnapshot de : ds.getChildren()) {
+                    for (DataSnapshot de : dataSnapshot.getChildren()) {
 
-                            String userId = de.getKey();
-                            String userName = de.child("name").getValue().toString();
+                        String userId = de.getKey();
+                        String userName = de.child("name").getValue().toString();
+                        Log.d(TAG, "onDataChange: if "+date);
+                        if (userName.equals(selectedUser)) {
+                            noListLayout.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
+                            Query query = FirebaseDatabase.getInstance().getReference().child("Expenses").child(currentGroupId)
+                                    .child(date).child(userId).child("products")
+                                    .limitToLast(50);
 
-                            if (expenseDate.equals(date)) {
-                                if (userName.equals(selectedUser)) {
-                                    recyclerView.setVisibility(View.VISIBLE);
-                                    Query query = FirebaseDatabase.getInstance().getReference().child("Expenses").child(currentGroupId)
-                                            .child(expenseDate).child(userId).child("products")
-                                            .limitToLast(50);
+                            displayAllCurrentExpense(query);
+                        }else {
+                            recyclerView.setVisibility(View.GONE);
+                            noListLayout.setVisibility(View.VISIBLE);
 
-                                    displayAllCurrentExpense(query);
-                                }
-                            } else {
-                                recyclerView.setVisibility(View.GONE);
-                            }
                         }
                     }
+                }
+                else {
+                    noListLayout.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+
                 }
             }
 
@@ -407,6 +428,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 
             @Override
             protected void onBindViewHolder(@NonNull CurrentExpenseViewHolder holder, int position, @NonNull CurrentExpensesUserDataModel model) {
+                Log.d("asd", "onBindViewHolder: "+ model.getProduct_name());
                 holder.setProduct_name(model.getProduct_name());
                 holder.setAmount(model.getAmount());
             }

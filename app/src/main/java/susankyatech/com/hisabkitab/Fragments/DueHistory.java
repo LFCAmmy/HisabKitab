@@ -12,8 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -45,7 +48,16 @@ public class DueHistory extends Fragment implements AdapterView.OnItemSelectedLi
     TextView totalAmountTV;
     @BindView(R.id.due_history_recycler_view)
     RecyclerView recyclerView;
-
+    @BindView(R.id.mainLayout)
+    RelativeLayout mainLayout;
+    @BindView(R.id.history_text)
+    RelativeLayout historyTextLayout;
+    @BindView(R.id.progressBarLayout)
+    View progressLayout;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+    @BindView(R.id.progressTV)
+    TextView progressTextView;
 
     private Spinner spinner;
 
@@ -79,6 +91,8 @@ public class DueHistory extends Fragment implements AdapterView.OnItemSelectedLi
     }
 
     private void init() {
+        progressLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
 
         groupRef = FirebaseDatabase.getInstance().getReference().child("Group");
         historyReference = FirebaseDatabase.getInstance().getReference().child("Due_History");
@@ -100,14 +114,18 @@ public class DueHistory extends Fragment implements AdapterView.OnItemSelectedLi
                     historyReference.child(currentGroupId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                    String date = ds.getKey();
+                                    dateList.add(date);
+                                }
 
-                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                String date = ds.getKey();
-                                dateList.add(date);
+                                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                spinner.setAdapter(spinnerAdapter);
+                            }else {
+                                mainLayout.setVisibility(View.GONE);
+                                historyTextLayout.setVisibility(View.VISIBLE);
                             }
-
-                            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            spinner.setAdapter(spinnerAdapter);
                         }
 
                         @Override
@@ -127,6 +145,8 @@ public class DueHistory extends Fragment implements AdapterView.OnItemSelectedLi
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+        progressLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
         selectedDate = adapterView.getSelectedItem().toString();
         getAllHistory(selectedDate);
 
@@ -134,35 +154,29 @@ public class DueHistory extends Fragment implements AdapterView.OnItemSelectedLi
     }
 
     private void getAllHistory(final String selectedDate) {
-        Log.d(TAG, "getAllHistory: "+selectedDate);
-        Log.d(TAG, "getAllHistory: "+currentGroupId);
         groupRef.child(currentGroupId).child("members").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
+                    progressLayout.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
                     memberCount = dataSnapshot.getChildrenCount();
-                    Log.d(TAG, "onDataChange:count "+memberCount);
-                    historyReference.child(currentGroupId).addValueEventListener(new ValueEventListener() {
+                    historyReference.child(currentGroupId).child(selectedDate).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
-                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                    String date = ds.getKey();
-                                    Log.d(TAG, "onDataChange: " + date);
-                                    if (date.equals(selectedDate)){
-                                        for (DataSnapshot de : ds.getChildren()){
-                                            String userId = de.getKey();
-                                            int userAmount = Integer.valueOf(de.child("total_amount").getValue().toString());
-                                            totalExpenses += userAmount;
-                                            Log.d(TAG, "onDataChange: " + userAmount);
+                                totalExpenses = 0;
+                                for (DataSnapshot de : dataSnapshot.getChildren()){
+                                    String userId = de.getKey();
+                                    int userAmount = Integer.valueOf(de.child("total_amount").getValue().toString());
 
-                                            userExpenses.add(new DueAmount(userId, userAmount));
-                                            Log.d(TAG, "onDataChange: " + userExpenses.size());
+                                    totalExpenses = totalExpenses + userAmount;
 
-                                            Query query = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members").limitToLast(50);
-                                            getAllUserName(query);
-                                        }
-                                    }
+                                    userExpenses.add(new DueAmount(userId, userAmount));
+
+                                    Query query = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members").limitToLast(50);
+                                    getAllUserName(query);
+
                                 }
                             }
                         }

@@ -41,7 +41,7 @@ import static android.app.Activity.RESULT_OK;
 public class CreateGroup extends Fragment {
 
     private final static int GALLERY_PICK = 1;
-    private static final String string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final String string = "0123456789";
     private static final Random random = new Random();
 
     private CircleImageView groupImage;
@@ -133,11 +133,17 @@ public class CreateGroup extends Fragment {
                     SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
                     String date = currentDate.format(callForDate.getTime());
 
+                    Calendar calForTime = Calendar.getInstance();
+                    SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
+                    String time = currentTime.format(calForTime.getTime());
+
+                    final String date_time = date + " " + time;
+
                     final HashMap groupMap = new HashMap();
                     groupMap.put("group_name", name);
                     groupMap.put("max_members",max);
                     groupMap.put("group_image", downloadGroupImageUrl);
-                    groupMap.put("group_created_date", date);
+                    groupMap.put("group_created_date", date_time);
                     groupMap.put("group_token", groupToken);
                    groupReference.child(groupToken).updateChildren(groupMap).addOnCompleteListener(new OnCompleteListener() {
                        @Override

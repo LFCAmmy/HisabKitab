@@ -111,7 +111,6 @@ public class UpdateGroupMembers extends Fragment {
 
             }
         };
-
         query.addChildEventListener(childEventListener);
 
         FirebaseRecyclerOptions<UserDataModel> options = new FirebaseRecyclerOptions.Builder<UserDataModel>()

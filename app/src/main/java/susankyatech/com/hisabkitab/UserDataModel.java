@@ -2,15 +2,14 @@ package susankyatech.com.hisabkitab;
 
 public class UserDataModel {
 
-    public String user_id ,name, role, status;
+    public String user_id , name, role;
 
     public UserDataModel() {}
 
-    public UserDataModel(String user_id, String name, String role, String status) {
+    public UserDataModel(String user_id, String name, String role) {
         this.user_id = user_id;
         this.name = name;
         this.role = role;
-        this.status = status;
     }
 
     public String getUser_id() {
@@ -35,13 +34,5 @@ public class UserDataModel {
 
     public void setRole(String role) {
         this.role = role;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 }

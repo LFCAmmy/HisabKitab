@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="Due Date Since:"
+            android:text="@string/due_date_since"
             android:textSize="16sp"/>
 
         <TextView
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="23dp"
-            android:text="Total Amount:"
+            android:text="@string/total_amount"
             android:textSize="16sp"/>
 
         <TextView
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="46dp"
-            android:text="Each Amount:"
+            android:text="@string/each_amount"
             android:textSize="16sp"/>
 
     </RelativeLayout>
@@ -79,7 +79,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="27-September-2018"
+            android:text="@string/date_example"
             android:textSize="16sp"/>
 
         <TextView
@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="23dp"
-            android:text="0"
+            android:text="@string/price_amount"
             android:textSize="16sp"/>
 
         <TextView
@@ -97,7 +97,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="46dp"
-            android:text="0"
+            android:text="@string/price_amount"
             android:textSize="16sp"/>
 
     </RelativeLayout>
@@ -131,13 +131,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="Total Spent"
+            android:text="@string/total_spent"
             android:textSize="18sp" />
 
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/five"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/one"

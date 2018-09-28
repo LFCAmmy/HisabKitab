@@ -56,7 +56,7 @@
             android:layout_below="@id/group_name_tv"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
-            android:text="Group Code:"
+            android:text="@string/group_code"
             android:textSize="16sp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
@@ -67,7 +67,7 @@
             android:layout_below="@id/group_name_tv"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="35dp"
-            android:text="XFDKJDK"
+            android:text="@string/code"
             android:textSize="15sp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 

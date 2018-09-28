@@ -279,6 +279,8 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                         }else {
                             recyclerView.setVisibility(View.GONE);
                             noListLayout.setVisibility(View.VISIBLE);
+                            progressLayout.setVisibility(View.GONE);
+                            progressBar.setVisibility(View.GONE);
 
                         }
                     }
@@ -286,6 +288,8 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                 else {
                     noListLayout.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
+                    progressLayout.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
 
                 }
             }

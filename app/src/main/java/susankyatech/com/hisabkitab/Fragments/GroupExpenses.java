@@ -293,7 +293,7 @@ public class GroupExpenses extends Fragment {
 
         Calendar calForTime = Calendar.getInstance();
         SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
-        String time = currentTime.format(calForTime.getTime());
+        final String time = currentTime.format(calForTime.getTime());
 
         final String date_time = date + " " + time;
 
@@ -303,35 +303,44 @@ public class GroupExpenses extends Fragment {
                 if (dataSnapshot.exists()){
                     if (dataSnapshot.hasChild(date)){
                         Toast.makeText(getContext(), "Due has already been cleared on " + date + "!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        for (int i = 0; i < dueHistoryList.size(); i++) {
-                            HashMap historyMap = new HashMap();
-                            historyMap.put("user_id", dueHistoryList.get(i).userId);
-                            historyMap.put("name", dueHistoryList.get(i).userName);
-                            historyMap.put("total_amount", dueHistoryList.get(i).dueAmount);
-                            dueHistoryRef.child(currentGroupId).child(date_time).child(dueHistoryList.get(i).userId).updateChildren(historyMap)
-                                    .addOnCompleteListener(new OnCompleteListener() {
-                                        @Override
-                                        public void onComplete(@NonNull Task task) {
-                                            if (task.isSuccessful()) {
-                                                totalExpenseRef.child(currentGroupId).child(userId).child("total_amount").setValue(0)
-                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    }
+                } else {
+                        dueHistoryRef.child(currentGroupId).child(date).child("time").setValue(time)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isComplete()){
+                                            for (int i = 0; i < dueHistoryList.size(); i++) {
+                                                HashMap historyMap = new HashMap();
+                                                historyMap.put("user_id", dueHistoryList.get(i).userId);
+                                                historyMap.put("name", dueHistoryList.get(i).userName);
+                                                historyMap.put("total_amount", dueHistoryList.get(i).dueAmount);
+                                                dueHistoryRef.child(currentGroupId).child(date).child("members").child(dueHistoryList.get(i).userId).updateChildren(historyMap)
+                                                        .addOnCompleteListener(new OnCompleteListener() {
                                                             @Override
-                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                            public void onComplete(@NonNull Task task) {
                                                                 if (task.isSuccessful()) {
-                                                                    Fragment fragment = new GroupExpenses();
-                                                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                                                                    transaction.replace(R.id.content_main_frame, fragment);
-                                                                    transaction.addToBackStack(null);
-                                                                    transaction.commit();
+                                                                    totalExpenseRef.child(currentGroupId).child(userId).child("total_amount").setValue(0)
+                                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                                    if (task.isSuccessful()) {
+                                                                                        Fragment fragment = new GroupExpenses();
+                                                                                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                                                                        transaction.replace(R.id.content_main_frame, fragment);
+                                                                                        transaction.addToBackStack(null);
+                                                                                        transaction.commit();
+                                                                                    }
+                                                                                }
+                                                                            });
                                                                 }
                                                             }
                                                         });
                                             }
                                         }
-                                    });
-                        }
-                    }
+                                    }
+                                });
+
                 }
             }
 

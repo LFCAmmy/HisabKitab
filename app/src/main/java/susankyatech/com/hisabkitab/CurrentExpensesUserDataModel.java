@@ -3,15 +3,16 @@ package susankyatech.com.hisabkitab;
 public class CurrentExpensesUserDataModel {
 
     public int amount;
-    public String product_name, id, date;
+    public String product_name, id, date, time;
 
     public CurrentExpensesUserDataModel(){ }
 
-    public CurrentExpensesUserDataModel(int amount, String product_name, String id, String date) {
+    public CurrentExpensesUserDataModel(int amount, String product_name, String id, String date, String time) {
         this.amount = amount;
         this.product_name = product_name;
         this.id = id;
         this.date = date;
+        this.time = time;
     }
 
     public int getAmount() {
@@ -44,5 +45,13 @@ public class CurrentExpensesUserDataModel {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }

@@ -166,16 +166,21 @@ public class DueHistory extends Fragment implements AdapterView.OnItemSelectedLi
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
                                 totalExpenses = 0;
-                                for (DataSnapshot de : dataSnapshot.getChildren()){
-                                    String userId = de.getKey();
-                                    int userAmount = Integer.valueOf(de.child("total_amount").getValue().toString());
+                                String dueTime = dataSnapshot.child("time").getValue().toString();
+                                for (DataSnapshot ds : dataSnapshot.getChildren()){
+                                    for (DataSnapshot de : ds.getChildren()){
+                                        String userId = de.getKey();
+                                        Log.d("asdasdasd", "onDataChange: "+de.child("total_amount"));
+                                        int userAmount = Integer.valueOf(de.child("total_amount").getValue().toString());
 
-                                    totalExpenses = totalExpenses + userAmount;
+                                        totalExpenses = totalExpenses + userAmount;
 
-                                    userExpenses.add(new DueAmount(userId, userAmount));
+                                        userExpenses.add(new DueAmount(userId, userAmount));
 
-                                    Query query = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members").limitToLast(50);
-                                    getAllUserName(query);
+                                        Query query = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members").limitToLast(50);
+                                        getAllUserName(query);
+                                    }
+
 
                                 }
                             }

@@ -137,13 +137,12 @@ public class CreateGroup extends Fragment {
                     SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
                     String time = currentTime.format(calForTime.getTime());
 
-                    final String date_time = date + " " + time;
-
                     final HashMap groupMap = new HashMap();
                     groupMap.put("group_name", name);
                     groupMap.put("max_members",max);
                     groupMap.put("group_image", downloadGroupImageUrl);
-                    groupMap.put("group_created_date", date_time);
+                    groupMap.put("group_created_date", date);
+                    groupMap.put("group_created_time", time);
                     groupMap.put("group_token", groupToken);
                    groupReference.child(groupToken).updateChildren(groupMap).addOnCompleteListener(new OnCompleteListener() {
                        @Override

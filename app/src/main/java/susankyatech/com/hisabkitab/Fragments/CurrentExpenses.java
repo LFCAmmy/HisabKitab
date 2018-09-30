@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -71,12 +72,12 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
     private List<String> userList = new ArrayList<>();
     private HorizontalCalendar horizontalCalendar;
     private HorizontalCalendar.Builder calanderbuilder;
-    private DatabaseReference expenseReference, userListReference, totalExpenditureRef, dueHistoryRef;
+    private DatabaseReference expenseReference, groupReference, totalExpenditureRef, dueHistoryRef;
     private FirebaseRecyclerAdapter adapter;
 
     private int totalAmount;
 
-    private String currentUserId, currentUserName, currentGroupId, date, selectedUser, token, groupCreatedDate, latestDueDate;
+    private String currentUserId, currentUserName, currentGroupId, date, selectedUser, token, groupCreatedDate, latestDueDateTime;
 
     private View mView;
 
@@ -114,7 +115,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
         expenseReference = FirebaseDatabase.getInstance().getReference().child("Expenses");
-        userListReference = FirebaseDatabase.getInstance().getReference().child("Group");
+        groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
         totalExpenditureRef = FirebaseDatabase.getInstance().getReference().child("Total_Expenditures");
         dueHistoryRef = FirebaseDatabase.getInstance().getReference().child("Due_History");
 
@@ -140,10 +141,9 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
                                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                            for (DataSnapshot de : ds.getChildren()){
-                                                Log.d("TAG", "onDataChange: " + de.child("name").getValue());
+                                            for (DataSnapshot de : ds.getChildren()) {
                                                 String name = de.child("name").getValue().toString();
-                                                if (!userList.contains(name)){
+                                                if (!userList.contains(name)) {
                                                     userList.add(name);
                                                 }
                                             }
@@ -157,75 +157,9 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                         SimpleDateFormat format1 = new SimpleDateFormat("dd-MMMM-yyyy");
                                         date = format1.format(calDate);
                                         showExpenses(date);
-                                        calanderbuilder = new HorizontalCalendar.Builder(mView, R.id.calendarView);
-                                        userListReference.child(currentGroupId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                if (dataSnapshot.exists()) {
-                                                    groupCreatedDate = dataSnapshot.child("group_created_date").getValue().toString();
-                                                    latestDueDate = groupCreatedDate;
-                                                    DatabaseReference db = dueHistoryRef.child(currentGroupId);
-                                                    Query query = db.orderByKey().limitToLast(1);
-                                                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                            if (dataSnapshot.exists()){
-                                                                for (DataSnapshot ds : dataSnapshot.getChildren()){
-                                                                    latestDueDate = ds.getKey();
-                                                                    Log.d(TAG, "onDataChange: if"+latestDueDate);
-                                                                }
-                                                            } else {
 
-                                                                Log.d(TAG, "onDataChange: else"+latestDueDate);
-                                                            }
-                                                        }
+                                        Log.d(TAG, "onDataChange: 1" + currentGroupId);
 
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                                        }
-                                                    });
-
-                                                    Calendar currentDate = Calendar.getInstance();
-                                                    currentDate.add(Calendar.MONTH, 0);
-                                                    currentDate.add(Calendar.DATE, 0);
-
-                                                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy");
-                                                    Date groupDate = null;
-                                                    try {
-                                                        groupDate = sdf.parse(groupCreatedDate);
-                                                        Log.d("asd", "onDataChange: " + groupDate);
-                                                    } catch (ParseException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                    Calendar startDate = Calendar.getInstance();
-                                                    startDate.setTime(groupDate);
-                                                    startDate.add(groupDate.getMonth(), 0);
-                                                    startDate.add(groupDate.getDate(), 0);
-
-                                                    horizontalCalendar = calanderbuilder.range(startDate, currentDate)
-                                                            .datesNumberOnScreen(5)
-                                                            .defaultSelectedDate(currentDate)
-                                                            .build();
-
-                                                    horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
-                                                        @Override
-                                                        public void onDateSelected(Calendar cal, int position) {
-                                                            Date calDate = cal.getTime();
-                                                            SimpleDateFormat format1 = new SimpleDateFormat("dd-MMMM-yyyy");
-                                                            date = format1.format(calDate);
-
-                                                            showExpenses(date);
-                                                        }
-                                                    });
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                            }
-                                        });
                                     }
                                 }
 
@@ -234,6 +168,85 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 
                                 }
                             });
+
+                    groupReference.child(currentGroupId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                groupCreatedDate = dataSnapshot.child("group_created_date").getValue().toString();
+                                final String groupCreatedTime = dataSnapshot.child("group_created_time").getValue().toString();
+                                Log.d(TAG, "onDataChange: " + groupCreatedDate);
+                                DatabaseReference db = dueHistoryRef.child(currentGroupId);
+                                Query query = db.orderByKey().limitToLast(1);
+
+                                latestDueDateTime = groupCreatedDate + " " + groupCreatedTime;
+                                query.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.exists()) {
+                                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                                String latestDueDate = ds.getKey();
+                                                String latestDueTime = ds.child("time").getValue().toString();
+
+                                                latestDueDateTime = latestDueDate + " " + latestDueTime;
+
+                                                Log.d(TAG, "onDataChange: if" + latestDueDateTime);
+                                            }
+                                        } else {
+
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                                calanderbuilder = new HorizontalCalendar.Builder(mView, R.id.calendarView);
+
+                                Calendar currentDate = Calendar.getInstance();
+                                currentDate.add(Calendar.MONTH, 0);
+                                currentDate.add(Calendar.DATE, 0);
+
+                                SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy");
+                                Date groupDate = null;
+                                try {
+                                    groupDate = sdf.parse(groupCreatedDate);
+                                    Log.d("asd", "onDataChange: 1 :" + groupDate);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                Calendar startDate = Calendar.getInstance();
+                                startDate.setTime(groupDate);
+                                startDate.add(groupDate.getMonth(), 0);
+                                startDate.add(groupDate.getDate(), 0);
+
+                                horizontalCalendar = calanderbuilder.range(startDate, currentDate)
+                                        .datesNumberOnScreen(5)
+                                        .defaultSelectedDate(currentDate)
+                                        .build();
+
+                                horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
+                                    @Override
+                                    public void onDateSelected(Calendar cal, int position) {
+                                        Date calDate = cal.getTime();
+                                        SimpleDateFormat format1 = new SimpleDateFormat("dd-MMMM-yyyy");
+                                        date = format1.format(calDate);
+
+                                        showExpenses(date);
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+
                 }
             }
 
@@ -299,16 +312,9 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                     .limitToLast(50);
 
                             displayAllCurrentExpense(query);
-                        }else {
-                            recyclerView.setVisibility(View.GONE);
-                            noListLayout.setVisibility(View.VISIBLE);
-                            progressLayout.setVisibility(View.GONE);
-                            progressBar.setVisibility(View.GONE);
-
                         }
                     }
-                }
-                else {
+                } else {
                     noListLayout.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
                     progressLayout.setVisibility(View.GONE);
@@ -366,9 +372,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 
             Calendar calForTime = Calendar.getInstance();
             SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
-            String time = currentTime.format(calForTime.getTime());
-
-            final String date_time = date + " " + time;
+            final String time = currentTime.format(calForTime.getTime());
 
             HashMap expenseMap = new HashMap();
             expenseMap.put("name", currentUserName);
@@ -382,7 +386,8 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                 HashMap userExpenseMap = new HashMap();
                                 userExpenseMap.put("product_name", title);
                                 userExpenseMap.put("amount", amount);
-                                userExpenseMap.put("date", date_time);
+                                userExpenseMap.put("date", date);
+                                userExpenseMap.put("time", time);
                                 userExpenseMap.put("id", token);
                                 expenseReference.child(currentGroupId).child(date).child(currentUserId).child("products")
                                         .child(token).updateChildren(userExpenseMap)
@@ -399,6 +404,12 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 
                                                                     totalAmt = totalAmt + amount;
                                                                     totalExpenditureRef.child(currentGroupId).child(currentUserId).child("total_amount").setValue(totalAmt);
+
+                                                                    Fragment fragment = new CurrentExpenses();
+                                                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                                                    transaction.replace(R.id.content_main_frame, fragment);
+                                                                    transaction.addToBackStack(null);
+                                                                    transaction.commit();
 
                                                                     materialDialog.dismiss();
                                                                 }
@@ -466,27 +477,59 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 
                 holder.setProduct_name(model.getProduct_name());
                 holder.setAmount(model.getAmount());
-                Log.d("asd", "onDataChange: asd "+latestDueDate);
-                Log.d("asd", "onDataChange: asd "+model.getDate());
+                Log.d("qwer", "onDataChange: " + latestDueDateTime);
+                Log.d("asd", "onDataChange: asd " + model.getDate());
                 SimpleDateFormat sdtf = new SimpleDateFormat("dd-MMMM-yyyy HH:mm:ss");
                 Date productDate = null;
                 Date latestDate = null;
                 try {
-                    productDate = sdtf.parse(model.getDate());
-                    latestDate = sdtf.parse(latestDueDate);
-                    Log.d("asd", "onDataChange: asd "+latestDueDate);
-                    Log.d(TAG, "onBindViewHolder: groupDate"+ productDate);
-                    Log.d(TAG, "onBindViewHolder: latestDate"+ latestDate);
+                    productDate = sdtf.parse(model.getDate() + " " + model.getTime());
+                    latestDate = sdtf.parse(latestDueDateTime);
+                    Log.d("asd", "onDataChange: asd " + latestDueDateTime);
+                    Log.d(TAG, "onBindViewHolder: groupDate" + productDate);
+                    Log.d(TAG, "onBindViewHolder: latestDate" + latestDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
-//                if (productDate.after(latestDate)){
-//                    holder.actionLayout.setVisibility(View.VISIBLE);
-//
-//                } else if (productDate.before(latestDate)){
-//                    holder.actionLayout.setVisibility(View.GONE);
-//                }
+                if (productDate.after(latestDate)) {
+                    holder.actionLayout.setVisibility(View.VISIBLE);
+
+                } else if (productDate.before(latestDate)) {
+                    holder.actionLayout.setVisibility(View.GONE);
+                } else {
+                    holder.actionLayout.setVisibility(View.GONE);
+                }
+                holder.deleteProduct.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        totalExpenditureRef.child(currentGroupId).child(currentUserId)
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.exists()) {
+                                            totalAmount = Integer.valueOf(dataSnapshot.child("total_amount").getValue().toString());
+                                            totalAmount = totalAmount - model.getAmount();
+                                            totalExpenditureRef.child(currentGroupId).child(currentUserId).child("total_amount").setValue(totalAmount)
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()) {
+                                                                expenseReference.child(currentGroupId).child(model.getDate()).child(currentUserId)
+                                                                        .child("products").child(model.getId()).removeValue();
+                                                            }
+                                                        }
+                                                    });
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+                    }
+                });
 
                 holder.editProduct.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -511,10 +554,72 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                         materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                String editProductName = productName.getText().toString();
-                                String editProductAmount = productAmount.getText().toString();
+                                final String editProductName = productName.getText().toString();
+                                final String editProductAmount = productAmount.getText().toString();
 
-                                Toast.makeText(getContext(), ""+model.id, Toast.LENGTH_SHORT).show();
+                                totalExpenditureRef.child(currentGroupId).child(currentUserId)
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                if (dataSnapshot.exists()) {
+                                                    totalAmount = Integer.valueOf(dataSnapshot.child("total_amount").getValue().toString());
+                                                    totalAmount = totalAmount - model.getAmount();
+                                                    totalExpenditureRef.child(currentGroupId).child(currentUserId).child("total_amount").setValue(totalAmount)
+                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        HashMap productDetailMap = new HashMap();
+                                                                        productDetailMap.put("product_name", editProductName);
+                                                                        productDetailMap.put("amount", Integer.valueOf(editProductAmount));
+                                                                        expenseReference.child(currentGroupId).child(model.getDate()).child(currentUserId)
+                                                                                .child("products").child(model.getId()).updateChildren(productDetailMap)
+                                                                                .addOnCompleteListener(new OnCompleteListener() {
+                                                                                    @Override
+                                                                                    public void onComplete(@NonNull Task task) {
+                                                                                        if (task.isSuccessful()) {
+                                                                                            Log.d(TAG, "onComplete: " + totalAmount);
+                                                                                            totalAmount = totalAmount + Integer.valueOf(editProductAmount);
+                                                                                            totalExpenditureRef.child(currentGroupId).child(currentUserId).child("total_amount").setValue(totalAmount)
+                                                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                        @Override
+                                                                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                                                                            if (task.isSuccessful()) {
+                                                                                                                materialDialog.dismiss();
+//                                                                                                                Fragment fragment = new CurrentExpenses();
+//                                                                                                                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//                                                                                                                transaction.replace(R.id.content_main_frame, fragment);
+//                                                                                                                transaction.addToBackStack(null);
+//                                                                                                                transaction.commit();
+                                                                                                            }
+                                                                                                        }
+                                                                                                    });
+//                                                                                    totalExpenditureRef.child(currentGroupId).child(currentUserId).child("total_amount").setValue(editProductAmount)
+//                                                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                                                                                @Override
+//                                                                                                public void onComplete(@NonNull Task<Void> task) {
+//                                                                                                    Fragment fragment = new CurrentExpenses();
+//                                                                                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//                                                                                                    transaction.replace(R.id.content_main_frame, fragment);
+//                                                                                                    transaction.addToBackStack(null);
+//                                                                                                    transaction.commit();
+//                                                                                                }
+//                                                                                            });
+                                                                                        }
+                                                                                    }
+                                                                                });
+                                                                    }
+                                                                }
+                                                            });
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+
 
                             }
                         });

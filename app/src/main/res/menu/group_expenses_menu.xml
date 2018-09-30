@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/menu_due_history"
-        android:title="@string/due_history"
+        android:title="@string/show_history"
         app:showAsAction="ifRoom"/>
 
 </menu>

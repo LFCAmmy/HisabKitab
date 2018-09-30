@@ -35,6 +35,8 @@ public class AdminMain extends AppCompatActivity implements NavigationView.OnNav
     private CircleImageView navGroupImageDisplay;
     private TextView navGroupNameDisplay;
 
+    private SharedPreferences sp;
+
     private FirebaseAuth mAuth;
     private DatabaseReference groupReference;
 
@@ -50,7 +52,7 @@ public class AdminMain extends AppCompatActivity implements NavigationView.OnNav
 
         getSupportFragmentManager().beginTransaction().add(R.id.content_main_frame, new CurrentExpenses()).commit();
 
-        NavigationView navigationView = findViewById(R.id.admin_nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         View navHeader = navigationView.getHeaderView(0);
@@ -59,12 +61,12 @@ public class AdminMain extends AppCompatActivity implements NavigationView.OnNav
         TextView navUserNameDisplay = navHeader.findViewById(R.id.user_name_tv);
         final TextView navGroupTokenDisplay = navHeader.findViewById(R.id.group_token);
 
-        DrawerLayout drawer = findViewById(R.id.admin_drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        SharedPreferences sp = getSharedPreferences("Info", 0);
+        sp = getSharedPreferences("Info", 0);
         String userName = sp.getString("email", "none");
         navUserNameDisplay.setText(userName);
 
@@ -152,13 +154,18 @@ public class AdminMain extends AppCompatActivity implements NavigationView.OnNav
             }
             case R.id.nav_logout: {
                 mAuth.signOut();
+
+                SharedPreferences.Editor editor = sp.edit();
+                editor.clear();
+                editor.apply();
+
                 Intent intent = new Intent(AdminMain.this, Login.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }
         }
 
-        DrawerLayout drawer = findViewById(R.id.admin_drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

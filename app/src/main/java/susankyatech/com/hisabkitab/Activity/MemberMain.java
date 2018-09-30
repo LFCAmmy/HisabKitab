@@ -34,11 +34,12 @@ public class MemberMain extends AppCompatActivity implements NavigationView.OnNa
     private CircleImageView navGroupImage;
     private TextView navGroupNameTV;
 
-    private FirebaseAuth mAuth;
+    private SharedPreferences sp;
 
+    private FirebaseAuth mAuth;
     private DatabaseReference groupReference;
 
-    private String currentGroupId;
+    private String currentUserId, currentGroupId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,59 +51,52 @@ public class MemberMain extends AppCompatActivity implements NavigationView.OnNa
 
         getSupportFragmentManager().beginTransaction().add(R.id.content_main_frame, new CurrentExpenses()).commit();
 
-        NavigationView navigationView = findViewById(R.id.member_nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         View navHeader = navigationView.getHeaderView(0);
         navGroupImage = navHeader.findViewById(R.id.group_image_display);
         navGroupNameTV = navHeader.findViewById(R.id.group_name_tv);
-        TextView navUserNameDisplay = navHeader.findViewById(R.id.user_name_tv);
-        final TextView navGroupTokenDisplay = navHeader.findViewById(R.id.group_token);
+        TextView navUserEmailDisplay = navHeader.findViewById(R.id.user_email_tv);
 
-        DrawerLayout drawer = findViewById(R.id.member_drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        SharedPreferences sp = getSharedPreferences("Info", 0);
-        String userName = sp.getString("email", "none");
-        navUserNameDisplay.setText(userName);
+        sp = getSharedPreferences("Info", 0);
+        String userEmail = sp.getString("email", "none");
+        navUserEmailDisplay.setText(userEmail);
 
         mAuth = FirebaseAuth.getInstance();
-        String currentUserId = mAuth.getCurrentUser().getUid();
-
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
-        userRef.addValueEventListener(new ValueEventListener() {
+        currentUserId = mAuth.getCurrentUser().getUid();
+        DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                currentGroupId = dataSnapshot.child("group_id").getValue().toString();
-                navGroupTokenDisplay.setText(currentGroupId);
+                if (dataSnapshot.exists()) {
+                    currentGroupId = dataSnapshot.child("group_id").getValue().toString();
 
-                if (currentGroupId.equals("none")) {
-                    Intent intent = new Intent(MemberMain.this, Welcome.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                }
+                    groupReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId);
+                    groupReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                groupReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId);
-                groupReference.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                        if (dataSnapshot.exists()) {
-                            String groupImage = dataSnapshot.child("group_image").getValue().toString();
-                            String groupName = dataSnapshot.child("group_name").getValue().toString();
-                            Picasso.get().load(groupImage).into(navGroupImage);
-                            navGroupNameTV.setText(groupName);
+                            if (dataSnapshot.exists()) {
+                                String groupImage = dataSnapshot.child("group_image").getValue().toString();
+                                String groupName = dataSnapshot.child("group_name").getValue().toString();
+                                Picasso.get().load(groupImage).into(navGroupImage);
+                                navGroupNameTV.setText(groupName);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
+                        }
+                    });
+                }
             }
 
             @Override
@@ -151,14 +145,30 @@ public class MemberMain extends AppCompatActivity implements NavigationView.OnNa
             }
             case R.id.nav_logout: {
                 mAuth.signOut();
+
+                SharedPreferences.Editor editor = sp.edit();
+                editor.clear();
+                editor.apply();
+
                 Intent intent = new Intent(MemberMain.this, Login.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }
         }
 
-        DrawerLayout drawer = findViewById(R.id.member_drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (currentUserId.equals("none")) {
+            Intent intent = new Intent(MemberMain.this, Welcome.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
     }
 }

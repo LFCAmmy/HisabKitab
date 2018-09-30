@@ -33,10 +33,12 @@ public class Login extends AppCompatActivity {
     private EditText userEmailET, userPasswordET;
     private ProgressDialog loadingBar;
 
-    private FirebaseAuth mAuth;
-    private DatabaseReference userReference, memberReference;
+    private SharedPreferences sp;
 
-    private String currentUserId, currentGroupId;
+    private FirebaseAuth mAuth;
+    private DatabaseReference userReference, groupReference;
+
+    private String currentUserId, currentGroupId, role;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +68,8 @@ public class Login extends AppCompatActivity {
 
         loadingBar = new ProgressDialog(this);
 
+        sp = getSharedPreferences("Info", 0);
+
         mAuth = FirebaseAuth.getInstance();
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
@@ -85,7 +89,6 @@ public class Login extends AppCompatActivity {
                 startActivity(new Intent(Login.this, Register.class));
             }
         });
-
     }
 
     private void logInUserAccount(final String email, String password) {
@@ -99,7 +102,7 @@ public class Login extends AppCompatActivity {
             userPasswordET.requestFocus();
         } else {
             loadingBar.setTitle("Logging In");
-            loadingBar.setMessage("Please wait!");
+            loadingBar.setMessage("Please wait...");
             loadingBar.show();
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -115,29 +118,32 @@ public class Login extends AppCompatActivity {
 
                                         currentGroupId = dataSnapshot.child("group_id").getValue().toString();
 
-                                        if (!currentGroupId.equals("none")) {
-                                            memberReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members").child(currentUserId);
-                                            memberReference.addValueEventListener(new ValueEventListener() {
+                                        if (currentGroupId.equals("none")) {
+                                            Intent intent = new Intent(Login.this, Welcome.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(intent);
+                                        } else {
+                                            groupReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members")
+                                                    .child(currentUserId);
+                                            groupReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                                    if (dataSnapshot.exists()){
-                                                        String status = dataSnapshot.child("role").getValue().toString();
+                                                    if (dataSnapshot.exists()) {
+                                                        role = dataSnapshot.child("role").getValue().toString();
 
-                                                        if (status.equals("admin")) {
-                                                            SharedPreferences sp = getSharedPreferences("Info", 0);
-                                                            SharedPreferences.Editor editor = sp.edit();
+                                                        SharedPreferences.Editor editor = sp.edit();
+                                                        editor.putString("role", role);
+
+                                                        if (role.equals("admin")) {
                                                             editor.putString("email", email);
                                                             editor.apply();
 
                                                             Intent intent = new Intent(Login.this, AdminMain.class);
                                                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                             startActivity(intent);
-                                                        }
 
-                                                        if (status.equals("member")) {
-                                                            SharedPreferences sp = getSharedPreferences("Info", 0);
-                                                            SharedPreferences.Editor editor = sp.edit();
+                                                        }else if (role.equals("member")) {
                                                             editor.putString("email", email);
                                                             editor.apply();
 
@@ -154,11 +160,6 @@ public class Login extends AppCompatActivity {
                                                 }
                                             });
                                         }
-                                        else {
-                                            Intent intent = new Intent(Login.this, Welcome.class);
-                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                            startActivity(intent);
-                                        }
                                     }
 
                                     @Override
@@ -167,9 +168,9 @@ public class Login extends AppCompatActivity {
                                     }
                                 });
                             } else {
+                                loadingBar.dismiss();
                                 Toast.makeText(Login.this, "Email/Password not matched. Try again!", Toast.LENGTH_SHORT).show();
                             }
-                            loadingBar.dismiss();
                         }
                     });
         }
@@ -182,9 +183,18 @@ public class Login extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if (currentUser != null) {
-            Intent intent = new Intent(Login.this, AdminMain.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+
+            role = sp.getString("role", "none");
+
+            if (role.equals("admin")) {
+                Intent intent = new Intent(Login.this, AdminMain.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }else if (role.equals("member")) {
+                Intent intent = new Intent(Login.this, MemberMain.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
         }
     }
 }

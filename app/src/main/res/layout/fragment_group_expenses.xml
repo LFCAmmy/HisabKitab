@@ -20,7 +20,6 @@
             android:layout_gravity="center"
             android:layout_margin="5dp"
             android:background="@drawable/circular_bg"
-            android:elevation="2dp"
             android:padding="4dp"
             android:visibility="gone" />
 
@@ -107,14 +106,14 @@
         android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/one"
-        android:layout_marginTop="30dp">
+        android:layout_marginTop="60dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="@string/username"
-            android:textSize="18sp" />
+            android:textSize="17sp" />
 
     </RelativeLayout>
 
@@ -125,14 +124,14 @@
         android:layout_below="@id/one"
         android:layout_toEndOf="@id/three"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="30dp">
+        android:layout_marginTop="60dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="@string/total_spent"
-            android:textSize="18sp" />
+            android:textSize="17sp" />
 
     </RelativeLayout>
 
@@ -142,21 +141,21 @@
         android:layout_below="@id/one"
         android:layout_toEndOf="@id/four"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="30dp">
+        android:layout_marginTop="60dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="@string/due_amount"
-            android:textSize="18sp" />
+            android:textSize="17sp" />
 
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="280dp"
         android:layout_below="@id/three"/>
 
     <Button

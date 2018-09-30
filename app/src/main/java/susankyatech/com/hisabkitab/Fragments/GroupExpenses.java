@@ -295,16 +295,13 @@ public class GroupExpenses extends Fragment {
         SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
         final String time = currentTime.format(calForTime.getTime());
 
-        final String date_time = date + " " + time;
-
         dueHistoryRef.child(currentGroupId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
                     if (dataSnapshot.hasChild(date)){
                         Toast.makeText(getContext(), "Due has already been cleared on " + date + "!", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
+                    } else {
                         dueHistoryRef.child(currentGroupId).child(date).child("time").setValue(time)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
@@ -341,6 +338,7 @@ public class GroupExpenses extends Fragment {
                                     }
                                 });
 
+                    }
                 }
             }
 

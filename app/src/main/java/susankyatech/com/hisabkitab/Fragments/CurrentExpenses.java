@@ -275,7 +275,6 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                     @Override
                     public void onClick(View view) {
                         addExpenseToDB(materialDialog);
-//                        materialDialog.dismiss();
                     }
                 });
                 materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {

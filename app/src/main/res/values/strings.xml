@@ -28,6 +28,7 @@
     <string name="group_expenses">Group Expenses</string>
     <string name="manage_group">Manage Group</string>
     <string name="logout">Logout</string>
+    <string name="group_qr_code">Group QR Code</string>
     <string name="about">About</string>
 
     <!-- Current CurrentExpenses -->

@@ -38,7 +38,16 @@
                 android:padding="12dp"
                 android:gravity="center"
                 android:hint="@string/enter_group_code"
-                android:background="@drawable/text_layout" />
+                android:background="@drawable/text_layout"/>
+
+            <ImageButton
+                android:id="@+id/qr_code_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/group_code_et"
+                android:layout_marginStart="13dp"
+                android:layout_marginTop="4dp"
+                android:src="@drawable/ic_qr_code"/>
 
             <Button
                 android:id="@+id/join_group_btn"

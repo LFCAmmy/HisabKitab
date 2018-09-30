@@ -194,6 +194,10 @@ public class Login extends AppCompatActivity {
                 Intent intent = new Intent(Login.this, MemberMain.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
+            }else {
+                Intent intent = new Intent(Login.this, Welcome.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
             }
         }
     }

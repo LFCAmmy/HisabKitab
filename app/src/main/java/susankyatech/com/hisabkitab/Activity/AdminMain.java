@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,6 +26,7 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import susankyatech.com.hisabkitab.Fragments.AboutFragment;
+import susankyatech.com.hisabkitab.Fragments.AdminQRCode;
 import susankyatech.com.hisabkitab.Fragments.CurrentExpenses;
 import susankyatech.com.hisabkitab.Fragments.GroupExpenses;
 import susankyatech.com.hisabkitab.Fragments.ManageGroup;
@@ -40,7 +42,7 @@ public class AdminMain extends AppCompatActivity implements NavigationView.OnNav
     private FirebaseAuth mAuth;
     private DatabaseReference groupReference;
 
-    private String currentGroupId;
+    public String currentGroupId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,12 +92,12 @@ public class AdminMain extends AppCompatActivity implements NavigationView.OnNav
                 groupReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()){
-                                String groupImage = dataSnapshot.child("group_image").getValue().toString();
-                                String groupName = dataSnapshot.child("group_name").getValue().toString();
-                                Picasso.get().load(groupImage).into(navGroupImageDisplay);
-                                navGroupNameDisplay.setText(groupName);
-                            }
+                        if (dataSnapshot.exists()) {
+                            String groupImage = dataSnapshot.child("group_image").getValue().toString();
+                            String groupName = dataSnapshot.child("group_name").getValue().toString();
+                            Picasso.get().load(groupImage).into(navGroupImageDisplay);
+                            navGroupNameDisplay.setText(groupName);
+                        }
                     }
 
                     @Override
@@ -150,6 +152,10 @@ public class AdminMain extends AppCompatActivity implements NavigationView.OnNav
             }
             case R.id.nav_manage_group: {
                 getSupportFragmentManager().beginTransaction().replace(R.id.content_main_frame, new ManageGroup()).commit();
+                break;
+            }
+            case R.id.nav_qr_code: {
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_main_frame, new AdminQRCode()).commit();
                 break;
             }
             case R.id.nav_logout: {

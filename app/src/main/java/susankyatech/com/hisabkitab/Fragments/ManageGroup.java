@@ -3,6 +3,7 @@ package susankyatech.com.hisabkitab.Fragments;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -31,6 +32,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+
+import net.glxn.qrgen.android.QRCode;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import susankyatech.com.hisabkitab.R;
@@ -103,6 +106,7 @@ public class ManageGroup extends Fragment {
                             String currentGroupImageUrl = dataSnapshot.child("group_image").getValue().toString();
                             displayGroupNameTV.setText(currentGroupName);
                             Picasso.get().load(currentGroupImageUrl).placeholder(R.drawable.ic_photo_camera).into(displayGroupImage);
+                            generateQRCode();
                         }
 
                     }
@@ -315,5 +319,9 @@ public class ManageGroup extends Fragment {
                 }
             });
         }
+    }
+
+    private void generateQRCode() {
+        Bitmap bitmap = QRCode.from(currentGroupId).bitmap();
     }
 }

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ public class GettingStarted extends Fragment {
 
     private EditText groupCodeET;
     private Button joinGroupBtn;
+    private ImageButton qrCodeBtn;
     private TextView createGroupTV;
 
     private DatabaseReference userReference, groupReference, totalExpenditureRef;
@@ -48,6 +50,7 @@ public class GettingStarted extends Fragment {
 
         groupCodeET = view.findViewById(R.id.group_code_et);
         joinGroupBtn = view.findViewById(R.id.join_group_btn);
+        qrCodeBtn = view.findViewById(R.id.qr_code_btn);
         createGroupTV = view.findViewById(R.id.create_group_tv);
 
         init();
@@ -147,6 +150,17 @@ public class GettingStarted extends Fragment {
                         }
                     });
                 }
+            }
+        });
+
+        qrCodeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new QRCode();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.content_welcome_frame, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
 

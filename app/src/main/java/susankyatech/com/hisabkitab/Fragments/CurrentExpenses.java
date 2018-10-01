@@ -296,29 +296,37 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 if (dataSnapshot.exists()) {
+
                     progressLayout.setVisibility(View.GONE);
                     progressBar.setVisibility(View.GONE);
 
-                    for (DataSnapshot de : dataSnapshot.getChildren()) {
+                    expenseReference.child(currentGroupId).child(date).child(selectedUser)
+                            .addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()){
+                                        String userId = dataSnapshot.getKey();
+                                        String userName = dataSnapshot.child("name").getValue().toString();
+                                        recyclerView.setVisibility(View.VISIBLE);
+                                        Query query = FirebaseDatabase.getInstance().getReference().child("Expenses").child(currentGroupId)
+                                                .child(date).child(userId).child("products")
+                                                .limitToLast(50);
 
-                        String userId = de.getKey();
-                        String userName = de.child("name").getValue().toString();
-                        if (userName.equals(selectedUser)) {
-                            noListLayout.setVisibility(View.GONE);
-                            recyclerView.setVisibility(View.VISIBLE);
-                            Query query = FirebaseDatabase.getInstance().getReference().child("Expenses").child(currentGroupId)
-                                    .child(date).child(userId).child("products")
-                                    .limitToLast(50);
+                                        displayAllCurrentExpense(query);
+                                    }else {
+                                        noListLayout.setVisibility(View.VISIBLE);
+                                        recyclerView.setVisibility(View.GONE);
+                                        progressLayout.setVisibility(View.GONE);
+                                        progressBar.setVisibility(View.GONE);
+                                        Log.d(TAG, "onDataChange: else" + "asd" );
+                                    }
+                                }
 
-                            displayAllCurrentExpense(query);
-                        }
-                    }
-                } else {
-                    noListLayout.setVisibility(View.VISIBLE);
-                    recyclerView.setVisibility(View.GONE);
-                    progressLayout.setVisibility(View.GONE);
-                    progressBar.setVisibility(View.GONE);
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                                }
+                            });
                 }
             }
 

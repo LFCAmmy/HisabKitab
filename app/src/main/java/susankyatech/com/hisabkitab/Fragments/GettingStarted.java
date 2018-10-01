@@ -68,8 +68,11 @@ public class GettingStarted extends Fragment {
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    userName = dataSnapshot.child("user_name").getValue().toString();
+                }
 
-                userName = dataSnapshot.child("user_name").getValue().toString();
+
             }
 
             @Override

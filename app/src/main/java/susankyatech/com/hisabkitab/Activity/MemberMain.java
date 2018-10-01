@@ -32,7 +32,7 @@ import susankyatech.com.hisabkitab.R;
 public class MemberMain extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private CircleImageView navGroupImage;
-    private TextView navGroupNameTV;
+    private TextView navGroupNameTV, navUserEmailDisplay;
 
     private SharedPreferences sp;
 
@@ -57,16 +57,14 @@ public class MemberMain extends AppCompatActivity implements NavigationView.OnNa
         View navHeader = navigationView.getHeaderView(0);
         navGroupImage = navHeader.findViewById(R.id.group_image_display);
         navGroupNameTV = navHeader.findViewById(R.id.group_name_tv);
-        TextView navUserEmailDisplay = navHeader.findViewById(R.id.user_email_tv);
+        navUserEmailDisplay = navHeader.findViewById(R.id.user_email_tv);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        sp = getSharedPreferences("Info", 0);
-        String userEmail = sp.getString("email", "none");
-        navUserEmailDisplay.setText(userEmail);
+        sp = getSharedPreferences("UserInfo", 0);
 
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
@@ -77,6 +75,14 @@ public class MemberMain extends AppCompatActivity implements NavigationView.OnNa
 
                 if (dataSnapshot.exists()) {
                     currentGroupId = dataSnapshot.child("group_id").getValue().toString();
+                    String userEmail = dataSnapshot.child("user_email").getValue().toString();
+                    navUserEmailDisplay.setText(userEmail);
+
+                    if (currentGroupId.equals("none")) {
+                        Intent intent = new Intent(MemberMain.this, Welcome.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    }
 
                     groupReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId);
                     groupReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -161,14 +167,4 @@ public class MemberMain extends AppCompatActivity implements NavigationView.OnNa
         return true;
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        if (currentUserId.equals("none")) {
-            Intent intent = new Intent(MemberMain.this, Welcome.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        }
-    }
 }

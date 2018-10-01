@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -146,49 +147,81 @@ public class UpdateGroupMembers extends Fragment {
                             @Override
                             public void onClick(View view) {
 
-                                final DatabaseReference expendituresReference = FirebaseDatabase.getInstance().getReference().child("Total_Expenditures")
-                                        .child(currentGroupId).child(model.getUser_id());
+                                final DatabaseReference groupMemberReference = FirebaseDatabase.getInstance().getReference().child(currentGroupId).child("members")
+                                        .child(model.getUser_id());
+                                groupMemberReference.addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                expendituresReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                if (dataSnapshot.exists()) {
 
-                                        String amount = dataSnapshot.child("total_amount").getValue().toString();
+                                                    String role = dataSnapshot.child("role").getValue().toString();
 
-                                        if (amount.equals("0")) {
+                                                    Log.d("Intel", "" + role);
 
-                                            expendituresReference.removeValue();
+                                                    if (role.equals("member")) {
 
-                                            DatabaseReference groupMemberDeleteReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId)
-                                                    .child("members").child(model.getUser_id());
+                                                        final DatabaseReference expendituresReference = FirebaseDatabase.getInstance().getReference()
+                                                                .child("Total_Expenditures").child(currentGroupId).child(model.getUser_id());
 
-                                            groupMemberDeleteReference.removeValue();
+                                                        expendituresReference.addValueEventListener(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users").child(model.getUser_id())
-                                                    .child("group_id");
+                                                                if (dataSnapshot.exists()) {
 
-                                            reference.setValue("none").addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                    String amount = dataSnapshot.child("total_amount").getValue().toString();
 
-                                                    if (task.isSuccessful()) {
-                                                        Toast.makeText(getActivity(), "Group member deleted successfully!", Toast.LENGTH_SHORT).show();
+                                                                    if (amount.equals("0")) {
+
+                                                                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users")
+                                                                                .child(model.getUser_id());
+                                                                        reference.child("group_id").setValue("none").addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                            @Override
+                                                                            public void onComplete(@NonNull Task<Void> task) {
+
+                                                                                if (task.isSuccessful()) {
+
+                                                                                    expendituresReference.removeValue();
+
+                                                                                    groupMemberReference.removeValue();
+
+                                                                                    dialog.dismiss();
+
+                                                                                    Toast.makeText(getActivity(), "Group member deleted successfully!",
+                                                                                            Toast.LENGTH_SHORT).show();
+
+                                                                                }
+                                                                            }
+                                                                        });
+
+                                                                    }else {
+                                                                        dialog.dismiss();
+                                                                        Toast.makeText(getActivity(), model.getUser_id() + "'s" + " due must be cleared before you can "
+                                                                                + "delete the account from the group!", Toast.LENGTH_LONG).show();
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                            }
+                                                        });
+
+                                                    }else {
                                                         dialog.dismiss();
+                                                        Toast.makeText(getActivity(), "You cannot delete yourself because your are the admin of this group!",
+                                                                Toast.LENGTH_LONG).show();
                                                     }
                                                 }
-                                            });
-                                        } else {
-                                            Toast.makeText(getActivity(), model.getName() + "'s" + " due must be cleared before you can remove the account from the " +
-                                                            "group!", Toast.LENGTH_LONG).show();
-                                            dialog.dismiss();
-                                        }
-                                    }
+                                            }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                    }
-                                });
+                                            }
+                                        });
                             }
                         });
 

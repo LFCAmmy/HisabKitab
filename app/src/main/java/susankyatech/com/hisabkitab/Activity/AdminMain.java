@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,63 +34,70 @@ import susankyatech.com.hisabkitab.R;
 public class AdminMain extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private CircleImageView navGroupImageDisplay;
-    private TextView navGroupNameDisplay;
+    private TextView navGroupNameDisplay, navUserEmailDisplay, navGroupCodeDisplay;
 
     private SharedPreferences sp;
 
     private FirebaseAuth mAuth;
-    private DatabaseReference groupReference;
+    private DatabaseReference userReference, groupReference;
 
-    public String currentGroupId;
+    public String currentUserId, currentGroupId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_activity_main);
 
+        getSupportFragmentManager().beginTransaction().add(R.id.content_main_frame, new CurrentExpenses()).commit();
+
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        getSupportFragmentManager().beginTransaction().add(R.id.content_main_frame, new CurrentExpenses()).commit();
-
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        View navHeader = navigationView.getHeaderView(0);
-        navGroupImageDisplay = navHeader.findViewById(R.id.group_image_display);
-        navGroupNameDisplay = navHeader.findViewById(R.id.group_name_tv);
-        TextView navUserNameDisplay = navHeader.findViewById(R.id.user_name_tv);
-        final TextView navGroupTokenDisplay = navHeader.findViewById(R.id.group_token);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        sp = getSharedPreferences("Info", 0);
-        String userName = sp.getString("email", "none");
-        navUserNameDisplay.setText(userName);
+        View navHeader = navigationView.getHeaderView(0);
+        navGroupImageDisplay = navHeader.findViewById(R.id.group_image_display);
+        navGroupNameDisplay = navHeader.findViewById(R.id.group_name_tv);
+        navUserEmailDisplay = navHeader.findViewById(R.id.user_email_tv);
+        navGroupCodeDisplay = navHeader.findViewById(R.id.group_code_tv);
+
+        sp = getSharedPreferences("UserInfo", 0);
 
         mAuth = FirebaseAuth.getInstance();
-        String currentUserId = mAuth.getCurrentUser().getUid();
-        DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+        currentUserId = mAuth.getCurrentUser().getUid();
+        userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+
+        init();
+    }
+
+    private void init() {
+
         userReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 currentGroupId = dataSnapshot.child("group_id").getValue().toString();
-                navGroupTokenDisplay.setText(currentGroupId);
+                String userEmail = dataSnapshot.child("user_email").getValue().toString();
+                navGroupCodeDisplay.setText(currentGroupId);
+                navUserEmailDisplay.setText(userEmail);
 
-                if (currentGroupId.equals("none")) {
-                    Intent intent = new Intent(AdminMain.this, Welcome.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                }
+//                if (currentGroupId.equals("none")) {
+//                    Intent intent = new Intent(AdminMain.this, Welcome.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                    startActivity(intent);
+//                }
 
                 groupReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId);
                 groupReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                         if (dataSnapshot.exists()) {
                             String groupImage = dataSnapshot.child("group_image").getValue().toString();
                             String groupName = dataSnapshot.child("group_name").getValue().toString();
@@ -160,7 +166,6 @@ public class AdminMain extends AppCompatActivity implements NavigationView.OnNav
             }
             case R.id.nav_logout: {
                 mAuth.signOut();
-
                 SharedPreferences.Editor editor = sp.edit();
                 editor.clear();
                 editor.apply();

@@ -34,7 +34,7 @@ import susankyatech.com.hisabkitab.R;
 public class AdminMain extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private CircleImageView navGroupImageDisplay;
-    private TextView navGroupNameDisplay, navUserEmailDisplay, navGroupCodeDisplay;
+    private TextView navUserEmailDisplayTV, navGroupNameDisplayTV, navGroupCodeDisplayTV;
 
     private SharedPreferences sp;
 
@@ -63,9 +63,9 @@ public class AdminMain extends AppCompatActivity implements NavigationView.OnNav
 
         View navHeader = navigationView.getHeaderView(0);
         navGroupImageDisplay = navHeader.findViewById(R.id.group_image_display);
-        navGroupNameDisplay = navHeader.findViewById(R.id.group_name_tv);
-        navUserEmailDisplay = navHeader.findViewById(R.id.user_email_tv);
-        navGroupCodeDisplay = navHeader.findViewById(R.id.group_code_tv);
+        navUserEmailDisplayTV = navHeader.findViewById(R.id.user_email_tv);
+        navGroupNameDisplayTV = navHeader.findViewById(R.id.group_name_tv);
+        navGroupCodeDisplayTV = navHeader.findViewById(R.id.group_code_tv);
 
         sp = getSharedPreferences("UserInfo", 0);
 
@@ -82,34 +82,31 @@ public class AdminMain extends AppCompatActivity implements NavigationView.OnNav
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                currentGroupId = dataSnapshot.child("group_id").getValue().toString();
-                String userEmail = dataSnapshot.child("user_email").getValue().toString();
-                navGroupCodeDisplay.setText(currentGroupId);
-                navUserEmailDisplay.setText(userEmail);
+                if (dataSnapshot.exists()) {
+                    currentGroupId = dataSnapshot.child("group_id").getValue().toString();
+                    navGroupCodeDisplayTV.setText(currentGroupId);
 
-//                if (currentGroupId.equals("none")) {
-//                    Intent intent = new Intent(AdminMain.this, Welcome.class);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                    startActivity(intent);
-//                }
+                    String userEmail = dataSnapshot.child("user_email").getValue().toString();
+                    navUserEmailDisplayTV.setText(userEmail);
 
-                groupReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId);
-                groupReference.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    groupReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId);
+                    groupReference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        if (dataSnapshot.exists()) {
-                            String groupImage = dataSnapshot.child("group_image").getValue().toString();
-                            String groupName = dataSnapshot.child("group_name").getValue().toString();
-                            Picasso.get().load(groupImage).into(navGroupImageDisplay);
-                            navGroupNameDisplay.setText(groupName);
+                            if (dataSnapshot.exists()) {
+                                String groupImage = dataSnapshot.child("group_image").getValue().toString();
+                                String groupName = dataSnapshot.child("group_name").getValue().toString();
+                                Picasso.get().load(groupImage).into(navGroupImageDisplay);
+                                navGroupNameDisplayTV.setText(groupName);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                    }
-                });
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
+                }
             }
 
             @Override

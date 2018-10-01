@@ -585,11 +585,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                                                                                         public void onComplete(@NonNull Task<Void> task) {
                                                                                                             if (task.isSuccessful()) {
                                                                                                                 materialDialog.dismiss();
-//                                                                                                                Fragment fragment = new CurrentExpenses();
-//                                                                                                                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//                                                                                                                transaction.replace(R.id.content_main_frame, fragment);
-//                                                                                                                transaction.addToBackStack(null);
-//                                                                                                                transaction.commit();
+//
                                                                                                             }
                                                                                                         }
                                                                                                     });

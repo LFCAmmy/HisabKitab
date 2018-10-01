@@ -161,7 +161,8 @@ public class GroupExpenses extends Fragment {
                                                                 userExpenses.add(new DueAmount(userId, userAmount));
                                                                 Log.d(TAG, "onDataChange: "+userExpenses.size());
 
-                                                                Query query = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members").limitToLast(50);
+                                                                Query query = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId)
+                                                                        .child("members").limitToLast(50);
                                                                 getAllUserName(query);
                                                             }
                                                         }

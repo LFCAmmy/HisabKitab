@@ -26,7 +26,7 @@ import susankyatech.com.hisabkitab.R;
 
 public class Register extends AppCompatActivity {
 
-    private EditText newUsernameET, newEmailET, newPasswordET;
+    private EditText usernameET, emailET, passwordET;
     private ProgressDialog loadingBar;
 
     private FirebaseAuth mAuth;
@@ -44,22 +44,22 @@ public class Register extends AppCompatActivity {
         loadingBar = new ProgressDialog(this);
 
         TextView appName = findViewById(R.id.app_name);
-        newUsernameET = findViewById(R.id.new_username_et);
-        newEmailET = findViewById(R.id.new_email_et);
-        newPasswordET = findViewById(R.id.new_password_et);
+        usernameET = findViewById(R.id.username_et);
+        emailET = findViewById(R.id.email_et);
+        passwordET = findViewById(R.id.password_et);
         Button btnRegister = findViewById(R.id.register_btn);
 
         Animation animation = AnimationUtils.loadAnimation(this,R.anim.from_left);
         appName.setAnimation(animation);
 
         animation = AnimationUtils.loadAnimation(this,R.anim.from_left);
-        newUsernameET.setAnimation(animation);
+        usernameET.setAnimation(animation);
 
         animation = AnimationUtils.loadAnimation(this,R.anim.from_left);
-        newEmailET.setAnimation(animation);
+        emailET.setAnimation(animation);
 
         animation = AnimationUtils.loadAnimation(this,R.anim.from_left);
-        newPasswordET.setAnimation(animation);
+        passwordET.setAnimation(animation);
 
         animation = AnimationUtils.loadAnimation(this,R.anim.from_left);
         btnRegister.setAnimation(animation);
@@ -70,31 +70,31 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String name = newUsernameET.getText().toString();
-                String email = newEmailET.getText().toString();
-                String password = newPasswordET.getText().toString();
+                String name = usernameET.getText().toString();
+                String email = emailET.getText().toString();
+                String password = passwordET.getText().toString();
 
-                RegisterAccount(name, email, password);
+                registerAccount(name, email, password);
             }
         });
     }
 
-    private void RegisterAccount(final String name, String email, String password) {
+    private void registerAccount(final String name, final String email, String password) {
 
         if (TextUtils.isEmpty(name)) {
-            newUsernameET.setError("Please enter your name!");
-            newUsernameET.requestFocus();
+            usernameET.setError("Please enter your name!");
+            usernameET.requestFocus();
         }
         else if (TextUtils.isEmpty(email)) {
-            newEmailET.setError("Please enter your email!");
-            newEmailET.requestFocus();
+            emailET.setError("Please enter your email!");
+            emailET.requestFocus();
         }
         else if (TextUtils.isEmpty(password)) {
-            newPasswordET.setError("Please enter your password!");
-            newPasswordET.requestFocus();
+            passwordET.setError("Please enter your password!");
+            passwordET.requestFocus();
         } else {
             loadingBar.setTitle("Creating new account");
-            loadingBar.setMessage("Please wait while we are creating an account for you!");
+            loadingBar.setMessage("Please wait while we are creating a new account for you!");
             loadingBar.setCanceledOnTouchOutside(false);
             loadingBar.show();
             mAuth.createUserWithEmailAndPassword(email, password)
@@ -106,7 +106,8 @@ public class Register extends AppCompatActivity {
                                 String currentUserId = mAuth.getCurrentUser().getUid();
                                 userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
                                 userReference.child("user_name").setValue(name);
-                                userReference.child("group_id").setValue("none")
+                                userReference.child("group_id").setValue("none");
+                                userReference.child("user_email").setValue(email)
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {

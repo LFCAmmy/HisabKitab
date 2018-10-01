@@ -17,17 +17,16 @@
             android:layout_height="90dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_marginStart="30dp"
             android:src="@drawable/ic_launcher_background"/>
 
         <TextView
-            android:id="@+id/user_name_tv"
+            android:id="@+id/user_email_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/group_image_display"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:text="@string/username"
+            android:text="@string/name"
             android:textSize="15sp"
             android:textColor="@android:color/white"/>
 
@@ -54,13 +53,13 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/group_name_tv"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="12dp"
             android:text="@string/group_code"
             android:textSize="16sp"
             android:textColor="@android:color/white"/>
 
         <TextView
-            android:id="@+id/group_token"
+            android:id="@+id/group_code_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/group_name_tv"

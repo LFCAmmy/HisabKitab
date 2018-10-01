@@ -2,7 +2,6 @@ package susankyatech.com.hisabkitab.Fragments;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -45,7 +44,7 @@ public class ManageGroup extends Fragment {
     private static final int GALLERY_PICK = 1;
 
     private CircleImageView displayGroupImage;
-    private TextView displayUserNameTV, displayGroupNameTV;
+    private TextView displayUserNameTV, displayGroupNameTV, displayUserEmailTV;
     private EditText changeGroupNameET, changeMaxGroupMembersET;
     private Button changeGroupNameBtn, changeGroupImageBtn, changeGroupMaxMembersBtn, updateGroupMembersBtn;
     private ProgressDialog loadingBar;
@@ -64,7 +63,7 @@ public class ManageGroup extends Fragment {
         displayGroupImage = view.findViewById(R.id.display_group_image);
         displayGroupNameTV = view.findViewById(R.id.group_name_tv);
         displayUserNameTV = view.findViewById(R.id.user_name_tv);
-        TextView displayUserEmailTV = view.findViewById(R.id.user_email_tv);
+        displayUserEmailTV = view.findViewById(R.id.user_email_tv);
         changeGroupNameBtn = view.findViewById(R.id.change_group_name_btn);
         changeGroupImageBtn = view.findViewById(R.id.change_group_image_btn);
         changeGroupMaxMembersBtn = view.findViewById(R.id.change_max_members_btn);
@@ -77,10 +76,6 @@ public class ManageGroup extends Fragment {
         userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
         groupImageReference = FirebaseStorage.getInstance().getReference().child("Group Images");
         groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
-
-        SharedPreferences sp = getActivity().getSharedPreferences("Info", 0);
-        String userName = sp.getString("email", "none");
-        displayUserEmailTV.setText(userName);
 
         init();
 
@@ -95,7 +90,9 @@ public class ManageGroup extends Fragment {
 
                 currentGroupId = dataSnapshot.child("group_id").getValue().toString();
                 currentUserName = dataSnapshot.child("user_name").getValue().toString();
+                String userEmail = dataSnapshot.child("user_email").getValue().toString();
                 displayUserNameTV.setText(currentUserName);
+                displayUserEmailTV.setText(userEmail);
 
                 groupReference = groupReference.child(currentGroupId);
                 groupReference.addValueEventListener(new ValueEventListener() {

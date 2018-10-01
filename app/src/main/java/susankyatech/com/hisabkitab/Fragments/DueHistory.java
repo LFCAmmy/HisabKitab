@@ -125,6 +125,9 @@ public class DueHistory extends Fragment implements AdapterView.OnItemSelectedLi
                             }else {
                                 mainLayout.setVisibility(View.GONE);
                                 historyTextLayout.setVisibility(View.VISIBLE);
+                                progressLayout.setVisibility(View.GONE);
+                                progressBar.setVisibility(View.GONE);
+
                             }
                         }
 

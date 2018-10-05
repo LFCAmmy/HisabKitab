@@ -3,6 +3,8 @@ package susankyatech.com.hisabkitab.Fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +38,7 @@ import susankyatech.com.hisabkitab.UserDataModel;
 public class UpdateGroupMembers extends Fragment {
 
     private RecyclerView recyclerView;
+    private CoordinatorLayout coordinatorLayout;
 
     private DatabaseReference groupReference;
 
@@ -47,6 +51,7 @@ public class UpdateGroupMembers extends Fragment {
         View view = inflater.inflate(R.layout.fragment_update_group_members, container, false);
 
         recyclerView = view.findViewById(R.id.recycler_view);
+        coordinatorLayout = view.findViewById(R.id.coordinatorLayout);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -59,20 +64,25 @@ public class UpdateGroupMembers extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                currentGroupId = dataSnapshot.child("group_id").getValue().toString();
-                groupReference.child(currentGroupId).child("members").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    currentGroupId = dataSnapshot.child("group_id").getValue().toString();
 
-                        Query query = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members").limitToLast(50);
-                        getAllUserName(query);
-                    }
+                    groupReference.child(currentGroupId).child("members").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                            if (dataSnapshot.exists()) {
+                                Query query = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members").limitToLast(50);
+                                getAllUserName(query);
+                            }
+                        }
 
-                    }
-                });
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
             }
 
             @Override
@@ -114,8 +124,7 @@ public class UpdateGroupMembers extends Fragment {
         };
         query.addChildEventListener(childEventListener);
 
-        FirebaseRecyclerOptions<UserDataModel> options = new FirebaseRecyclerOptions.Builder<UserDataModel>()
-                .setQuery(query, UserDataModel.class).build();
+        FirebaseRecyclerOptions<UserDataModel> options = new FirebaseRecyclerOptions.Builder<UserDataModel>().setQuery(query, UserDataModel.class).build();
 
         FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<UserDataModel, UpdateGroupMembersViewHolder>(options) {
 
@@ -127,15 +136,24 @@ public class UpdateGroupMembers extends Fragment {
 
             @Override
             protected void onBindViewHolder(@NonNull UpdateGroupMembersViewHolder holder, int position, @NonNull final UserDataModel model) {
+
                 holder.setName(model.getName());
+
+//                String user_role =  model.getRole();
+//
+//                if (user_role.equals("admin")){
+//                    holder.itemView.setVisibility(View.GONE);
+//               }else {
+//                    holder.itemView.setVisibility(View.VISIBLE);
+//               }
 
                 holder.deleteMemberBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
                         final MaterialDialog dialog = new MaterialDialog.Builder(getContext())
-                                .title("Warning!")
-                                .customView(R.layout.delete_account_dialog_layout, true)
+                                .title("Warning")
+                                .customView(R.layout.delete_member_dialog_layout, true)
                                 .negativeText("Cancel")
                                 .positiveText("Remove")
                                 .negativeColor(getResources().getColor(R.color.green))
@@ -145,11 +163,11 @@ public class UpdateGroupMembers extends Fragment {
 
                         dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void onClick(View view) {
+                            public void onClick(final View view) {
 
-                                final DatabaseReference groupMemberReference = FirebaseDatabase.getInstance().getReference().child(currentGroupId).child("members")
-                                        .child(model.getUser_id());
-                                groupMemberReference.addValueEventListener(new ValueEventListener() {
+                                final DatabaseReference groupMemberReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId)
+                                        .child("members").child(model.getUser_id());
+                                groupMemberReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -157,14 +175,12 @@ public class UpdateGroupMembers extends Fragment {
 
                                                     String role = dataSnapshot.child("role").getValue().toString();
 
-                                                    Log.d("Intel", "" + role);
-
                                                     if (role.equals("member")) {
 
                                                         final DatabaseReference expendituresReference = FirebaseDatabase.getInstance().getReference()
                                                                 .child("Total_Expenditures").child(currentGroupId).child(model.getUser_id());
 
-                                                        expendituresReference.addValueEventListener(new ValueEventListener() {
+                                                        expendituresReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                                             @Override
                                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -188,17 +204,17 @@ public class UpdateGroupMembers extends Fragment {
 
                                                                                     dialog.dismiss();
 
-                                                                                    Toast.makeText(getActivity(), "Group member deleted successfully!",
-                                                                                            Toast.LENGTH_SHORT).show();
-
+                                                                                    Snackbar.make(coordinatorLayout, "Group member deleted successfully!",
+                                                                                            Snackbar.LENGTH_LONG).show();
                                                                                 }
                                                                             }
                                                                         });
 
                                                                     }else {
                                                                         dialog.dismiss();
-                                                                        Toast.makeText(getActivity(), model.getUser_id() + "'s" + " due must be cleared before you can "
-                                                                                + "delete the account from the group!", Toast.LENGTH_LONG).show();
+
+                                                                        Snackbar.make(coordinatorLayout, model.getName() + "'s" + " due must be cleared before " +
+                                                                                "you can remove him/her from the group!", Snackbar.LENGTH_LONG).show();
                                                                     }
                                                                 }
                                                             }
@@ -211,8 +227,8 @@ public class UpdateGroupMembers extends Fragment {
 
                                                     }else {
                                                         dialog.dismiss();
-                                                        Toast.makeText(getActivity(), "You cannot delete yourself because your are the admin of this group!",
-                                                                Toast.LENGTH_LONG).show();
+                                                        Snackbar.make(coordinatorLayout, "You cannot delete yourself because your are the admin of this group!",
+                                                                Snackbar.LENGTH_LONG).show();
                                                     }
                                                 }
                                             }
@@ -244,6 +260,7 @@ public class UpdateGroupMembers extends Fragment {
 
         Button deleteMemberBtn;
         View mView;
+        RelativeLayout mainLayout;
 
         public UpdateGroupMembersViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -251,7 +268,7 @@ public class UpdateGroupMembers extends Fragment {
             mView = itemView;
 
             deleteMemberBtn = mView.findViewById(R.id.delete_member_btn);
-            deleteMemberBtn.setText(R.string.remove);
+            mainLayout = mView.findViewById(R.id.main_layout);
         }
 
         public void setName(String name) {

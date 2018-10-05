@@ -1,61 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Fragments.DueHistory">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/progressBarLayout"
+    <RelativeLayout
+        android:id="@+id/progress_bar_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:visibility="gone">
 
         <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:progressBarStyle"
+            android:id="@+id/progress_bar"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:background="@drawable/circular_bg"
-            android:elevation="2dp"
-            android:padding="4dp"
-            android:visibility="gone" />
+            android:background="@drawable/ic_progress_bar"/>
 
-        <TextView
-            android:id="@+id/progressTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="0dp"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
-
-    </LinearLayout>
+    </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/history_text"
+        android:id="@+id/display_no_history_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
+            android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="Sorry! No Due History Found" />
+            android:text="@string/no_history_message"/>
 
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/mainLayout"
+        android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -91,7 +72,6 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/two"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/spinner"
@@ -99,7 +79,7 @@
             android:layout_marginTop="10dp">
 
             <TextView
-                android:id="@+id/due_history_total_amt"
+                android:id="@+id/total_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -107,7 +87,7 @@
                 android:textSize="16sp"/>
 
             <TextView
-                android:id="@+id/due_history_each_amt"
+                android:id="@+id/each_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -118,8 +98,8 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@id/three"
-            android:layout_width="110dp"
+            android:id="@id/two"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/one"
             android:layout_marginTop="40dp">
@@ -134,12 +114,11 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/four"
-            android:layout_width="110dp"
+            android:id="@+id/three"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:layout_below="@id/one"
-            android:layout_toEndOf="@id/three"
-            android:layout_marginStart="12dp"
             android:layout_marginTop="40dp">
 
             <TextView
@@ -152,11 +131,10 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_width="110dp"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/one"
-            android:layout_toEndOf="@id/four"
-            android:layout_marginStart="12dp"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="40dp">
 
             <TextView
@@ -169,11 +147,11 @@
         </RelativeLayout>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/due_history_recycler_view"
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/three"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"/>
 
     </RelativeLayout>
 

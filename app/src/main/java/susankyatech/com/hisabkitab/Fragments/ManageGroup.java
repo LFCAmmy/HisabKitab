@@ -2,10 +2,11 @@ package susankyatech.com.hisabkitab.Fragments;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
@@ -32,8 +33,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import net.glxn.qrgen.android.QRCode;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import susankyatech.com.hisabkitab.R;
 
@@ -44,10 +43,11 @@ public class ManageGroup extends Fragment {
     private static final int GALLERY_PICK = 1;
 
     private CircleImageView displayGroupImage;
-    private TextView displayUserNameTV, displayGroupNameTV, displayUserEmailTV;
+    private TextView displayUserNameTV, displayGroupNameTV, displayUserEmailTV, displayCurrentMaxMembersTV;
     private EditText changeGroupNameET, changeMaxGroupMembersET;
     private Button changeGroupNameBtn, changeGroupImageBtn, changeGroupMaxMembersBtn, updateGroupMembersBtn;
     private ProgressDialog loadingBar;
+    private CoordinatorLayout coordinatorLayout;
 
     private DatabaseReference userReference, groupReference;
     private StorageReference groupImageReference;
@@ -60,6 +60,7 @@ public class ManageGroup extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_manage_group, container, false);
 
+        coordinatorLayout = view.findViewById(R.id.coordinatorLayout);
         displayGroupImage = view.findViewById(R.id.display_group_image);
         displayGroupNameTV = view.findViewById(R.id.group_name_tv);
         displayUserNameTV = view.findViewById(R.id.user_name_tv);
@@ -67,6 +68,7 @@ public class ManageGroup extends Fragment {
         changeGroupNameBtn = view.findViewById(R.id.change_group_name_btn);
         changeGroupImageBtn = view.findViewById(R.id.change_group_image_btn);
         changeGroupMaxMembersBtn = view.findViewById(R.id.change_max_members_btn);
+        displayCurrentMaxMembersTV = view.findViewById(R.id.current_group_max_members_tv);
         updateGroupMembersBtn = view.findViewById(R.id.update_group_members_btn);
 
         loadingBar = new ProgressDialog(getContext());
@@ -101,9 +103,10 @@ public class ManageGroup extends Fragment {
                         if (dataSnapshot.exists()){
                             String currentGroupName = dataSnapshot.child("group_name").getValue().toString();
                             String currentGroupImageUrl = dataSnapshot.child("group_image").getValue().toString();
-                            displayGroupNameTV.setText(currentGroupName);
+                            String currentMaxMembers = dataSnapshot.child("max_members").getValue().toString();
                             Picasso.get().load(currentGroupImageUrl).placeholder(R.drawable.ic_photo_camera).into(displayGroupImage);
-                            generateQRCode();
+                            displayGroupNameTV.setText(currentGroupName);
+                            displayCurrentMaxMembersTV.setText(currentMaxMembers);
                         }
 
                     }
@@ -156,6 +159,8 @@ public class ManageGroup extends Fragment {
 
                                                     String newGroupName = dataSnapshot.child("group_name").getValue().toString();
                                                     changeGroupNameET.setText(newGroupName);
+                                                    materialDialog.dismiss();
+                                                    Snackbar.make(coordinatorLayout, "Group name changed successfully!", Snackbar.LENGTH_SHORT).show();
                                                 }
 
                                                 @Override
@@ -165,8 +170,6 @@ public class ManageGroup extends Fragment {
                                             });
                                         }
                                     });
-                            materialDialog.dismiss();
-                            Toast.makeText(getActivity(), "Group name changed successfully!", Toast.LENGTH_SHORT).show();
                         }
                         else {
                             changeGroupNameET.setError("Please enter a new group name!");
@@ -229,7 +232,8 @@ public class ManageGroup extends Fragment {
 
                                                     String newGroupMaxMembers = dataSnapshot.child("max_members").getValue().toString();
                                                     changeMaxGroupMembersET.setText(newGroupMaxMembers);
-                                                    Toast.makeText(getActivity(), "Max members changed successfully!", Toast.LENGTH_SHORT).show();
+                                                    materialDialog.dismiss();
+                                                    Snackbar.make(coordinatorLayout, "Max members changed successfully!", Snackbar.LENGTH_SHORT).show();
                                                 }
 
                                                 @Override
@@ -239,8 +243,6 @@ public class ManageGroup extends Fragment {
                                             });
                                         }
                                     });
-
-                            materialDialog.dismiss();
                         } else {
                             changeMaxGroupMembersET.setError("Please enter new max members!");
                             changeMaxGroupMembersET.requestFocus();
@@ -316,9 +318,5 @@ public class ManageGroup extends Fragment {
                 }
             });
         }
-    }
-
-    private void generateQRCode() {
-        Bitmap bitmap = QRCode.from(currentGroupId).bitmap();
     }
 }

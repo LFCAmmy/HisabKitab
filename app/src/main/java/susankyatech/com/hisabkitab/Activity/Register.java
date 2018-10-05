@@ -43,7 +43,7 @@ public class Register extends AppCompatActivity {
 
         loadingBar = new ProgressDialog(this);
 
-        TextView appName = findViewById(R.id.app_name);
+        TextView appName = findViewById(R.id.app_name_tv);
         usernameET = findViewById(R.id.username_et);
         emailET = findViewById(R.id.email_et);
         passwordET = findViewById(R.id.password_et);
@@ -70,61 +70,56 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String name = usernameET.getText().toString();
-                String email = emailET.getText().toString();
+                final String name = usernameET.getText().toString();
+                final String email = emailET.getText().toString();
                 String password = passwordET.getText().toString();
 
-                registerAccount(name, email, password);
+                if (TextUtils.isEmpty(name)) {
+                    usernameET.setError("Please enter your name!");
+                    usernameET.requestFocus();
+                }
+                else if (TextUtils.isEmpty(email)) {
+                    emailET.setError("Please enter your email!");
+                    emailET.requestFocus();
+                }
+                else if (TextUtils.isEmpty(password)) {
+                    passwordET.setError("Please enter your password!");
+                    passwordET.requestFocus();
+                }else {
+                    loadingBar.setTitle("Creating new account");
+                    loadingBar.setMessage("Please wait while we are creating a new account for you!");
+                    loadingBar.setCanceledOnTouchOutside(false);
+                    loadingBar.show();
+                    mAuth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+
+                                    if (task.isSuccessful()) {
+                                        String currentUserId = mAuth.getCurrentUser().getUid();
+                                        userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+                                        userReference.child("user_name").setValue(name);
+                                        userReference.child("group_id").setValue("none");
+                                        userReference.child("user_email").setValue(email)
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+
+                                                        if (task.isSuccessful()) {
+                                                            Intent intent = new Intent(Register.this, Welcome.class);
+                                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                            startActivity(intent);
+                                                        } else {
+                                                            Toast.makeText(Register.this, "Error occurred, please try again!", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                        loadingBar.dismiss();
+                                                    }
+                                                });
+                                    }
+                                }
+                            });
+                }
             }
         });
-    }
-
-    private void registerAccount(final String name, final String email, String password) {
-
-        if (TextUtils.isEmpty(name)) {
-            usernameET.setError("Please enter your name!");
-            usernameET.requestFocus();
-        }
-        else if (TextUtils.isEmpty(email)) {
-            emailET.setError("Please enter your email!");
-            emailET.requestFocus();
-        }
-        else if (TextUtils.isEmpty(password)) {
-            passwordET.setError("Please enter your password!");
-            passwordET.requestFocus();
-        } else {
-            loadingBar.setTitle("Creating new account");
-            loadingBar.setMessage("Please wait while we are creating a new account for you!");
-            loadingBar.setCanceledOnTouchOutside(false);
-            loadingBar.show();
-            mAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-
-                            if (task.isSuccessful()) {
-                                String currentUserId = mAuth.getCurrentUser().getUid();
-                                userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
-                                userReference.child("user_name").setValue(name);
-                                userReference.child("group_id").setValue("none");
-                                userReference.child("user_email").setValue(email)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-
-                                                if (task.isSuccessful()) {
-                                                    Intent intent = new Intent(Register.this, Welcome.class);
-                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                    startActivity(intent);
-                                                } else {
-                                                    Toast.makeText(Register.this, "Error occurred, please try again!", Toast.LENGTH_SHORT).show();
-                                                }
-                                                loadingBar.dismiss();
-                                            }
-                                        });
-                            }
-                        }
-                    });
-        }
     }
 }

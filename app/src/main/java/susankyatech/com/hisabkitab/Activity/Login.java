@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -46,7 +45,7 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        TextView appName = findViewById(R.id.app_name);
+        TextView appName = findViewById(R.id.app_name_tv);
         userEmailET = findViewById(R.id.email_et);
         userPasswordET = findViewById(R.id.password_et);
         Button loginBtn = findViewById(R.id.login_btn);
@@ -91,6 +90,7 @@ public class Login extends AppCompatActivity {
                 } else {
                     loadingBar.setTitle("Logging In");
                     loadingBar.setMessage("Please wait...");
+                    loadingBar.setCanceledOnTouchOutside(false);
                     loadingBar.show();
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -184,8 +184,6 @@ public class Login extends AppCompatActivity {
         if (currentUser != null) {
 
             userRole = sp.getString("role", "apple");
-
-            Log.d("Intel", "" + userRole);
 
             switch (userRole) {
                 case "admin": {

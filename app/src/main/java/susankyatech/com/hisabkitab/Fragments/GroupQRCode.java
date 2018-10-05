@@ -20,19 +20,17 @@ import net.glxn.qrgen.android.QRCode;
 
 import susankyatech.com.hisabkitab.R;
 
-public class AdminQRCode extends Fragment {
-
-    private View mView;
+public class GroupQRCode extends Fragment {
 
     private String currentGroupId;
 
-    public AdminQRCode() {}
+    public GroupQRCode() {}
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_admin_qrcode, container, false);
+        final View view = inflater.inflate(R.layout.fragment_admin_qrcode, container, false);
 
-        mView = view;
+        final ImageView displayQRCode = view.findViewById(R.id.display_qr_code);
 
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
@@ -42,9 +40,9 @@ public class AdminQRCode extends Fragment {
 
                 if (dataSnapshot.exists()) {
                     currentGroupId = dataSnapshot.child("group_id").getValue().toString();
-                    Bitmap myBitmap = QRCode.from(currentGroupId).bitmap();
-                    ImageView displayQRCode = mView.findViewById(R.id.display_qr_code);
-                    displayQRCode.setImageBitmap(myBitmap);
+
+                    Bitmap bitmap = QRCode.from(currentGroupId).bitmap();
+                    displayQRCode.setImageBitmap(bitmap);
                 }
             }
 
@@ -54,6 +52,6 @@ public class AdminQRCode extends Fragment {
             }
         });
 
-        return mView;
+        return view;
     }
 }

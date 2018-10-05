@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
@@ -33,7 +32,7 @@ public class QRCode extends Fragment {
 
     private CodeScanner mCodeScanner;
 
-    String currentUserId, currentGroupId, userName;
+    String currentUserId, userName;
 
     public QRCode() {}
 
@@ -41,12 +40,13 @@ public class QRCode extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_qrcode, container, false);
 
+        CodeScannerView scannerView = view.findViewById(R.id.scanner_view);
+
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
         groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
         expendituresReference = FirebaseDatabase.getInstance().getReference().child("Total_Expenditures");
 
-        CodeScannerView scannerView = view.findViewById(R.id.scanner_view);
         mCodeScanner = new CodeScanner(getActivity(), scannerView);
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
             @Override
@@ -75,45 +75,37 @@ public class QRCode extends Fragment {
                             public void onComplete(@NonNull Task<Void> task) {
 
                                 if (task.isSuccessful()) {
+                                    HashMap memberMap = new HashMap();
+                                    memberMap.put("user_id", currentUserId);
+                                    memberMap.put("name", userName);
+                                    memberMap.put("role","member");
+                                    groupReference.child(result.getText()).child("members").child(currentUserId).updateChildren(memberMap)
+                                            .addOnCompleteListener(new OnCompleteListener() {
+                                                @Override
+                                                public void onComplete(@NonNull Task task) {
 
-                                    if (task.isSuccessful()) {
-                                        HashMap memberMap = new HashMap();
-                                        memberMap.put("user_id", currentUserId);
-                                        memberMap.put("name", userName);
-                                        memberMap.put("role","member");
-                                        groupReference.child(result.getText()).child("members").child(currentUserId).updateChildren(memberMap)
-                                                .addOnCompleteListener(new OnCompleteListener() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task task) {
-
-                                                        if (task.isSuccessful()) {
-                                                            HashMap expendituresMap = new HashMap();
-                                                            expendituresMap.put("name", userName);
-                                                            expendituresMap.put("total_amount", 0);
-                                                            expendituresMap.put("user_id", currentUserId);
-                                                            expendituresReference.child(result.getText()).child(currentUserId).updateChildren(expendituresMap)
-                                                                    .addOnCompleteListener(new OnCompleteListener() {
-                                                                        @Override
-                                                                        public void onComplete(@NonNull Task task) {
-
-                                                                            if (task.isSuccessful()) {
-                                                                                Intent intent = new Intent(getActivity(), MemberMain.class);
-                                                                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                                                startActivity(intent);
-                                                                            }
+                                                    if (task.isSuccessful()) {
+                                                        HashMap expendituresMap = new HashMap();
+                                                        expendituresMap.put("name", userName);
+                                                        expendituresMap.put("total_amount", 0);
+                                                        expendituresMap.put("user_id", currentUserId);
+                                                        expendituresReference.child(result.getText()).child(currentUserId).updateChildren(expendituresMap)
+                                                                .addOnCompleteListener(new OnCompleteListener() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task task) {
+                                                                        if (task.isSuccessful()) {
+                                                                            Intent intent = new Intent(getActivity(), MemberMain.class);
+                                                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                                            startActivity(intent);
                                                                         }
-                                                                    });
+                                                                    }
+                                                                });
                                                         }
-
                                                     }
                                                 });
                                     }
-                                }
-
                             }
                         });
-
-//                        Toast.makeText(getActivity(), result.getText(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }

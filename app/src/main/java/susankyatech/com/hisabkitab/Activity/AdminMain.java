@@ -25,7 +25,7 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import susankyatech.com.hisabkitab.Fragments.AboutFragment;
-import susankyatech.com.hisabkitab.Fragments.AdminQRCode;
+import susankyatech.com.hisabkitab.Fragments.GroupQRCode;
 import susankyatech.com.hisabkitab.Fragments.CurrentExpenses;
 import susankyatech.com.hisabkitab.Fragments.GroupExpenses;
 import susankyatech.com.hisabkitab.Fragments.ManageGroup;
@@ -72,6 +72,7 @@ public class AdminMain extends AppCompatActivity implements NavigationView.OnNav
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
         userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+        groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
 
         init();
     }
@@ -89,8 +90,7 @@ public class AdminMain extends AppCompatActivity implements NavigationView.OnNav
                     String userEmail = dataSnapshot.child("user_email").getValue().toString();
                     navUserEmailDisplayTV.setText(userEmail);
 
-                    groupReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId);
-                    groupReference.addValueEventListener(new ValueEventListener() {
+                    groupReference.child(currentGroupId).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -158,7 +158,7 @@ public class AdminMain extends AppCompatActivity implements NavigationView.OnNav
                 break;
             }
             case R.id.nav_qr_code: {
-                getSupportFragmentManager().beginTransaction().replace(R.id.content_main_frame, new AdminQRCode()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_main_frame, new GroupQRCode()).commit();
                 break;
             }
             case R.id.nav_logout: {

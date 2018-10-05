@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -31,70 +29,50 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import susankyatech.com.hisabkitab.DueAmount;
 import susankyatech.com.hisabkitab.R;
 import susankyatech.com.hisabkitab.UserDataModel;
 
-import static android.content.ContentValues.TAG;
-
 public class DueHistory extends Fragment implements AdapterView.OnItemSelectedListener {
 
-    @BindView(R.id.due_history_each_amt)
-    TextView eachAmountTV;
-    @BindView(R.id.due_history_total_amt)
-    TextView totalAmountTV;
-    @BindView(R.id.due_history_recycler_view)
-    RecyclerView recyclerView;
-    @BindView(R.id.mainLayout)
-    RelativeLayout mainLayout;
-    @BindView(R.id.history_text)
-    RelativeLayout historyTextLayout;
-    @BindView(R.id.progressBarLayout)
-    View progressLayout;
-    @BindView(R.id.progressBar)
-    ProgressBar progressBar;
-    @BindView(R.id.progressTV)
-    TextView progressTextView;
+    private TextView totalAmountTV, eachAmountTV;
+    private RecyclerView recyclerView;
+    private ProgressBar progressBar;
+
+    private RelativeLayout mainLayout, historyTextLayout;
+    private View progressBarLayout;
 
     private Spinner spinner;
+
+    private DatabaseReference historyReference, groupReference;
 
     private List<String> dateList = new ArrayList<>();
     private List<DueAmount> userExpenses = new ArrayList<>();
 
-    private String currentUserId, currentGroupId, selectedDate;
+    private String currentGroupId, selectedDate;
     private int totalExpenses;
     private long memberCount, dueAmount;
 
-    private View mView;
-
-    private DatabaseReference historyReference, groupRef;
-
-    public DueHistory() {
-    }
+    public DueHistory() {}
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_due_history, container, false);
 
-        ButterKnife.bind(this, view);
+        totalAmountTV = view.findViewById(R.id.total_amount);
+        eachAmountTV = view.findViewById(R.id.each_amount);
+        recyclerView = view.findViewById(R.id.recycler_view);
+        mainLayout = view.findViewById(R.id.main_layout);
+        historyTextLayout = view.findViewById(R.id.display_no_history_layout);
+        progressBarLayout = view.findViewById(R.id.progress_bar_layout);
+        progressBar = view.findViewById(R.id.progress_bar);
         spinner = view.findViewById(R.id.spinner);
 
-        mView = view;
-
-        init();
-
-        return mView;
-
-    }
-
-    private void init() {
-        progressLayout.setVisibility(View.VISIBLE);
+        progressBarLayout.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
+        mainLayout.setVisibility(View.INVISIBLE);
 
-        groupRef = FirebaseDatabase.getInstance().getReference().child("Group");
+        groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
         historyReference = FirebaseDatabase.getInstance().getReference().child("Due_History");
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -108,13 +86,18 @@ public class DueHistory extends Fragment implements AdapterView.OnItemSelectedLi
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                 if (dataSnapshot.exists()) {
                     currentGroupId = dataSnapshot.child("group_id").getValue().toString();
 
                     historyReference.child(currentGroupId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                             if (dataSnapshot.exists()) {
+
+                                mainLayout.setVisibility(View.VISIBLE);
+
                                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                     String date = ds.getKey();
                                     dateList.add(date);
@@ -122,12 +105,11 @@ public class DueHistory extends Fragment implements AdapterView.OnItemSelectedLi
 
                                 spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                                 spinner.setAdapter(spinnerAdapter);
-                            }else {
+                            } else {
+                                progressBarLayout.setVisibility(View.GONE);
+                                progressBar.setVisibility(View.GONE);
                                 mainLayout.setVisibility(View.GONE);
                                 historyTextLayout.setVisibility(View.VISIBLE);
-                                progressLayout.setVisibility(View.GONE);
-                                progressBar.setVisibility(View.GONE);
-
                             }
                         }
 
@@ -144,36 +126,44 @@ public class DueHistory extends Fragment implements AdapterView.OnItemSelectedLi
 
             }
         });
+
+        return view;
     }
+
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-        progressLayout.setVisibility(View.VISIBLE);
+
+        progressBarLayout.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
         selectedDate = adapterView.getSelectedItem().toString();
         getAllHistory(selectedDate);
-
-
     }
 
     private void getAllHistory(final String selectedDate) {
-        groupRef.child(currentGroupId).child("members").addValueEventListener(new ValueEventListener() {
+        groupReference.child(currentGroupId).child("members").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                 if (dataSnapshot.exists()){
-                    progressLayout.setVisibility(View.GONE);
+                    progressBarLayout.setVisibility(View.GONE);
                     progressBar.setVisibility(View.GONE);
                     memberCount = dataSnapshot.getChildrenCount();
+
                     historyReference.child(currentGroupId).child(selectedDate).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                             if (dataSnapshot.exists()) {
                                 totalExpenses = 0;
                                 String dueTime = dataSnapshot.child("time").getValue().toString();
+
                                 for (DataSnapshot ds : dataSnapshot.getChildren()){
+
                                     for (DataSnapshot de : ds.getChildren()){
+
                                         String userId = de.getKey();
-                                        Log.d("asdasdasd", "onDataChange: "+de.child("total_amount"));
+
                                         int userAmount = Integer.valueOf(de.child("total_amount").getValue().toString());
 
                                         totalExpenses = totalExpenses + userAmount;
@@ -183,8 +173,6 @@ public class DueHistory extends Fragment implements AdapterView.OnItemSelectedLi
                                         Query query = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId).child("members").limitToLast(50);
                                         getAllUserName(query);
                                     }
-
-
                                 }
                             }
                         }
@@ -271,9 +259,7 @@ public class DueHistory extends Fragment implements AdapterView.OnItemSelectedLi
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
+    public void onNothingSelected(AdapterView<?> parent) {}
 
     public static class DueHistoryViewHolder extends RecyclerView.ViewHolder {
 

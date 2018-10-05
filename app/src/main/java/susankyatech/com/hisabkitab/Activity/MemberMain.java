@@ -31,13 +31,13 @@ import susankyatech.com.hisabkitab.R;
 
 public class MemberMain extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private CircleImageView navGroupImage;
-    private TextView navGroupNameTV, navUserEmailDisplay;
+    private CircleImageView navGroupImageDisplay;
+    private TextView navUserEmailDisplayTV, navGroupNameDisplayTV;
 
     private SharedPreferences sp;
 
     private FirebaseAuth mAuth;
-    private DatabaseReference groupReference;
+    private DatabaseReference userReference, groupReference;
 
     private String currentUserId, currentGroupId;
 
@@ -55,9 +55,9 @@ public class MemberMain extends AppCompatActivity implements NavigationView.OnNa
         navigationView.setNavigationItemSelectedListener(this);
 
         View navHeader = navigationView.getHeaderView(0);
-        navGroupImage = navHeader.findViewById(R.id.group_image_display);
-        navGroupNameTV = navHeader.findViewById(R.id.group_name_tv);
-        navUserEmailDisplay = navHeader.findViewById(R.id.user_email_tv);
+        navGroupImageDisplay = navHeader.findViewById(R.id.group_image_display);
+        navGroupNameDisplayTV = navHeader.findViewById(R.id.group_name_tv);
+        navUserEmailDisplayTV = navHeader.findViewById(R.id.user_email_tv);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -68,32 +68,46 @@ public class MemberMain extends AppCompatActivity implements NavigationView.OnNa
 
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
-        DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
-        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        userReference = FirebaseDatabase.getInstance().getReference().child("Users");
+        groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
+
+        init();
+    }
+
+    private void init() {
+        
+        userReference.child(currentUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 if (dataSnapshot.exists()) {
                     currentGroupId = dataSnapshot.child("group_id").getValue().toString();
-                    String userEmail = dataSnapshot.child("user_email").getValue().toString();
-                    navUserEmailDisplay.setText(userEmail);
 
                     if (currentGroupId.equals("none")) {
+
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.remove("role");
+                        editor.apply();
+
                         Intent intent = new Intent(MemberMain.this, Welcome.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                     }
 
-                    groupReference = FirebaseDatabase.getInstance().getReference().child("Group").child(currentGroupId);
-                    groupReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    String userEmail = dataSnapshot.child("user_email").getValue().toString();
+                    navUserEmailDisplayTV.setText(userEmail);
+
+                    groupReference.child(currentGroupId).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                             if (dataSnapshot.exists()) {
                                 String groupImage = dataSnapshot.child("group_image").getValue().toString();
                                 String groupName = dataSnapshot.child("group_name").getValue().toString();
-                                Picasso.get().load(groupImage).into(navGroupImage);
-                                navGroupNameTV.setText(groupName);
+                                Picasso.get().load(groupImage).into(navGroupImageDisplay);
+                                navGroupNameDisplayTV.setText(groupName);
+
+
                             }
                         }
 
@@ -166,5 +180,4 @@ public class MemberMain extends AppCompatActivity implements NavigationView.OnNa
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 }

@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="70dp"
             android:text="@string/group_name"
             android:textColor="@android:color/white"
             android:textSize="20sp"/>
@@ -52,8 +52,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="90dp"
-            android:text="@string/group_name"
+            android:layout_marginTop="100dp"
+            android:text="@string/group_name_example"
             android:textColor="@android:color/white"
             android:textSize="15sp"/>
 

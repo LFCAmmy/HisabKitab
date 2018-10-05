@@ -31,7 +31,7 @@
 
         <RelativeLayout
             android:id="@+id/relative_layout_one"
-            android:layout_width="110dp"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/spinner"
             android:layout_marginTop="30dp">
@@ -47,10 +47,10 @@
 
         <RelativeLayout
             android:id="@+id/relative_layout_two"
-            android:layout_width="130dp"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/spinner"
-            android:layout_toEndOf="@id/relative_layout_one"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp">
 
             <TextView
@@ -64,11 +64,10 @@
 
         <RelativeLayout
             android:id="@+id/relative_layout_three"
-            android:layout_width="match_parent"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/spinner"
             android:layout_alignParentEnd="true"
-            android:layout_toEndOf="@id/relative_layout_two"
             android:layout_marginTop="30dp">
 
             <TextView
@@ -96,8 +95,7 @@
                 android:layout_height="45dp"
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
-                android:background="@drawable/circular_bg"
-                android:elevation="2dp"
+                android:background="@drawable/ic_progress_bar"
                 android:padding="4dp"
                 android:visibility="gone" />
 

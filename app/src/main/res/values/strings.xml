@@ -22,21 +22,25 @@
     <!-- Navigation Drawer/Header/Menu -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="group_name_example">Hudson</string>
     <string name="group_code">Group Code</string>
     <string name="code">123456</string>
     <string name="current_expenses">Current Expenses</string>
     <string name="group_expenses">Group Expenses</string>
     <string name="manage_group">Manage Group</string>
-    <string name="logout">Logout</string>
     <string name="group_qr_code">Group QR Code</string>
+    <string name="logout">Logout</string>
     <string name="about">About</string>
+    <string name="app_version">v1.1</string>
+    <string name="developed_by">Developed by:</string>
+    <string name="app_developer">Susankya Team</string>
 
-    <!-- Current CurrentExpenses -->
+    <!-- CurrentExpenses -->
     <string name="id">ID</string>
     <string name="product_name">Product Name</string>
     <string name="amount">Amount</string>
 
-    <!-- Group Expenses -->
+    <!-- Group Expenses/Due History -->
     <string name="due_date_since">Due Date Since:</string>
     <string name="total_amount">Total Amount:</string>
     <string name="each_amount">Each Amount:</string>
@@ -46,18 +50,24 @@
     <string name="due_amount">Due Amount</string>
     <string name="clear_due">Clear Due</string>
     <string name="show_history">Show History</string>
+    <string name="no_history_message">No history found!</string>
 
-    <!-- Manage Group -->
+    <!-- Manage Group/Update Group Members -->
     <string name="signed_as">Signed as:</string>
     <string name="change_group_name">Change Name</string>
     <string name="change_group_image">Change Image</string>
     <string name="change_max_members">Change Max Members</string>
+    <string name="current">Current:</string>
+    <string name="current_members">5</string>
     <string name="update_group_members">Update Group Members</string>
     <string name="group_members">Group Members</string>
-    <string name="remove">Remove</string>
-
-    <!-- Update Group Members -->
     <string name="action">Action</string>
+    <string name="delete">Delete</string>
+    <string name="delete_member_message">You are about to delete a member from the group. Are you sure want to do this?</string>
+
+    <!-- Group QR Code -->
+    <string name="qr_code_message">Scan the QR code below to join group.</string>
+    <string name="qr_code_description">QR Code Image</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

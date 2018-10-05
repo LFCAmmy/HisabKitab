@@ -1,7 +1,5 @@
 package susankyatech.com.hisabkitab;
 
-import java.util.List;
-
 public class DueAmount {
     public String userId;
     public int dueAmount;

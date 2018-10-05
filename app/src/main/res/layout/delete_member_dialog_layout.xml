@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="You're about to remove an account. Are you sure want to do this?"
+        android:text="@string/delete_member_message"
         android:textSize="16sp"/>
 
 </RelativeLayout>

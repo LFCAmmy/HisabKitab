@@ -357,10 +357,10 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
         final String amt = expenseAmount.getText().toString();
 
         if (TextUtils.isEmpty(title)) {
-            expenseTitle.setError("Please enter expense expenseTitle!");
+            expenseTitle.setError("Please enter product name!");
             expenseTitle.requestFocus();
         } else if (TextUtils.isEmpty(amt)) {
-            expenseAmount.setError("Please enter expense expenseAmount!");
+            expenseAmount.setError("Please enter product price!");
             expenseAmount.requestFocus();
         } else {
             final int amount = Integer.valueOf(amt);

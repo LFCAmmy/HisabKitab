@@ -299,6 +299,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 
                     progressLayout.setVisibility(View.GONE);
                     progressBar.setVisibility(View.GONE);
+                    Log.d("topasd", "onDataChange: "+selectedUser);
 
                     expenseReference.child(currentGroupId).child(date).child(selectedUser)
                             .addValueEventListener(new ValueEventListener() {
@@ -308,6 +309,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                         String userId = dataSnapshot.getKey();
                                         String userName = dataSnapshot.child("name").getValue().toString();
                                         recyclerView.setVisibility(View.VISIBLE);
+
                                         Query query = FirebaseDatabase.getInstance().getReference().child("Expenses").child(currentGroupId)
                                                 .child(date).child(userId).child("products")
                                                 .limitToLast(50);
@@ -497,6 +499,12 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                     Log.d(TAG, "onBindViewHolder: latestDate" + latestDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
+                }
+
+                if (model.getId().equals(currentUserId)){
+                    holder.actionLayout.setVisibility(View.VISIBLE);
+                } else {
+                    holder.actionLayout.setVisibility(View.GONE);
                 }
 
                 if (productDate.after(latestDate)) {

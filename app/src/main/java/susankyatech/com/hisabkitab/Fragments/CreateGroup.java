@@ -56,7 +56,8 @@ public class CreateGroup extends Fragment {
 
     private String currentUserId, userName, groupToken, downloadGroupImageUrl = "none";
 
-    public CreateGroup() {}
+    public CreateGroup() {
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -139,100 +140,100 @@ public class CreateGroup extends Fragment {
 
                     final HashMap groupMap = new HashMap();
                     groupMap.put("group_name", name);
-                    groupMap.put("max_members",max);
+                    groupMap.put("max_members", max);
                     groupMap.put("group_image", downloadGroupImageUrl);
                     groupMap.put("group_created_date", date);
                     groupMap.put("group_created_time", time);
                     groupMap.put("group_token", groupToken);
-                   groupReference.child(groupToken).updateChildren(groupMap).addOnCompleteListener(new OnCompleteListener() {
-                       @Override
-                       public void onComplete(@NonNull Task task) {
+                    groupReference.child(groupToken).updateChildren(groupMap).addOnCompleteListener(new OnCompleteListener() {
+                        @Override
+                        public void onComplete(@NonNull Task task) {
 
-                           if (task.isSuccessful()) {
-                               HashMap membersMap = new HashMap();
-                               membersMap.put("user_id", currentUserId);
-                               membersMap.put("name", userName);
-                               membersMap.put("role","admin");
-                               groupReference.child(groupToken).child("members").child(currentUserId).updateChildren(membersMap)
-                                       .addOnCompleteListener(new OnCompleteListener() {
-                                           @Override
-                                           public void onComplete(@NonNull Task task) {
+                            if (task.isSuccessful()) {
+                                HashMap membersMap = new HashMap();
+                                membersMap.put("user_id", currentUserId);
+                                membersMap.put("name", userName);
+                                membersMap.put("role", "admin");
+                                groupReference.child(groupToken).child("members").child(currentUserId).updateChildren(membersMap)
+                                        .addOnCompleteListener(new OnCompleteListener() {
+                                            @Override
+                                            public void onComplete(@NonNull Task task) {
 
-                                               if (task.isSuccessful()) {
-                                                   HashMap userMap = new HashMap();
-                                                   userMap.put("group_id", groupToken);
-                                                   userReference.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
-                                                       @Override
-                                                       public void onComplete(@NonNull Task task) {
+                                                if (task.isSuccessful()) {
+                                                    HashMap userMap = new HashMap();
+                                                    userMap.put("group_id", groupToken);
+                                                    userReference.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task task) {
 
-                                                           if (task.isSuccessful()) {
-                                                               userReference.child("group_id").setValue(groupToken).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                   @Override
-                                                                   public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()) {
+                                                                userReference.child("group_id").setValue(groupToken).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<Void> task) {
 
-                                                                       if (task.isSuccessful()) {
-                                                                           HashMap totalExp = new HashMap();
-                                                                           totalExp.put("user_id", currentUserId);
-                                                                           totalExp.put("name", userName);
-                                                                           totalExp.put("total_amount",0);
-                                                                           totalExpenditureRef.child(groupToken).child(currentUserId).updateChildren(totalExp)
-                                                                                   .addOnCompleteListener(new OnCompleteListener() {
-                                                                                       @Override
-                                                                                       public void onComplete(@NonNull Task task) {
-                                                                                           if (task.isSuccessful()){
-                                                                                               if (imageUri != null) {
-                                                                                                   final StorageReference imagePath = groupImageStoreReference.child(groupToken + ".jpg");
-                                                                                                   imagePath.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                                                                                       @Override
-                                                                                                       public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> taskSnapshot) {
+                                                                        if (task.isSuccessful()) {
+                                                                            HashMap totalExp = new HashMap();
+                                                                            totalExp.put("user_id", currentUserId);
+                                                                            totalExp.put("name", userName);
+                                                                            totalExp.put("total_amount", 0);
+                                                                            totalExpenditureRef.child(groupToken).child(currentUserId).updateChildren(totalExp)
+                                                                                    .addOnCompleteListener(new OnCompleteListener() {
+                                                                                        @Override
+                                                                                        public void onComplete(@NonNull Task task) {
+                                                                                            if (task.isSuccessful()) {
+                                                                                                if (imageUri != null) {
+                                                                                                    final StorageReference imagePath = groupImageStoreReference.child(groupToken + ".jpg");
+                                                                                                    imagePath.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                                                                                        @Override
+                                                                                                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> taskSnapshot) {
 
-                                                                                                           if (taskSnapshot.isSuccessful()) {
-                                                                                                               imagePath.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                                                                                   @Override
-                                                                                                                   public void onComplete(@NonNull Task<Uri> task) {
+                                                                                                            if (taskSnapshot.isSuccessful()) {
+                                                                                                                imagePath.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                                                                                    @Override
+                                                                                                                    public void onComplete(@NonNull Task<Uri> task) {
 
-                                                                                                                       downloadGroupImageUrl = task.getResult().toString();
-                                                                                                                       groupReference.child(groupToken).child("group_image")
-                                                                                                                               .setValue(downloadGroupImageUrl)
-                                                                                                                               .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                                                                   @Override
-                                                                                                                                   public void onComplete(@NonNull Task<Void> task) {
+                                                                                                                        downloadGroupImageUrl = task.getResult().toString();
+                                                                                                                        groupReference.child(groupToken).child("group_image")
+                                                                                                                                .setValue(downloadGroupImageUrl)
+                                                                                                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                    @Override
+                                                                                                                                    public void onComplete(@NonNull Task<Void> task) {
 
-                                                                                                                                   }
-                                                                                                                               });
-                                                                                                                   }
-                                                                                                               });
-                                                                                                           } else {
-                                                                                                               Toast.makeText(getContext(), "Error Occurred, please try again!", Toast.LENGTH_SHORT).show();
-                                                                                                           }
-                                                                                                       }
-                                                                                                   });
-                                                                                               }
+                                                                                                                                    }
+                                                                                                                                });
+                                                                                                                    }
+                                                                                                                });
+                                                                                                            } else {
+                                                                                                                Toast.makeText(getContext(), "Error Occurred, please try again!", Toast.LENGTH_SHORT).show();
+                                                                                                            }
+                                                                                                        }
+                                                                                                    });
+                                                                                                }
 
-                                                                                               Intent intent = new Intent(getActivity(), AdminMain.class);
-                                                                                               intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                                                               startActivity(intent);
+                                                                                                Intent intent = new Intent(getActivity(), AdminMain.class);
+                                                                                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                                                                startActivity(intent);
 
-                                                                                               loadingBar.dismiss();
-                                                                                           }
-                                                                                       }
-                                                                                   });
+                                                                                                loadingBar.dismiss();
+                                                                                            }
+                                                                                        }
+                                                                                    });
 
 
-                                                                       }
-                                                                   }
-                                                               });
-                                                           }
-                                                       }
-                                                   });
-                                               }
-                                           }
-                                       });
-                           } else{
-                               Toast.makeText(getContext(), "Error occurred, please try again!", Toast.LENGTH_SHORT).show();
-                           }
-                       }
-                   });
+                                                                        }
+                                                                    }
+                                                                });
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+                            } else {
+                                Toast.makeText(getContext(), "Error occurred, please try again!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -241,7 +242,7 @@ public class CreateGroup extends Fragment {
     public String generateGroupToken() {
 
         StringBuilder token = new StringBuilder(6);
-        for (int i=0; i<6; i++) {
+        for (int i = 0; i < 6; i++) {
             token.append(string.charAt(random.nextInt(string.length())));
         }
         return token.toString();

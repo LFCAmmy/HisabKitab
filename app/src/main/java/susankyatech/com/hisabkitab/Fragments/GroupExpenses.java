@@ -51,8 +51,6 @@ public class GroupExpenses extends Fragment {
     private RecyclerView recyclerView;
     private RelativeLayout progressBarLayout;
 
-    private SharedPreferences sp;
-
     private DatabaseReference userReference, groupReference, totalExpendituresReference, dueHistoryReference;
 
     private String currentGroupId, groupCreatedDate, userState, userId;
@@ -78,7 +76,7 @@ public class GroupExpenses extends Fragment {
         progressBarLayout.setVisibility(View.VISIBLE);
         clearDueBtn.setVisibility(View.INVISIBLE);
 
-        sp = getActivity().getSharedPreferences("UserInfo", 0);
+        SharedPreferences sp = getActivity().getSharedPreferences("UserInfo", 0);
         userState = sp.getString("role", "none");
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());

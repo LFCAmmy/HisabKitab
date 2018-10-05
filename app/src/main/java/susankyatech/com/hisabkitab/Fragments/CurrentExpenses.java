@@ -310,7 +310,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                     .child(date).child(userId).child("products")
                                     .limitToLast(50);
 
-                            displayAllCurrentExpense(query);
+                            displayAllCurrentExpense(query, userId);
                         }
                     }
                 } else {
@@ -427,7 +427,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
         }
     }
 
-    private void displayAllCurrentExpense(final Query query) {
+    private void displayAllCurrentExpense(final Query query, final String userId) {
 
         ChildEventListener childEventListener = new ChildEventListener() {
             @Override
@@ -490,15 +490,22 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
+                Log.d("qwe", "onBindViewHolder: model id"+selectedUser);
+                Log.d("qwe", "onBindViewHolder: current user id"+currentUserId);
 
-                if (productDate.after(latestDate)) {
+                if (userId.equals(currentUserId)){
                     holder.actionLayout.setVisibility(View.VISIBLE);
-
-                } else if (productDate.before(latestDate)) {
-                    holder.actionLayout.setVisibility(View.GONE);
+                    if (productDate.after(latestDate)) {
+                        holder.actionLayout.setVisibility(View.VISIBLE);
+                    } else if (productDate.before(latestDate)) {
+                        holder.actionLayout.setVisibility(View.GONE);
+                    } else {
+                        holder.actionLayout.setVisibility(View.GONE);
+                    }
                 } else {
                     holder.actionLayout.setVisibility(View.GONE);
                 }
+
                 holder.deleteProduct.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

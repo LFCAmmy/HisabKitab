@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,6 +44,8 @@ import susankyatech.com.hisabkitab.DueAmount;
 import susankyatech.com.hisabkitab.DueHistoryDataModel;
 import susankyatech.com.hisabkitab.R;
 import susankyatech.com.hisabkitab.UserDataModel;
+
+import static android.content.ContentValues.TAG;
 
 public class GroupExpenses extends Fragment {
 
@@ -274,6 +277,7 @@ public class GroupExpenses extends Fragment {
                             if (dataSnapshot.exists()) {
                                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                     long count = ds.getChildrenCount();
+                                    Log.d("tyu", "onDataChange: "+count);
 
                                     String userId = ds.getKey();
                                     String userName = ds.child("name").getValue().toString();
@@ -317,44 +321,44 @@ public class GroupExpenses extends Fragment {
                 if (dataSnapshot.exists()){
                     if (dataSnapshot.hasChild(date)){
                         Toast.makeText(getContext(), "Due has already been cleared on " + date + "!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        dueHistoryReference.child(currentGroupId).child(date).child("time").setValue(time)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isComplete()){
-                                            for (int i = 0; i < dueHistoryList.size(); i++) {
-                                                HashMap historyMap = new HashMap();
-                                                historyMap.put("user_id", dueHistoryList.get(i).userId);
-                                                historyMap.put("name", dueHistoryList.get(i).userName);
-                                                historyMap.put("total_amount", dueHistoryList.get(i).dueAmount);
-                                                dueHistoryReference.child(currentGroupId).child(date).child("members").child(dueHistoryList.get(i).userId).updateChildren(historyMap)
-                                                        .addOnCompleteListener(new OnCompleteListener() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task task) {
-                                                                if (task.isSuccessful()) {
-                                                                    totalExpendituresReference.child(currentGroupId).child(userId).child("total_amount").setValue(0)
-                                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                @Override
-                                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                                    if (task.isSuccessful()) {
-                                                                                        Fragment fragment = new GroupExpenses();
-                                                                                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                                                                                        transaction.replace(R.id.content_main_frame, fragment);
-                                                                                        transaction.addToBackStack(null);
-                                                                                        transaction.commit();
-                                                                                    }
+                    }
+                }else {
+                    dueHistoryReference.child(currentGroupId).child(date).child("time").setValue(time)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isComplete()){
+                                        for (int i = 0; i < dueHistoryList.size(); i++) {
+                                            HashMap historyMap = new HashMap();
+                                            historyMap.put("user_id", dueHistoryList.get(i).userId);
+                                            historyMap.put("name", dueHistoryList.get(i).userName);
+                                            historyMap.put("total_amount", dueHistoryList.get(i).dueAmount);
+                                            dueHistoryReference.child(currentGroupId).child(date).child("members").child(dueHistoryList.get(i).userId).updateChildren(historyMap)
+                                                    .addOnCompleteListener(new OnCompleteListener() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task task) {
+                                                            if (task.isSuccessful()) {
+                                                                totalExpendituresReference.child(currentGroupId).child(userId).child("total_amount").setValue(0)
+                                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                            @Override
+                                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                                if (task.isSuccessful()) {
+                                                                                    Fragment fragment = new GroupExpenses();
+                                                                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                                                                    transaction.replace(R.id.content_main_frame, fragment);
+                                                                                    transaction.addToBackStack(null);
+                                                                                    transaction.commit();
                                                                                 }
-                                                                            });
-                                                                }
+                                                                            }
+                                                                        });
                                                             }
-                                                        });
-                                            }
+                                                        }
+                                                    });
                                         }
                                     }
-                                });
+                                }
+                            });
 
-                    }
                 }
             }
 

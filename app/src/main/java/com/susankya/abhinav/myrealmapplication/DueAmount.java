@@ -1,4 +1,4 @@
-package susankyatech.com.hisabkitab;
+package com.susankya.abhinav.myrealmapplication;
 
 public class DueAmount {
     public String userId;

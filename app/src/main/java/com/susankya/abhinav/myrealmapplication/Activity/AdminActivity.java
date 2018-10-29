@@ -1,4 +1,4 @@
-package susankyatech.com.hisabkitab.Activity;
+package com.susankya.abhinav.myrealmapplication.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,80 +21,54 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-import susankyatech.com.hisabkitab.Fragments.AboutFragment;
-import susankyatech.com.hisabkitab.Fragments.CurrentExpenses;
-import susankyatech.com.hisabkitab.Fragments.GroupExpenses;
-import susankyatech.com.hisabkitab.R;
+import com.susankya.abhinav.myrealmapplication.fragments.AboutApp;
+import com.susankya.abhinav.myrealmapplication.fragments.CurrentExpenses;
+import com.susankya.abhinav.myrealmapplication.fragments.GroupExpenses;
+import com.susankya.abhinav.myrealmapplication.fragments.AdminQRCode;
+import com.susankya.abhinav.myrealmapplication.fragments.ManageGroup;
+import com.susankya.abhinav.myrealmapplication.R;
 
-public class MemberMain extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class AdminActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private CircleImageView navGroupImageDisplay;
-    private TextView navUserEmailDisplayTV, navGroupNameDisplayTV;
-
-    private SharedPreferences sp;
-
-    private FirebaseAuth mAuth;
-    private DatabaseReference userReference, groupReference;
-
-    private String currentUserId, currentGroupId;
+    private String currentGroupId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.member_activity_main);
+        setContentView(R.layout.admin_activity_main);
+
+        getSupportFragmentManager().beginTransaction().add(R.id.content_main_frame, new CurrentExpenses()).commit();
 
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        getSupportFragmentManager().beginTransaction().add(R.id.content_main_frame, new CurrentExpenses()).commit();
-
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        View navHeader = navigationView.getHeaderView(0);
-        navGroupImageDisplay = navHeader.findViewById(R.id.group_image_display);
-        navGroupNameDisplayTV = navHeader.findViewById(R.id.group_name_tv);
-        navUserEmailDisplayTV = navHeader.findViewById(R.id.user_email_tv);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        sp = getSharedPreferences("UserInfo", 0);
+        View navHeader = navigationView.getHeaderView(0);
+        final TextView navUserEmailDisplayTV = navHeader.findViewById(R.id.user_email_tv);
+        final TextView navGroupNameDisplayTV = navHeader.findViewById(R.id.group_name_tv);
+        final TextView navGroupCodeDisplayTV = navHeader.findViewById(R.id.group_code_tv);
 
-        mAuth = FirebaseAuth.getInstance();
-        currentUserId = mAuth.getCurrentUser().getUid();
-        userReference = FirebaseDatabase.getInstance().getReference().child("Users");
-        groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+        final DatabaseReference groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
 
-        init();
-    }
-
-    private void init() {
-        
-        userReference.child(currentUserId).addValueEventListener(new ValueEventListener() {
+        userReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 if (dataSnapshot.exists()) {
-                    currentGroupId = dataSnapshot.child("group_id").getValue().toString();
+                    currentGroupId = dataSnapshot.child("group_id").getValue(String.class);
+                    navGroupCodeDisplayTV.setText(currentGroupId);
 
-                    if (currentGroupId.equals("none")) {
-
-                        SharedPreferences.Editor editor = sp.edit();
-                        editor.remove("role");
-                        editor.apply();
-
-                        Intent intent = new Intent(MemberMain.this, Welcome.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                    }
-
-                    String userEmail = dataSnapshot.child("user_email").getValue().toString();
+                    String userEmail = dataSnapshot.child("user_email").getValue(String.class);
                     navUserEmailDisplayTV.setText(userEmail);
 
                     groupReference.child(currentGroupId).addValueEventListener(new ValueEventListener() {
@@ -102,18 +76,13 @@ public class MemberMain extends AppCompatActivity implements NavigationView.OnNa
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                             if (dataSnapshot.exists()) {
-                                String groupImage = dataSnapshot.child("group_image").getValue().toString();
-                                String groupName = dataSnapshot.child("group_name").getValue().toString();
-                                Picasso.get().load(groupImage).into(navGroupImageDisplay);
+                                String groupName = dataSnapshot.child("group_name").getValue(String.class);
                                 navGroupNameDisplayTV.setText(groupName);
-
-
                             }
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-
                         }
                     });
                 }
@@ -141,7 +110,7 @@ public class MemberMain extends AppCompatActivity implements NavigationView.OnNa
 
         switch (id) {
             case R.id.about: {
-                getSupportFragmentManager().beginTransaction().replace(R.id.content_main_frame, new AboutFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_main_frame, new AboutApp()).addToBackStack(null).commit();
                 break;
             }
         }
@@ -152,25 +121,32 @@ public class MemberMain extends AppCompatActivity implements NavigationView.OnNa
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        int id = item.getItemId();
-
-        switch (id) {
+        switch (item.getItemId()) {
             case R.id.nav_current_expenses: {
-                getSupportFragmentManager().beginTransaction().replace(R.id.content_main_frame, new CurrentExpenses()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_main_frame, new CurrentExpenses()).addToBackStack(null).commit();
                 break;
             }
             case R.id.nav_group_expenses: {
-                getSupportFragmentManager().beginTransaction().replace(R.id.content_main_frame, new GroupExpenses()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_main_frame, new GroupExpenses()).addToBackStack(null).commit();
+                break;
+            }
+            case R.id.nav_manage_group: {
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_main_frame, new ManageGroup()).addToBackStack(null).commit();
+                break;
+            }
+            case R.id.nav_qr_code: {
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_main_frame, new AdminQRCode()).addToBackStack(null).commit();
                 break;
             }
             case R.id.nav_logout: {
-                mAuth.signOut();
+                FirebaseAuth.getInstance().signOut();
 
+                SharedPreferences sp = getSharedPreferences("UserInfo", 0);
                 SharedPreferences.Editor editor = sp.edit();
                 editor.clear();
                 editor.apply();
 
-                Intent intent = new Intent(MemberMain.this, Login.class);
+                Intent intent = new Intent(AdminActivity.this, LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }

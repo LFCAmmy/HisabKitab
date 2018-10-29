@@ -1,4 +1,4 @@
-package susankyatech.com.hisabkitab.Fragments;
+package com.susankya.abhinav.myrealmapplication.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,11 +20,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.Result;
+import com.susankya.abhinav.myrealmapplication.activity.AdminActivity;
+import com.susankya.abhinav.myrealmapplication.R;
 
 import java.util.HashMap;
-
-import susankyatech.com.hisabkitab.Activity.MemberMain;
-import susankyatech.com.hisabkitab.R;
 
 public class QRCode extends Fragment {
 
@@ -32,22 +31,33 @@ public class QRCode extends Fragment {
 
     private CodeScanner mCodeScanner;
 
-    String currentUserId, userName;
+    private String currentUserId, userName;
 
-    public QRCode() {}
+    public QRCode() {
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_qrcode, container, false);
 
         CodeScannerView scannerView = view.findViewById(R.id.scanner_view);
-
-        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
-        groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
-        expendituresReference = FirebaseDatabase.getInstance().getReference().child("Total_Expenditures");
-
         mCodeScanner = new CodeScanner(getActivity(), scannerView);
+
+        showCamera();
+
+        scannerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                mCodeScanner.startPreview();
+            }
+        });
+
+        return view;
+    }
+
+    private void showCamera() {
+
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
             @Override
             public void onDecoded(@NonNull final Result result) {
@@ -55,7 +65,12 @@ public class QRCode extends Fragment {
                     @Override
                     public void run() {
 
-                        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+                        groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
+                        expendituresReference = FirebaseDatabase.getInstance().getReference().child("Total_Expenditures");
+
+                        userReference.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -78,12 +93,11 @@ public class QRCode extends Fragment {
                                     HashMap memberMap = new HashMap();
                                     memberMap.put("user_id", currentUserId);
                                     memberMap.put("name", userName);
-                                    memberMap.put("role","member");
+                                    memberMap.put("role", "member");
                                     groupReference.child(result.getText()).child("members").child(currentUserId).updateChildren(memberMap)
                                             .addOnCompleteListener(new OnCompleteListener() {
                                                 @Override
                                                 public void onComplete(@NonNull Task task) {
-
                                                     if (task.isSuccessful()) {
                                                         HashMap expendituresMap = new HashMap();
                                                         expendituresMap.put("name", userName);
@@ -93,33 +107,25 @@ public class QRCode extends Fragment {
                                                                 .addOnCompleteListener(new OnCompleteListener() {
                                                                     @Override
                                                                     public void onComplete(@NonNull Task task) {
+
                                                                         if (task.isSuccessful()) {
-                                                                            Intent intent = new Intent(getActivity(), MemberMain.class);
+                                                                            Intent intent = new Intent(getActivity(), AdminActivity.class);
                                                                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                                             startActivity(intent);
                                                                         }
                                                                     }
                                                                 });
-                                                        }
                                                     }
-                                                });
-                                    }
+                                                }
+                                            });
+                                }
                             }
                         });
+
                     }
                 });
             }
         });
-
-        scannerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                mCodeScanner.startPreview();
-            }
-        });
-
-        return view;
     }
 
     @Override

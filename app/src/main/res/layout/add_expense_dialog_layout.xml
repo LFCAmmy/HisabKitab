@@ -11,6 +11,7 @@
         android:inputType="text"
         android:padding="15dp"
         android:hint="@string/product_name"
+        android:fontFamily="@font/dosis_book"
         android:background="@drawable/text_layout"
         android:textSize="18sp"/>
 
@@ -19,6 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="number"
+        android:fontFamily="@font/dosis_book"
         android:layout_below="@id/add_expense_title"
         android:layout_marginTop="10dp"
         android:padding="15dp"

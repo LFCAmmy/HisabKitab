@@ -1,5 +1,7 @@
-package susankyatech.com.hisabkitab.Fragments;
+package com.susankya.abhinav.myrealmapplication.fragments;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,7 +23,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -37,6 +38,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.susankya.abhinav.myrealmapplication.CurrentExpensesUserDataModel;
+import com.susankya.abhinav.myrealmapplication.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -45,15 +48,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
-import butterknife.BindView;
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
-import susankyatech.com.hisabkitab.CurrentExpensesUserDataModel;
-import susankyatech.com.hisabkitab.R;
-
-import static android.content.ContentValues.TAG;
 
 public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelectedListener {
 
@@ -67,12 +66,15 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
     private View progressLayout;
     ProgressBar progressBar;
     TextView progressTextView;
-    private RelativeLayout noListLayout;
+    private RelativeLayout noExpensesLayout;
+    private Context context;
+    private ArrayAdapter<String> spinnerAdapter;
+    private ProgressDialog progressDialog;
 
     private List<String> userList = new ArrayList<>();
     private HorizontalCalendar horizontalCalendar;
-    private HorizontalCalendar.Builder calanderbuilder;
-    private DatabaseReference expenseReference, groupReference, totalExpenditureRef, dueHistoryRef;
+    private HorizontalCalendar.Builder calenderBuilder;
+    private DatabaseReference userReference, expenseReference, groupReference, totalExpenditureRef, dueHistoryRef;
     private FirebaseRecyclerAdapter adapter;
 
     private int totalAmount;
@@ -92,10 +94,25 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
         addExpense = view.findViewById(R.id.fab);
         mSpinner = view.findViewById(R.id.spinner);
         recyclerView = view.findViewById(R.id.recycler_view);
-        progressLayout = view.findViewById(R.id.progressBarLayout);
-        progressBar = view.findViewById(R.id.progressBar);
-        progressTextView = view.findViewById(R.id.progressTV);
-        noListLayout = view.findViewById(R.id.no_list_layout);
+        progressBar = view.findViewById(R.id.progress_bar);
+        progressLayout = view.findViewById(R.id.progress_bar_layout);
+        noExpensesLayout = view.findViewById(R.id.no_expenses_layout);
+        noExpensesLayout.setVisibility(View.GONE);
+
+        progressDialog = new ProgressDialog(context);
+
+        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+        expenseReference = FirebaseDatabase.getInstance().getReference().child("Expenses");
+        groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
+        totalExpenditureRef = FirebaseDatabase.getInstance().getReference().child("Total_Expenditures");
+        dueHistoryRef = FirebaseDatabase.getInstance().getReference().child("Due_History");
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        mSpinner.setOnItemSelectedListener(this);
+        spinnerAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, userList);
 
         mView = view;
 
@@ -109,91 +126,87 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
     }
 
     private void init() throws ParseException {
+
         progressLayout.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
-
-        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
-        expenseReference = FirebaseDatabase.getInstance().getReference().child("Expenses");
-        groupReference = FirebaseDatabase.getInstance().getReference().child("Group");
-        totalExpenditureRef = FirebaseDatabase.getInstance().getReference().child("Total_Expenditures");
-        dueHistoryRef = FirebaseDatabase.getInstance().getReference().child("Due_History");
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(linearLayoutManager);
-
-        mSpinner.setOnItemSelectedListener(this);
-        final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, userList);
 
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 if (dataSnapshot.exists()) {
-                    progressLayout.setVisibility(View.GONE);
-                    progressBar.setVisibility(View.GONE);
-                    currentGroupId = dataSnapshot.child("group_id").getValue().toString();
-                    currentUserName = dataSnapshot.child("user_name").getValue().toString();
+                    currentGroupId = dataSnapshot.child("group_id").getValue(String.class);
+                    currentUserName = dataSnapshot.child("user_name").getValue(String.class);
 
-                    expenseReference.child(currentGroupId)
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()) {
-                                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                            for (DataSnapshot de : ds.getChildren()) {
-                                                String name = de.child("name").getValue().toString();
-                                                if (!userList.contains(name)) {
-                                                    userList.add(name);
-                                                }
-                                            }
+                    expenseReference.child(currentGroupId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                            if (dataSnapshot.exists()) {
+                                progressLayout.setVisibility(View.GONE);
+                                progressBar.setVisibility(View.GONE);
+                                noExpensesLayout.setVisibility(View.GONE);
+
+                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                                    for (DataSnapshot de : ds.getChildren()) {
+
+                                        String name = de.child("name").getValue(String.class);
+
+                                        if (!userList.contains(name)) {
+                                            userList.add(name);
+
+                                            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                            int selectedPosition = spinnerAdapter.getPosition(currentUserName);
+                                            mSpinner.setSelection(selectedPosition);
+                                            mSpinner.setAdapter(spinnerAdapter);
                                         }
-
-                                        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                        mSpinner.setAdapter(spinnerAdapter);
-
-                                        Calendar startDate = Calendar.getInstance();
-                                        Date calDate = startDate.getTime();
-                                        SimpleDateFormat format1 = new SimpleDateFormat("dd-MMMM-yyyy");
-                                        date = format1.format(calDate);
-                                        showExpenses(date);
-
-                                        Log.d(TAG, "onDataChange: 1" + currentGroupId);
-
                                     }
                                 }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                Calendar startDate = Calendar.getInstance();
+                                Date calDate = startDate.getTime();
+                                SimpleDateFormat format1 = new SimpleDateFormat("dd-MMMM-yyyy", Locale.ENGLISH);
+                                date = format1.format(calDate);
+                                showExpenses(date);
+                            } else {
+                                progressLayout.setVisibility(View.GONE);
+                                progressBar.setVisibility(View.GONE);
+                                noExpensesLayout.setVisibility(View.VISIBLE);
+                            }
+                        }
 
-                                }
-                            });
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
 
                     groupReference.child(currentGroupId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                             if (dataSnapshot.exists()) {
-                                groupCreatedDate = dataSnapshot.child("group_created_date").getValue().toString();
-                                final String groupCreatedTime = dataSnapshot.child("group_created_time").getValue().toString();
-                                Log.d(TAG, "onDataChange: " + groupCreatedDate);
+                                groupCreatedDate = dataSnapshot.child("group_created_date").getValue(String.class);
+                                final String groupCreatedTime = dataSnapshot.child("group_created_time").getValue(String.class);
+
                                 DatabaseReference db = dueHistoryRef.child(currentGroupId);
                                 Query query = db.orderByKey().limitToLast(1);
 
                                 latestDueDateTime = groupCreatedDate + " " + groupCreatedTime;
+
                                 query.addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                                         if (dataSnapshot.exists()) {
+
                                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                                 String latestDueDate = ds.getKey();
-                                                String latestDueTime = ds.child("time").getValue().toString();
+                                                String latestDueTime = ds.child("time").getValue(String.class);
 
                                                 latestDueDateTime = latestDueDate + " " + latestDueTime;
-
-                                                Log.d(TAG, "onDataChange: if" + latestDueDateTime);
                                             }
-                                        } else {
-
                                         }
                                     }
 
@@ -203,26 +216,27 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                     }
                                 });
 
-                                calanderbuilder = new HorizontalCalendar.Builder(mView, R.id.calendarView);
+                                calenderBuilder = new HorizontalCalendar.Builder(mView, R.id.calendarView);
 
                                 Calendar currentDate = Calendar.getInstance();
                                 currentDate.add(Calendar.MONTH, 0);
                                 currentDate.add(Calendar.DATE, 0);
 
-                                SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy");
+                                SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy", Locale.ENGLISH);
                                 Date groupDate = null;
+
                                 try {
                                     groupDate = sdf.parse(groupCreatedDate);
-                                    Log.d("asd", "onDataChange: 1 :" + groupDate);
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
+
                                 Calendar startDate = Calendar.getInstance();
                                 startDate.setTime(groupDate);
                                 startDate.add(groupDate.getMonth(), 0);
                                 startDate.add(groupDate.getDate(), 0);
 
-                                horizontalCalendar = calanderbuilder.range(startDate, currentDate)
+                                horizontalCalendar = calenderBuilder.range(startDate, currentDate)
                                         .datesNumberOnScreen(5)
                                         .defaultSelectedDate(currentDate)
                                         .build();
@@ -231,7 +245,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                     @Override
                                     public void onDateSelected(Calendar cal, int position) {
                                         Date calDate = cal.getTime();
-                                        SimpleDateFormat format1 = new SimpleDateFormat("dd-MMMM-yyyy");
+                                        SimpleDateFormat format1 = new SimpleDateFormat("dd-MMMM-yyyy", Locale.ENGLISH);
                                         date = format1.format(calDate);
 
                                         showExpenses(date);
@@ -259,66 +273,86 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
         addExpense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
+                final MaterialDialog materialDialog = new MaterialDialog.Builder(context)
                         .title("Add Expense")
                         .customView(R.layout.add_expense_dialog_layout, true)
-                        .positiveText("Add Expense")
-                        .negativeText("Close")
-                        .positiveColor(getResources().getColor(R.color.green))
-                        .negativeColor(getResources().getColor(R.color.red))
+                        .positiveText("Cancel")
+                        .negativeText("Add Expense")
+                        .positiveColor(getResources().getColor(R.color.red))
+                        .negativeColor(getResources().getColor(R.color.green))
                         .show();
 
                 expenseTitle = materialDialog.getCustomView().findViewById(R.id.add_expense_title);
                 expenseAmount = materialDialog.getCustomView().findViewById(R.id.add_expense_amount);
 
-                materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
+                materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         addExpenseToDB(materialDialog);
                     }
                 });
-                materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        materialDialog.dismiss();
-                    }
-                });
             }
         });
-
     }
 
     private void showExpenses(final String date) {
+
         progressLayout.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
-        expenseReference.child(currentGroupId).child(date).addValueEventListener(new ValueEventListener() {
+
+        userReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 if (dataSnapshot.exists()) {
-                    progressLayout.setVisibility(View.GONE);
-                    progressBar.setVisibility(View.GONE);
+                    expenseReference.child(currentGroupId).child(date).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    for (DataSnapshot de : dataSnapshot.getChildren()) {
+                            if (dataSnapshot.exists()) {
 
-                        String userId = de.getKey();
-                        String userName = de.child("name").getValue().toString();
-                        if (userName.equals(selectedUser)) {
-                            noListLayout.setVisibility(View.GONE);
-                            recyclerView.setVisibility(View.VISIBLE);
-                            Query query = FirebaseDatabase.getInstance().getReference().child("Expenses").child(currentGroupId)
-                                    .child(date).child(userId).child("products")
-                                    .limitToLast(50);
+                                progressLayout.setVisibility(View.GONE);
+                                progressBar.setVisibility(View.GONE);
 
-                            displayAllCurrentExpense(query, userId);
+                                Log.d("Pratik", currentGroupId + " " + date + " " + selectedUser);
+
+                                expenseReference.child(currentGroupId).child(date).child(selectedUser)
+                                        .addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                                if (dataSnapshot.exists()) {
+
+                                                    String userId = dataSnapshot.getKey();
+                                                    String userName = dataSnapshot.child("name").getValue(String.class);
+                                                    recyclerView.setVisibility(View.VISIBLE);
+
+                                                    Query query = FirebaseDatabase.getInstance().getReference().child("Expenses").child(currentGroupId)
+                                                            .child(date).child(userId).child("products")
+                                                            .limitToLast(50);
+
+                                                    displayAllCurrentExpense(query);
+                                                } else {
+                                                    noExpensesLayout.setVisibility(View.VISIBLE);
+                                                    recyclerView.setVisibility(View.GONE);
+                                                    progressLayout.setVisibility(View.GONE);
+                                                    progressBar.setVisibility(View.GONE);
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+                            }
                         }
-                    }
-                } else {
-                    noListLayout.setVisibility(View.VISIBLE);
-                    recyclerView.setVisibility(View.GONE);
-                    progressLayout.setVisibility(View.GONE);
-                    progressBar.setVisibility(View.GONE);
 
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             }
 
@@ -327,6 +361,8 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 
             }
         });
+
+
     }
 
     @Override
@@ -360,17 +396,25 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
             expenseTitle.setError("Please enter product name!");
             expenseTitle.requestFocus();
         } else if (TextUtils.isEmpty(amt)) {
-            expenseAmount.setError("Please enter product price!");
+            expenseAmount.setError("Please enter amount!");
+            expenseAmount.requestFocus();
+        } else if (Integer.valueOf(amt) > 10000) {
+            expenseAmount.setError("Amount must not exceed than 10,000!");
             expenseAmount.requestFocus();
         } else {
+            progressDialog.setTitle("Adding Product");
+            progressDialog.setMessage("Please wait...");
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.show();
+
             final int amount = Integer.valueOf(amt);
 
             Calendar callForDate = Calendar.getInstance();
-            SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
+            SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy", Locale.ENGLISH);
             final String date = currentDate.format(callForDate.getTime());
 
             Calendar calForTime = Calendar.getInstance();
-            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
+            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
             final String time = currentTime.format(calForTime.getTime());
 
             HashMap expenseMap = new HashMap();
@@ -381,6 +425,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                         public void onComplete(@NonNull Task task) {
 
                             if (task.isSuccessful()) {
+
                                 token = generateGroupToken();
                                 HashMap userExpenseMap = new HashMap();
                                 userExpenseMap.put("product_name", title);
@@ -393,6 +438,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                         .addOnCompleteListener(new OnCompleteListener() {
                                             @Override
                                             public void onComplete(@NonNull Task task) {
+
                                                 totalExpenditureRef.child(currentGroupId).child(currentUserId)
                                                         .addListenerForSingleValueEvent(new ValueEventListener() {
                                                             @Override
@@ -409,6 +455,8 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                                                     transaction.replace(R.id.content_main_frame, fragment);
                                                                     transaction.addToBackStack(null);
                                                                     transaction.commit();
+
+                                                                    progressDialog.dismiss();
 
                                                                     materialDialog.dismiss();
                                                                 }
@@ -427,7 +475,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
         }
     }
 
-    private void displayAllCurrentExpense(final Query query, final String userId) {
+    private void displayAllCurrentExpense(final Query query) {
 
         ChildEventListener childEventListener = new ChildEventListener() {
             @Override
@@ -476,36 +524,32 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 
                 holder.setProduct_name(model.getProduct_name());
                 holder.setAmount(model.getAmount());
-                Log.d("qwer", "onDataChange: " + latestDueDateTime);
-                Log.d("asd", "onDataChange: asd " + model.getDate());
-                SimpleDateFormat sdtf = new SimpleDateFormat("dd-MMMM-yyyy HH:mm:ss");
+
+                SimpleDateFormat sdtf = new SimpleDateFormat("dd-MMMM-yyyy HH:mm:ss", Locale.ENGLISH);
                 Date productDate = null;
                 Date latestDate = null;
                 try {
                     productDate = sdtf.parse(model.getDate() + " " + model.getTime());
                     latestDate = sdtf.parse(latestDueDateTime);
-                    Log.d("asd", "onDataChange: asd " + latestDueDateTime);
-                    Log.d(TAG, "onBindViewHolder: groupDate" + productDate);
-                    Log.d(TAG, "onBindViewHolder: latestDate" + latestDate);
+
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                Log.d("qwe", "onBindViewHolder: model id"+selectedUser);
-                Log.d("qwe", "onBindViewHolder: current user id"+currentUserId);
 
-                if (userId.equals(currentUserId)){
+                if (model.getId().equals(currentUserId)) {
                     holder.actionLayout.setVisibility(View.VISIBLE);
-                    if (productDate.after(latestDate)) {
-                        holder.actionLayout.setVisibility(View.VISIBLE);
-                    } else if (productDate.before(latestDate)) {
-                        holder.actionLayout.setVisibility(View.GONE);
-                    } else {
-                        holder.actionLayout.setVisibility(View.GONE);
-                    }
                 } else {
                     holder.actionLayout.setVisibility(View.GONE);
                 }
 
+                if (productDate.after(latestDate)) {
+                    holder.actionLayout.setVisibility(View.VISIBLE);
+
+                } else if (productDate.before(latestDate)) {
+                    holder.actionLayout.setVisibility(View.GONE);
+                } else {
+                    holder.actionLayout.setVisibility(View.GONE);
+                }
                 holder.deleteProduct.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -584,7 +628,6 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                                                                     @Override
                                                                                     public void onComplete(@NonNull Task task) {
                                                                                         if (task.isSuccessful()) {
-                                                                                            Log.d(TAG, "onComplete: " + totalAmount);
                                                                                             totalAmount = totalAmount + Integer.valueOf(editProductAmount);
                                                                                             totalExpenditureRef.child(currentGroupId).child(currentUserId).child("total_amount").setValue(totalAmount)
                                                                                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -592,21 +635,9 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
                                                                                                         public void onComplete(@NonNull Task<Void> task) {
                                                                                                             if (task.isSuccessful()) {
                                                                                                                 materialDialog.dismiss();
-//
                                                                                                             }
                                                                                                         }
                                                                                                     });
-//                                                                                    totalExpenditureRef.child(currentGroupId).child(currentUserId).child("total_amount").setValue(editProductAmount)
-//                                                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                                                                                @Override
-//                                                                                                public void onComplete(@NonNull Task<Void> task) {
-//                                                                                                    Fragment fragment = new CurrentExpenses();
-//                                                                                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//                                                                                                    transaction.replace(R.id.content_main_frame, fragment);
-//                                                                                                    transaction.addToBackStack(null);
-//                                                                                                    transaction.commit();
-//                                                                                                }
-//                                                                                            });
                                                                                         }
                                                                                     }
                                                                                 });
@@ -621,8 +652,6 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
 
                                             }
                                         });
-
-
                             }
                         });
                     }
@@ -631,6 +660,7 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
             }
 
         };
+
         adapter.startListening();
         recyclerView.setAdapter(adapter);
     }
@@ -679,5 +709,12 @@ public class CurrentExpenses extends Fragment implements AdapterView.OnItemSelec
         if (adapter != null) {
             adapter.startListening();
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        this.context = context;
     }
 }

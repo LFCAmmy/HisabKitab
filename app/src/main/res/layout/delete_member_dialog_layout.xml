@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:text="@string/delete_member_message"
+        android:fontFamily="@font/dosis"
         android:textSize="16sp"/>
 
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package susankyatech.com.hisabkitab.Fragments;
+package com.susankya.abhinav.myrealmapplication.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -7,11 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import susankyatech.com.hisabkitab.R;
+import com.susankya.abhinav.myrealmapplication.R;
 
-public class AboutFragment extends Fragment {
+public class AboutApp extends Fragment {
 
-    public AboutFragment() {}
+    public AboutApp() {}
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

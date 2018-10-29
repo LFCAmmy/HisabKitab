@@ -31,7 +31,9 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="@string/no_history_message"/>
+            android:fontFamily="@font/dosis"
+            android:text="@string/no_history_message"
+            android:textSize="17sp"/>
 
     </RelativeLayout>
 
@@ -52,13 +54,14 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/spinner"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="20dp">
 
             <TextView
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:text="@string/total_amount"
+                android:fontFamily="@font/dosis"
                 android:textSize="16sp"/>
 
             <TextView
@@ -67,6 +70,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="23dp"
                 android:text="@string/each_amount"
+                android:fontFamily="@font/dosis"
                 android:textSize="16sp"/>
 
         </RelativeLayout>
@@ -76,7 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/spinner"
             android:layout_toEndOf="@id/one"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="20dp">
 
             <TextView
                 android:id="@+id/total_amount"
@@ -84,6 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:text="@string/price_amount"
+                android:fontFamily="@font/dosis"
                 android:textSize="16sp"/>
 
             <TextView
@@ -93,6 +98,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="23dp"
                 android:text="@string/price_amount"
+                android:fontFamily="@font/dosis"
                 android:textSize="16sp"/>
 
         </RelativeLayout>
@@ -109,6 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:text="@string/name"
+                android:fontFamily="@font/dosis"
                 android:textSize="17sp" />
 
         </RelativeLayout>
@@ -126,6 +133,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:text="@string/total_spent"
+                android:fontFamily="@font/dosis"
                 android:textSize="17sp" />
 
         </RelativeLayout>
@@ -142,6 +150,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:text="@string/due_amount"
+                android:fontFamily="@font/dosis"
                 android:textSize="17sp" />
 
         </RelativeLayout>

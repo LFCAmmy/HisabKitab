@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="susankyatech.com.hisabkitab">
+    package="com.susankya.abhinav.myrealmapplication">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -14,7 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.Login">
+        <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,11 +21,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.Register"
-            android:parentActivityName=".Activity.Login" />
-        <activity android:name=".Activity.Welcome" />
-        <activity android:name=".Activity.AdminMain"/>
-        <activity android:name=".Activity.MemberMain"/>
+            android:name=".activity.RegisterActivity"
+            android:parentActivityName=".activity.LoginActivity" />
+        <activity android:name=".activity.CreateGroupActivity" />
+        <activity android:name=".activity.AdminActivity" />
+        <activity android:name=".activity.MemberActivity" />
+        <activity android:name=".activity.JoinGroupActivity" />
+        <activity android:name=".activity.WelcomeActivity"/>
     </application>
 
 </manifest>

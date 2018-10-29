@@ -15,6 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="@string/name"
+            android:fontFamily="@font/dosis"
             android:textSize="16sp"/>
 
     </RelativeLayout>
@@ -31,6 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="@string/total_spent"
+            android:fontFamily="@font/dosis"
             android:textSize="16sp" />
 
     </RelativeLayout>
@@ -47,6 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="@string/due_amount"
+            android:fontFamily="@font/dosis"
             android:textSize="16sp"/>
 
     </RelativeLayout>

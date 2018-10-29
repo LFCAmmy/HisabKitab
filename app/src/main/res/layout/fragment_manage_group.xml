@@ -1,183 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/coordinatorLayout"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:fontFamily="@font/dosis"
+        android:text="@string/signed_as"
+        android:textSize="18sp"
+        android:textStyle="bold"/>
 
-        <RelativeLayout
-            android:id="@+id/one"
-            android:layout_width="180dp"
-            android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/user_email_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/one"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/dosis"
+        android:text="@string/email"
+        android:textSize="16sp" />
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/display_group_image"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="30dp"
-                android:src="@drawable/ic_launcher_background"/>
+    <TextView
+        android:id="@+id/user_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/user_email_tv"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/dosis"
+        android:padding="5dp"
+        android:text="@string/username"
+        android:textSize="17sp" />
 
-            <TextView
-                android:id="@+id/group_name_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/display_group_image"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="15dp"
-                android:text="@string/group_name"
-                android:textSize="16sp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/user_name_tv"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/text_layout"
+        android:fontFamily="@font/dosis"
+        android:padding="10dp"
+        android:text="@string/change_group_name"
+        android:textSize="16sp" />
 
-        </RelativeLayout>
+    <Button
+        android:id="@+id/change_group_name_btn"
+        android:layout_width="48dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/user_name_tv"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="43dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/button_layout"
+        android:drawableEnd="@drawable/ic_edit"
+        android:padding="10dp" />
 
-        <RelativeLayout
-            android:layout_width="150dp"
-            android:layout_height="130dp"
-            android:layout_toEndOf="@id/one">
+    <TextView
+        android:id="@+id/two"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/change_group_name_btn"
+        android:layout_marginStart="21dp"
+        android:layout_marginTop="3dp"
+        android:fontFamily="@font/dosis"
+        android:text="@string/current"
+        android:textSize="15sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:text="@string/signed_as"
-                android:textSize="16sp"/>
+    <TextView
+        android:id="@+id/group_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/change_group_name_btn"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="3dp"
+        android:layout_toEndOf="@id/two"
+        android:fontFamily="@font/dosis"
+        android:textSize="15sp" />
 
-            <TextView
-                android:id="@+id/user_email_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="80dp"
-                android:text="@string/email"
-                android:textSize="16sp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/group_name_tv"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/text_layout"
+        android:fontFamily="@font/dosis"
+        android:padding="10dp"
+        android:text="@string/change_max_members"
+        android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/user_name_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/user_email_tv"
-                android:layout_centerHorizontal="true"
-                android:text="@string/name"
-                android:textSize="16sp"/>
+    <Button
+        android:id="@+id/change_max_members_btn"
+        android:layout_width="48dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/group_name_tv"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/button_layout"
+        android:drawableEnd="@drawable/ic_edit"
+        android:padding="10dp" />
 
-        </RelativeLayout>
+    <TextView
+        android:id="@+id/three"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/change_max_members_btn"
+        android:layout_marginStart="21dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/dosis"
+        android:text="@string/current"
+        android:textSize="15sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/one"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="50dp"
-            android:padding="10dp"
-            android:text="@string/change_group_name"
-            android:textSize="15sp"
-            android:background="@drawable/button_layout"/>
+    <TextView
+        android:id="@+id/group_max_members_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/change_max_members_btn"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@id/three"
+        android:fontFamily="@font/dosis"
+        android:textSize="15sp" />
 
-        <Button
-            android:id="@+id/change_group_name_btn"
-            android:layout_width="45dp"
-            android:layout_height="35dp"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/one"
-            android:layout_marginTop="60dp"
-            android:layout_marginEnd="10dp"
-            android:padding="10dp"
-            android:background="@drawable/button_layout"
-            android:drawableEnd="@drawable/ic_edit"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/change_max_members_btn"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="70dp"
+        android:background="@drawable/text_layout"
+        android:fontFamily="@font/dosis"
+        android:padding="10dp"
+        android:text="@string/update_group_members"
+        android:textSize="16sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/change_group_name_btn"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="10dp"
-            android:padding="10dp"
-            android:text="@string/change_group_image"
-            android:textSize="15sp"
-            android:background="@drawable/button_layout"/>
+    <Button
+        android:id="@+id/update_group_members_btn"
+        android:layout_width="46dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/change_max_members_btn"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="70dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/button_layout"
+        android:drawableEnd="@drawable/ic_edit"
+        android:padding="8dp" />
 
-        <Button
-            android:id="@+id/change_group_image_btn"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/change_group_name_btn"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="10dp"
-            android:padding="10dp"
-            android:background="@drawable/button_layout"
-            android:drawableEnd="@drawable/ic_edit"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/change_group_image_btn"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="10dp"
-            android:padding="10dp"
-            android:text="@string/change_max_members"
-            android:textSize="15sp"
-            android:background="@drawable/button_layout"/>
-
-        <Button
-            android:id="@+id/change_max_members_btn"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/change_group_image_btn"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="10dp"
-            android:padding="10dp"
-            android:background="@drawable/button_layout"
-            android:drawableEnd="@drawable/ic_edit"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/change_max_members_btn"
-            android:layout_marginStart="21dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/current"
-            android:textSize="14sp"/>
-
-        <TextView
-            android:id="@+id/current_group_max_members_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/change_max_members_btn"
-            android:layout_marginStart="82dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/current_members"
-            android:textSize="14sp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/change_max_members_btn"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="50dp"
-            android:padding="10dp"
-            android:text="@string/update_group_members"
-            android:textSize="15sp"
-            android:background="@drawable/button_layout"/>
-
-        <Button
-            android:id="@+id/update_group_members_btn"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/change_max_members_btn"
-            android:layout_marginTop="50dp"
-            android:layout_marginEnd="10dp"
-            android:padding="10dp"
-            android:background="@drawable/button_layout"
-            android:drawableEnd="@drawable/ic_edit"/>
-
-    </RelativeLayout>
-
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>

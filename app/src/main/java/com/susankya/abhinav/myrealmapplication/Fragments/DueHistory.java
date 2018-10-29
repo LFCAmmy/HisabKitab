@@ -1,4 +1,4 @@
-package susankyatech.com.hisabkitab.Fragments;
+package com.susankya.abhinav.myrealmapplication.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -26,12 +26,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.susankya.abhinav.myrealmapplication.DueAmount;
+import com.susankya.abhinav.myrealmapplication.R;
+import com.susankya.abhinav.myrealmapplication.UserDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import susankyatech.com.hisabkitab.DueAmount;
-import susankyatech.com.hisabkitab.R;
-import susankyatech.com.hisabkitab.UserDataModel;
 
 public class DueHistory extends Fragment implements AdapterView.OnItemSelectedListener {
 

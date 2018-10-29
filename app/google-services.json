@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:843137247356:android:4417ac9f3e4feb50",
         "android_client_info": {
-          "package_name": "susankyatech.com.hisabkitab"
+          "package_name": "com.susankya.abhinav.myrealmapplication"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "843137247356-7mo2r45hfcun7qoegihodme06mcifd2c.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "susankyatech.com.hisabkitab",
+            "package_name": "com.susankya.abhinav.myrealmapplication",
             "certificate_hash": "e5e598c874eb2ac2d539e1bf51ddfe89b8715240"
           }
         },
